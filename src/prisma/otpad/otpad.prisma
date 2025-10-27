@@ -1,0 +1,59 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_OTPAD_URL")
+}
+
+model JciPodaci {
+  id           Int            @id @default(autoincrement())
+  zemlja       Zemlja
+  datum        DateTime
+  operacija    Operacija
+  brojJci      String
+  jciProizvodi JciProizvodi[]
+}
+
+model JciProizvodi {
+  id          Int       @id @default(autoincrement())
+  kolicina    Float
+  proizvod    Proizvodi @relation(fields: [proizvodId], references: [id])
+  jci         JciPodaci @relation(fields: [jciPodaciId], references: [id])
+  proizvodId  Int
+  jciPodaciId Int
+}
+
+model Proizvodi {
+  id                 Int                  @id @default(autoincrement())
+  proizvod           String
+  JciProizvodi       JciProizvodi[]
+  ProizvodMasaOtpada ProizvodMasaOtpada[]
+}
+
+model VrsteOtpada {
+  id                 Int                  @id @default(autoincrement())
+  vrstaOtpada        String
+  ProizvodMasaOtpada ProizvodMasaOtpada[]
+}
+
+model ProizvodMasaOtpada {
+  id            Int         @id @default(autoincrement())
+  Proizvod      Proizvodi   @relation(fields: [proizvodiId], references: [id])
+  VrstaOtpada   VrsteOtpada @relation(fields: [vrsteOtpadaId], references: [id])
+  masa          Float
+  proizvodiId   Int
+  vrsteOtpadaId Int
+}
+
+enum Operacija {
+  UVOZ
+  IZVOZ
+}
+
+enum Zemlja {
+  SRBIJA
+  CRNAGORA
+}

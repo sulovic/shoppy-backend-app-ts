@@ -1,0 +1,46 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_REKLAMACIJE_URL")
+}
+
+model Reklamacije {
+  broj_reklamacije   String            @id @unique
+  zemlja_reklamacije ZemljaReklamacije
+  datum_prijema      DateTime?
+  odgovorna_osoba    String?
+  ime_prezime        String
+  adresa             String?
+  telefon            String
+  email              String?
+  datum_kupovine     DateTime?
+  broj_racuna        String?
+  naziv_poizvoda     String?
+  opis_reklamacije   String?           @db.VarChar(512)
+  datum_odgovora     DateTime?
+  opis_odluke        String?           @db.VarChar(512)
+  komentar           String?           @db.VarChar(512)
+  sms_sent           Boolean?
+  status_reklamacije StatusReklamacije
+  files              Json?
+}
+
+enum StatusReklamacije {
+  PRIJEM
+  OBRADA
+  OPRAVDANA
+  NEOPRAVDANA
+  DODATNIROK
+}
+
+enum ZemljaReklamacije {
+  SRBIJA
+  CRNAGORA
+}

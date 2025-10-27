@@ -1,0 +1,54 @@
+generator client {
+    provider = "prisma-client-js"
+    output   = "client"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_NABAVKE_URL")
+}
+
+model Porudzbine {
+    id              Int       @id @default(autoincrement())
+    proFaktura      String    @db.VarChar(64)
+    datumPorudzbine DateTime
+    dobavljac       String    @db.VarChar(64)
+    sadrzaj         Sadrzaj[]
+    brojKontejnera  String?   @db.VarChar(64)
+    datumPolaska    DateTime?
+    datumPrijema    DateTime?
+    spediter        String?   @db.VarChar(64)
+    komentar        String?   @db.VarChar(512)
+    files           Json?
+    status          Statusi
+    zemlja          Zemlje
+}
+
+model Sadrzaj {
+    id           Int        @id @default(autoincrement())
+    porudzbina   Porudzbine @relation(fields: [porudzbinaId], references: [id])
+    porudzbinaId Int
+    proizvod     Proizvodi  @relation(fields: [proizvodId], references: [id])
+    proizvodId   Int
+    kolicina     Int
+    cena         Float
+}
+
+model Proizvodi {
+    id      Int       @id @default(autoincrement())
+    naziv   String    @db.VarChar(64)
+    SKU     String    @unique @db.VarChar(64)
+    sadrzaj Sadrzaj[]
+}
+
+enum Statusi {
+    NACRT
+    PROIZVODNJA
+    TRANZIT
+    PRIMLJENA
+}
+
+enum Zemlje {
+    SRBIJA
+    CRNAGORA
+}

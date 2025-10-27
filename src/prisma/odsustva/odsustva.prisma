@@ -1,0 +1,36 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_ODSUSTVA_URL")
+}
+
+model EvidencijaOdsustva {
+  id            Int          @id @default(autoincrement())
+  user          String
+  vrstaOdsustva VrsteOdsusva
+  start         DateTime
+  end           DateTime
+  brojDana      Int
+  odobreno      Boolean
+  odobrioUser   String?
+}
+
+model DodeljenaOdsustva {
+  id            Int          @id @default(autoincrement())
+  user          String
+  vrstaOdsustva VrsteOdsusva
+  godina        Int
+  brojDana      Int
+  dodelioUser   String
+}
+
+enum VrsteOdsusva {
+  GODISNJI_ODMOR
+  SLUZBENI_PUT_U_ZEMLJI
+  SLUZBENI_PUT_U_INOSTRANSTVO
+  PLACENO_ODSUSTVO
+}
