@@ -1,18 +1,14 @@
-import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
+import jwt = from "jsonwebtoken";
 
-interface RequestWithAuth extends Request {
-  auth?: AuthUser;
-}
-
-const verifyAccessToken = async (req: RequestWithAuth, res: Response, next: NextFunction) => {
+const verifyAccessToken = async (req, res, next) => {
   try {
     const authHeader = req?.headers?.authorization;
-
+    
     if (!authHeader) {
       return res.status(401).json({ error: "Unauthorized - Missing Authorization Header" });
     }
-    const accessToken: string = authHeader.split(" ")[1];
+
+    const accessToken = authHeader.split(" ")[1];
 
     if (!accessToken) {
       return res.status(401).json({ error: "Unauthorized - Missing Access Token" });
@@ -20,14 +16,12 @@ const verifyAccessToken = async (req: RequestWithAuth, res: Response, next: Next
 
     // Verify the accessToken signature
 
-    const decodedAccessToken = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET!) as JWTPayload;
+    const decodedAccessToken = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
 
-    //Attach authUser for future use
-
-    req.auth = decodedAccessToken.user;
+    req.user = decodedAccessToken;
 
     next();
-  } catch (error: any) {
+  } catch (error) {
     if (error.name === "JsonWebTokenError") {
       return res.status(401).json({ error: "Unauthorized - Invalid Access Token" });
     } else if (error.name === "TokenExpiredError") {
