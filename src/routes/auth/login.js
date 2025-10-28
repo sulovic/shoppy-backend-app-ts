@@ -1,9 +1,10 @@
-const { PrismaClient } = require("../../prisma/users/client");
+import express from "express";
+import jwt from "jsonwebtoken";
+import { PrismaClient } from "../../prisma/users/client/index.js";
+import verifyGoogleToken from "../../middleware/verifyGoogleToken.js";
+
 const prisma = new PrismaClient();
-const express = require("express");
 const router = express.Router();
-const jwt = require("jsonwebtoken");
-const verifyGoogleToken = require("../../middleware/verifyGoogleToken");
 
 router.post("/", async (req, res) => {
   try {

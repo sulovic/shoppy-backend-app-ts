@@ -11,24 +11,28 @@ datasource db {
 model EvidencijaOdsustva {
   id            Int          @id @default(autoincrement())
   user          String
-  vrstaOdsustva VrsteOdsusva
+  vrstaOdsustva VrsteOdsutva
   start         DateTime
   end           DateTime
   brojDana      Int
-  odobreno      Boolean
+  odobreno      Boolean      @default(false)
   odobrioUser   String?
+
+  @@index([user])
 }
 
 model DodeljenaOdsustva {
   id            Int          @id @default(autoincrement())
   user          String
-  vrstaOdsustva VrsteOdsusva
+  vrstaOdsustva VrsteOdsutva
   godina        Int
   brojDana      Int
   dodelioUser   String
+
+  @@index([user, godina])
 }
 
-enum VrsteOdsusva {
+enum VrsteOdsutva {
   GODISNJI_ODMOR
   SLUZBENI_PUT_U_ZEMLJI
   SLUZBENI_PUT_U_INOSTRANSTVO

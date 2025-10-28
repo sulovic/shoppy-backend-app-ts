@@ -12,19 +12,23 @@ datasource db {
 }
 
 model Users {
-  email       String    @id @unique
-  ime_prezime String
-  role_id     Int
-  role        UserRoles @relation(fields: [role_id], references: [role_id])
+  userId       Int       @id @default(autoincrement())
+  email        String    @unique
+  firstName    String
+  lastName     String
+  passwordHash String?
+  role_id      Int
+  role         UserRoles @relation(fields: [role_id], references: [role_id])
+  refreshToken String?
+  createdAt    DateTime  @default(now())
+  deletedAt    DateTime?
+  deleted      Boolean   @default(false)
+
+  @@index([email])
 }
 
 model UserRoles {
   role_id Int     @id @unique
   role    String  @unique
   users   Users[]
-}
-
-model Tokens {
-  email        String  @id @unique
-  refreshToken String? @db.VarChar(512)
 }

@@ -10,18 +10,20 @@ datasource db {
 
 model Porudzbine {
     id              Int       @id @default(autoincrement())
-    proFaktura      String    @db.VarChar(64)
+    proFaktura      String
+    dobavljac       String
+    spediter        String?
     datumPorudzbine DateTime
-    dobavljac       String    @db.VarChar(64)
-    sadrzaj         Sadrzaj[]
-    brojKontejnera  String?   @db.VarChar(64)
     datumPolaska    DateTime?
     datumPrijema    DateTime?
-    spediter        String?   @db.VarChar(64)
-    komentar        String?   @db.VarChar(512)
+    sadrzaj         Sadrzaj[]
+    brojKontejnera  String?
+    komentar        String?
     files           Json?
     status          Statusi
     zemlja          Zemlje
+
+    @@index([zemlja, status])
 }
 
 model Sadrzaj {
@@ -36,8 +38,8 @@ model Sadrzaj {
 
 model Proizvodi {
     id      Int       @id @default(autoincrement())
-    naziv   String    @db.VarChar(64)
-    SKU     String    @unique @db.VarChar(64)
+    naziv   String
+    SKU     String    @unique
     sadrzaj Sadrzaj[]
 }
 
@@ -50,5 +52,5 @@ enum Statusi {
 
 enum Zemlje {
     SRBIJA
-    CRNAGORA
+    CRNA_GORA
 }

@@ -12,24 +12,27 @@ datasource db {
 }
 
 model Reklamacije {
-  broj_reklamacije   String            @id @unique
-  zemlja_reklamacije ZemljaReklamacije
-  datum_prijema      DateTime?
-  odgovorna_osoba    String?
-  ime_prezime        String
-  adresa             String?
-  telefon            String
-  email              String?
-  datum_kupovine     DateTime?
-  broj_racuna        String?
-  naziv_poizvoda     String?
-  opis_reklamacije   String?           @db.VarChar(512)
-  datum_odgovora     DateTime?
-  opis_odluke        String?           @db.VarChar(512)
-  komentar           String?           @db.VarChar(512)
-  sms_sent           Boolean?
-  status_reklamacije StatusReklamacije
-  files              Json?
+  idReklamacije     Int               @id @default(autoincrement())
+  brojReklamacije   String            @unique
+  zemljaReklamacije ZemljaReklamacije
+  datumPrijema      DateTime?
+  odgovornaOsoba    String?
+  imePrezime        String
+  adresa            String?
+  telefon           String
+  email             String?
+  datumKupovine     DateTime?
+  brojRacuna        String?
+  nazivProizvoda    String?
+  opisReklamacije   String?
+  datumOdgovora     DateTime?
+  opisOdluke        String?
+  komentar          String?
+  smsSent           Boolean           @default(false)
+  statusReklamacije StatusReklamacije
+  files             Json?
+
+  @@index([zemljaReklamacije, statusReklamacije])
 }
 
 enum StatusReklamacije {
@@ -37,10 +40,10 @@ enum StatusReklamacije {
   OBRADA
   OPRAVDANA
   NEOPRAVDANA
-  DODATNIROK
+  DODATNI_ROK
 }
 
 enum ZemljaReklamacije {
   SRBIJA
-  CRNAGORA
+  CRNA_GORA
 }

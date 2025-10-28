@@ -15,6 +15,8 @@ model JciPodaci {
   operacija    Operacija
   brojJci      String
   jciProizvodi JciProizvodi[]
+
+  @@index([zemlja, operacija, brojJci])
 }
 
 model JciProizvodi {
@@ -41,11 +43,11 @@ model VrsteOtpada {
 
 model ProizvodMasaOtpada {
   id            Int         @id @default(autoincrement())
-  Proizvod      Proizvodi   @relation(fields: [proizvodiId], references: [id])
-  VrstaOtpada   VrsteOtpada @relation(fields: [vrsteOtpadaId], references: [id])
+  Proizvod      Proizvodi   @relation(fields: [proizvodId], references: [id])
+  VrstaOtpada   VrsteOtpada @relation(fields: [vrstaOtpadaId], references: [id])
   masa          Float
-  proizvodiId   Int
-  vrsteOtpadaId Int
+  proizvodId    Int
+  vrstaOtpadaId Int
 }
 
 enum Operacija {
@@ -55,5 +57,5 @@ enum Operacija {
 
 enum Zemlja {
   SRBIJA
-  CRNAGORA
+  CRNA_GORA
 }
