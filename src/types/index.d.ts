@@ -10,7 +10,8 @@ interface ProcessEnv {
   GOOGLE_CLIENT_ID: string;
 }
 
-declare type NewUser = {
+declare type UserData = {
+  userId: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -37,10 +38,4 @@ declare type QueryParams = {
   page?: string;
   search?: string;
   filters: Record<string, string>?;
-};
-
-declare type JWTPayload = {
-  user: AuthUser;
-  iat: number;
-  exp: number;
 };
