@@ -10,19 +10,33 @@ interface ProcessEnv {
   GOOGLE_CLIENT_ID: string;
 }
 
-declare type GoogleUser = {
-  email?: string;
-  name?: string;
-  picture?: string;
-  sub?: string;
+declare type NewUser = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  passwordHash: string | null;
+  roleId: number;
+  role: string;
 };
 
 declare type AuthUser = {
-  name: string;
+  userId: string;
+  firstName: string;
+  lastName: string;
   email: string;
-  picture: string;
-  roleId: number;
+  role_id: 1001 | 3001 | 5001;
   role: string;
+  picture: string;
+  superAdmin: boolean;
+};
+
+declare type QueryParams = {
+  sortBy?: string;
+  sortOrder?: string;
+  limit?: string;
+  page?: string;
+  search?: string;
+  filters: Record<string, string>?;
 };
 
 declare type JWTPayload = {

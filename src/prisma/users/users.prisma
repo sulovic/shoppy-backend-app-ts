@@ -1,7 +1,4 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-generator client {
+generator usersClient {
   provider = "prisma-client-js"
   output   = "client"
 }
@@ -17,18 +14,18 @@ model Users {
   firstName    String
   lastName     String
   passwordHash String?
-  role_id      Int
-  role         UserRoles @relation(fields: [role_id], references: [role_id])
+  roleId       Int
   refreshToken String?
   createdAt    DateTime  @default(now())
   deletedAt    DateTime?
   deleted      Boolean   @default(false)
+  role         UserRoles @relation(fields: [roleId], references: [roleId])
 
   @@index([email])
 }
 
 model UserRoles {
-  role_id Int     @id @unique
-  role    String  @unique
-  users   Users[]
+  roleId Int     @id
+  role   String  @unique
+  users  Users[]
 }

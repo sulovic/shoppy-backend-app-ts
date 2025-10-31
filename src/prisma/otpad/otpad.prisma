@@ -1,4 +1,4 @@
-generator client {
+generator otpadClient {
   provider = "prisma-client-js"
   output   = "client"
 }
