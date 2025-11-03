@@ -1,5 +1,4 @@
 import userModel from "../models/userModel.js";
-import { Users } from "../prisma/users/client/index.js";
 import { Request, Response, NextFunction } from "express";
 
 const getAllUsersController = async (req: Request, res: Response, next: NextFunction) => {
@@ -155,7 +154,7 @@ const getUserController = async (req: Request, res: Response, next: NextFunction
 
 const createUserController = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
   try {
-    const user: NewUser = req.body;
+    const user: Omit<UserData, "userId"> = req.body;
     const newUser = await userModel.createUser(user);
     return res.status(201).json(newUser);
   } catch (err) {
@@ -165,8 +164,8 @@ const createUserController = async (req: Request, res: Response, next: NextFunct
 
 const updateUserController = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
   try {
-    const user: UserPublicDataType = req.body;
-    const updatedUser: UserPublicDataType = await userModel.updateUser(user);
+    const user: NewUser = req.body;
+    const updatedUser = await userModel.updateUser(user);
     return res.status(200).json(updatedUser);
   } catch (err) {
     next(err);

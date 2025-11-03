@@ -1,3 +1,5 @@
+import { userDataSchema, authUserSchema, queryParamsSchema } from "../schemas/schemas";
+
 interface ProcessEnv {
   PORT: string;
   DATABASE_USERS_URL: string;
@@ -10,32 +12,8 @@ interface ProcessEnv {
   GOOGLE_CLIENT_ID: string;
 }
 
-declare type UserData = {
-  userId: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  passwordHash: string | null;
-  roleId: number;
-  role: string;
-};
-
-declare type AuthUser = {
-  userId: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  role_id: 1001 | 3001 | 5001;
-  role: string;
-  picture: string;
-  superAdmin: boolean;
-};
-
-declare type QueryParams = {
-  sortBy?: string;
-  sortOrder?: string;
-  limit?: string;
-  page?: string;
-  search?: string;
-  filters: Record<string, string>?;
-};
+declare global {
+  type UserData = z.infer<typeof userDataSchema>;
+  type AuthUser = z.infer<typeof authUserSchema>;
+  type QueryParams = z.infer<typeof queryParamsSchema>;
+}
