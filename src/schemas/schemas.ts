@@ -7,7 +7,6 @@ export const userSensitiveDataSchema = z.object({
   email: z.email("Invalid email"),
   passwordHash: z.string().nullable().optional(),
   refreshToken: z.string().nullable().optional(),
-  createdAt: z.date(),
   roleId: z.number().int(),
 });
 

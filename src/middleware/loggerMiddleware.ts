@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import type { Request, Response, NextFunction } from "express";
 import winston from "winston";
 
 // Create logger
@@ -19,12 +19,13 @@ if (process.env.NODE_ENV !== "production") {
 
 // Request logger middleware
 function requestLogger(req: Request, res: Response, next: NextFunction) {
+  const { password, ...safeBody } = req.body || {};
   logger.info({
     message: "Request logged",
     method: req.method,
     path: req.path,
     query: req.query,
-    body: req.body,
+    body: safeBody,
     timestamp: new Date().toISOString(),
   });
   next();
@@ -33,7 +34,7 @@ function requestLogger(req: Request, res: Response, next: NextFunction) {
 // Error logger middleware
 function errorLogger(err: Error, req: Request, res: Response, next: NextFunction) {
   logger.error({
-    message: "Error logged",
+    message: err.message,
     error: err.stack,
     method: req.method,
     path: req.path,
@@ -42,7 +43,7 @@ function errorLogger(err: Error, req: Request, res: Response, next: NextFunction
   next(err);
 }
 
-export default {
+export {
   requestLogger,
   errorLogger,
   logger,

@@ -1,7 +1,7 @@
-import userModel from "../models/userModel.js";
-import { Request, Response, NextFunction } from "express";
-import { userDataSchema, queryParamsSchema } from "../schemas/schemas";
-import { Prisma } from "@prisma/users-client";
+import userModel from "../models/userModel.ts";
+import type { Request, Response, NextFunction } from "express";
+import { userDataSchema, queryParamsSchema, userSensitiveDataSchema } from "../schemas/schemas.ts";
+import { Prisma } from "../prisma/users/client/client.js";
 
 const getAllUsersController = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -131,8 +131,15 @@ const getUserController = async (req: Request, res: Response, next: NextFunction
 
 const createUserController = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
   try {
-    const parsedUser = userDataSchema.omit({ userId: true }).parse(req.body);
-    const createdUserSensitiveData = await userModel.createUser(parsedUser);
+    const { roleId, ...parsedUser } = userSensitiveDataSchema.omit({ userId: true }).parse(req.body);
+
+    const userDataForCreation: Prisma.UsersCreateInput = {
+      ...parsedUser,
+      role: { connect: { roleId } }
+    };
+
+    const createdUserSensitiveData = await userModel.createUser(userDataForCreation);
+
 
     const createdUserData: UserData = {
       userId: createdUserSensitiveData.userId,
@@ -151,8 +158,15 @@ const createUserController = async (req: Request, res: Response, next: NextFunct
 
 const updateUserController = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
   try {
-    const parsedUser = userDataSchema.parse(req.body);
-    const updatedUserSensitiveData = await userModel.updateUser(parsedUser.userId, parsedUser);
+    const userId: number = parseInt(req.params.userId);
+    const { roleId, ...parsedUser } = userSensitiveDataSchema.omit({ userId: true }).parse(req.body);
+
+    const userDataForUpdate: Prisma.UsersUpdateInput = {
+      ...parsedUser,
+      role: { connect: { roleId } }
+    };
+
+    const updatedUserSensitiveData = await userModel.updateUser(userId, userDataForUpdate);
 
     const updatedUser: UserData = {
       userId: updatedUserSensitiveData.userId,

@@ -1,6 +1,6 @@
 generator nabavkeClient {
     provider = "prisma-client-js"
-  output   = "../../../node_modules/@prisma/nabavke-client"
+    output   = "client"
 }
 
 datasource db {

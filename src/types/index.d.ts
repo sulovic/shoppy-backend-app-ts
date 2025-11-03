@@ -1,4 +1,4 @@
-import { userDataSchema, userSensitiveDataSchema, queryParamsSchema } from "../schemas/schemas";
+import { userDataSchema, userSensitiveDataSchema, queryParamsSchema } from "../schemas/schemas.ts";
 
 interface ProcessEnv {
   PORT: string;
@@ -16,4 +16,9 @@ declare global {
   type UserData = z.infer<typeof userDataSchema>;
   type UserSensitiveData = z.infer<typeof userSensitiveDataSchema>;
   type QueryParams = z.infer<typeof queryParamsSchema>;
+  type JWTPayload = {
+    user: UserData;
+    iat: number;
+    exp: number;
+  };
 }

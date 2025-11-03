@@ -1,20 +1,31 @@
 import dotenv from "dotenv";
-import express, { Request, Response, NextFunction } from "express";
+import express from "express";
+import type { Request, Response, NextFunction } from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import corsConfig from "./config/cors.js";
+import corsConfig from "./config/cors.ts";
+import { Prisma } from "@prisma/client";
 import rateLimiter from "./middleware/rateLimiter.ts";
 import verifyAccessToken from "./utils/verifyAccessToken.ts";
+import { requestLogger, errorLogger } from "./middleware/loggerMiddleware.ts";
 import { ZodError } from "zod";
 import userRouter from "./routes/users.ts";
+import errorHandler from "./middleware/errorHandler.ts";
 
 dotenv.config();
 const app = express();
+
+const port = process.env.PORT || 3010;
+
 
 app.use(cors(corsConfig as any));
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(cookieParser());
+app.use(rateLimiter(1, 100))
+app.use(requestLogger);
+app.use(errorLogger);
+
 
 app.use("/users", userRouter);
 
@@ -60,25 +71,9 @@ app.use("/public/reklamacije", require("./routes/reklamacije/reklamacijePublic")
 
 */
 
-// Basic error handler (mirrors original project's behavior)
-app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-  if (err instanceof SyntaxError && (err as any).status === 400 && "body" in err) {
-    return res.status(400).json({ error: "Invalid JSON format" });
-  }
-  // Handle Zod validation errors
-  if (err instanceof ZodError) {
-    return res.status(400).json({
-      error: "Validation error",
-      details: err.message,
-    });
-  }
-  if (err && err.message === "File type not allowed") {
-    return res.status(400).json({ error: "File type not allowed" });
-  }
-  return res.status(500).json({ error: "Internal server error" });
-});
+app.use(errorHandler);
 
-const port = process.env.PORT || 3010;
+
 
 const server = app.listen(Number(port), () => {
   console.log(`TS server running at http://localhost:${port}/`);
