@@ -1,11 +1,12 @@
 {
   "name": "rest-api-ts",
   "version": "0.1.0",
+  "type": "module",
   "private": true,
   "scripts": {
     "build": "tsc",
     "start": "node dist/server.js",
-    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "dev": "nodemon --watch src --ext ts --exec \"ts-node --esm src/server.ts\"",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -28,6 +29,7 @@
     "@types/jsonwebtoken": "^9.0.2",
     "@types/multer": "^1.4.7",
     "@types/node": "^20.19.23",
+    "nodemon": "^3.1.10",
     "ts-node": "^10.9.1",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.5.6"

@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
 interface RequestWithAuth extends Request {
-  auth?: AuthUser;
+  auth?: UserData;
 }
 
 const verifyAccessToken = async (req: RequestWithAuth, res: Response, next: NextFunction) => {

@@ -1,4 +1,4 @@
-import { userDataSchema, authUserSchema, queryParamsSchema } from "../schemas/schemas";
+import { userDataSchema, userSensitiveDataSchema, queryParamsSchema } from "../schemas/schemas";
 
 interface ProcessEnv {
   PORT: string;
@@ -14,6 +14,6 @@ interface ProcessEnv {
 
 declare global {
   type UserData = z.infer<typeof userDataSchema>;
-  type AuthUser = z.infer<typeof authUserSchema>;
+  type UserSensitiveData = z.infer<typeof userSensitiveDataSchema>;
   type QueryParams = z.infer<typeof queryParamsSchema>;
 }

@@ -1,8 +1,10 @@
-const { PrismaClient } = require("../prisma/users/client");
+import { PrismaClient } from "@prisma/users-client";
+import express from "express";
+import checkUserRole from "../middleware/checkUserRole.ts";
+
 const prisma = new PrismaClient();
-const express = require("express");
+
 const router = express.Router();
-const checkUserRole = require("../middleware/checkUserRole");
 
 router.get("/", checkUserRole((minRole = 3000)), async (req, res) => {
   try {
@@ -155,4 +157,4 @@ router.delete("/:id", checkUserRole((minRole = 5000)), async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

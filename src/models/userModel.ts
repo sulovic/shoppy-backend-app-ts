@@ -1,4 +1,4 @@
-import { PrismaClient, Prisma } from "../prisma/users/client/index.js";
+import { PrismaClient, Prisma } from "../../node_modules/@prisma/users-client";
 
 const prisma = new PrismaClient();
 
@@ -8,6 +8,13 @@ const getAllUsers = async ({ whereClause, orderBy, take, skip }: { whereClause?:
     orderBy: orderBy,
     take: take,
     skip: skip,
+    include: {
+      role: {
+        select: {
+          role: true,
+        },
+      },
+    },
   });
 };
 
@@ -23,12 +30,26 @@ const getUser = async (userId: number) => {
       userId,
       deleted: false,
     },
+    include: {
+      role: {
+        select: {
+          role: true,
+        },
+      },
+    },
   });
 };
 
 const createUser = async (user: Prisma.UsersUncheckedCreateInput) => {
   return await prisma.users.create({
     data: user,
+    include: {
+      role: {
+        select: {
+          role: true,
+        },
+      },
+    },
   });
 };
 
@@ -39,6 +60,13 @@ const updateUser = async (userId: number, user: Prisma.UsersUpdateInput) => {
       deleted: false,
     },
     data: user,
+    include: {
+      role: {
+        select: {
+          role: true,
+        },
+      },
+    },
   });
 };
 
@@ -52,6 +80,13 @@ const deleteUser = async (userId: number) => {
     data: {
       deleted: true,
       deletedAt: new Date(),
+    },
+    include: {
+      role: {
+        select: {
+          role: true,
+        },
+      },
     },
   });
 };

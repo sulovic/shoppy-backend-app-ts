@@ -2,9 +2,11 @@ import dotenv from "dotenv";
 import express, { Request, Response, NextFunction } from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import corsConfig from "./config/cors";
-import rateLimiter from "./middleware/rateLimiter";
-import verifyAccessToken from "./utils/verifyAccessToken";
+import corsConfig from "./config/cors.js";
+import rateLimiter from "./middleware/rateLimiter.ts";
+import verifyAccessToken from "./utils/verifyAccessToken.ts";
+import { ZodError } from "zod";
+import userRouter from "./routes/users.ts";
 
 dotenv.config();
 const app = express();
@@ -14,6 +16,9 @@ app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(cookieParser());
 
+app.use("/users", userRouter);
+
+/*
 // Auth routes
 
 app.use("/login", rateLimiter(3, 10), require("./routes/auth/login"));
@@ -23,6 +28,7 @@ app.use("/logout", require("./routes/auth/logout"));
 // User routes
 
 app.use("/users", verifyAccessToken, require("./routes/users"));
+
 
 // Odsustva otpada routes
 
@@ -52,10 +58,19 @@ app.use("/uploads", verifyAccessToken, require("./routes/uploads"));
 // Public routes
 app.use("/public/reklamacije", require("./routes/reklamacije/reklamacijePublic"));
 
+*/
+
 // Basic error handler (mirrors original project's behavior)
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   if (err instanceof SyntaxError && (err as any).status === 400 && "body" in err) {
     return res.status(400).json({ error: "Invalid JSON format" });
+  }
+  // Handle Zod validation errors
+  if (err instanceof ZodError) {
+    return res.status(400).json({
+      error: "Validation error",
+      details: err.message,
+    });
   }
   if (err && err.message === "File type not allowed") {
     return res.status(400).json({ error: "File type not allowed" });

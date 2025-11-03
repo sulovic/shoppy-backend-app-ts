@@ -1,61 +1,34 @@
 import userModel from "../models/userModel.js";
 import { Request, Response, NextFunction } from "express";
+import { userDataSchema, queryParamsSchema } from "../schemas/schemas";
+import { Prisma } from "@prisma/users-client";
 
 const getAllUsersController = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const queryParams: QueryParams = req?.query as QueryParams;
+    const queryParams = queryParamsSchema.parse(req?.query);
 
     const { sortBy, sortOrder, limit, page, search, ...filters } = queryParams;
 
-    const take: number | undefined = limit ? parseInt(limit) : undefined;
-    const skip: number | undefined = page && limit ? (parseInt(page) - 1) * parseInt(limit) : undefined;
+    const take = limit ? parseInt(limit, 10) : undefined;
 
-    const orderBy: object | undefined = sortBy
-      ? {
-          [sortBy]: sortOrder || "asc",
-        }
-      : undefined;
+    const skip = page && limit ? (parseInt(page, 10) - 1) * parseInt(limit, 10) : undefined;
+
+    const orderBy = sortBy ? { [sortBy]: sortOrder || "asc" } : undefined;
 
     const andKeys = ["userId", "roleId"];
     const orKeys: string[] = [];
 
-    const hasAnyAndKeys = andKeys.some((key) => key in filters);
-    const hasAnyOrKeys = orKeys.some((key) => key in filters);
-
-    if (Object.keys(filters).length > 0 && !hasAnyAndKeys && !hasAnyOrKeys) {
-      return res.status(400).json({ message: "Invalid filters provided" });
-    }
-
     const createCondition = (key: string, value: string) => {
-      const values = value.split(",").map((item) => {
-        return isNaN(Number(item)) ? item.toString() : Number(item);
-      });
+      const values = value.split(",").map((v) => (isNaN(Number(v)) ? v : Number(v)));
       return values.length === 1 ? { [key]: values[0] } : { [key]: { in: values } };
     };
 
-    const andConditions: object[] = [];
-    const orConditions: object[] = [];
+    const andConditions: Prisma.UsersWhereInput[] = andKeys.filter((key) => filters[key]).map((key) => createCondition(key, filters[key]));
 
-    if (filters) {
-      andKeys.forEach((key) => {
-        const value = filters[key];
-        if (value) {
-          andConditions.push(createCondition(key, value));
-        }
-      });
-
-      orKeys.forEach((key) => {
-        const value = filters[key];
-        if (value) {
-          orConditions.push(createCondition(key, value));
-        }
-      });
-    }
+    const orConditions: Prisma.UsersWhereInput[] = orKeys.filter((key) => filters[key]).map((key) => createCondition(key, filters[key]));
 
     if (search) {
-      orConditions.push({
-        OR: [{ firstName: { contains: search } }, { lastName: { contains: search } }, { email: { contains: search } }],
-      });
+      orConditions.push({ firstName: { contains: search } }, { lastName: { contains: search } }, { email: { contains: search } });
     }
 
     const whereClause = {
@@ -63,13 +36,25 @@ const getAllUsersController = async (req: Request, res: Response, next: NextFunc
       OR: orConditions.length > 0 ? orConditions : undefined,
     };
 
-    const users = await userModel.getAllUsers({
+    const usersSensitiveData = await userModel.getAllUsers({
       whereClause,
       orderBy,
       take,
       skip,
     });
-    return res.status(200).json(users);
+
+    const usersData: UserData[] = usersSensitiveData.map((user) => {
+      return {
+        userId: user.userId,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        roleId: user.roleId,
+        roleName: user.role.role,
+      };
+    });
+
+    return res.status(200).json(usersData);
   } catch (err) {
     next(err);
   }
@@ -77,50 +62,30 @@ const getAllUsersController = async (req: Request, res: Response, next: NextFunc
 
 const getAllUsersCountController = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const queryParams: QueryParams = req?.query as QueryParams;
+    const queryParams = queryParamsSchema.parse(req?.query);
 
-    const { sortBy, sortOrder, limit, page, search, ...filters } = queryParams; // eslint-disable-line @typescript-eslint/no-unused-vars
+    const { sortBy, sortOrder, limit, page, search, ...filters } = queryParams;
+
+    const take = limit ? parseInt(limit, 10) : undefined;
+
+    const skip = page && limit ? (parseInt(page, 10) - 1) * parseInt(limit, 10) : undefined;
+
+    const orderBy = sortBy ? { [sortBy]: sortOrder || "asc" } : undefined;
 
     const andKeys = ["userId", "roleId"];
     const orKeys: string[] = [];
 
-    const hasAnyAndKeys = andKeys.some((key) => key in filters);
-    const hasAnyOrKeys = orKeys.some((key) => key in filters);
-
-    if (Object.keys(filters).length > 0 && !hasAnyAndKeys && !hasAnyOrKeys) {
-      return res.status(400).json({ message: "Invalid filters provided" });
-    }
-
     const createCondition = (key: string, value: string) => {
-      const values = value.split(",").map((item) => {
-        return isNaN(Number(item)) ? item.toString() : Number(item);
-      });
+      const values = value.split(",").map((v) => (isNaN(Number(v)) ? v : Number(v)));
       return values.length === 1 ? { [key]: values[0] } : { [key]: { in: values } };
     };
 
-    const andConditions: object[] = [];
-    const orConditions: object[] = [];
+    const andConditions: Prisma.UsersWhereInput[] = andKeys.filter((key) => filters[key]).map((key) => createCondition(key, filters[key]));
 
-    if (filters) {
-      andKeys.forEach((key) => {
-        const value = filters[key];
-        if (value) {
-          andConditions.push(createCondition(key, value));
-        }
-      });
-
-      orKeys.forEach((key) => {
-        const value = filters[key];
-        if (value) {
-          orConditions.push(createCondition(key, value));
-        }
-      });
-    }
+    const orConditions: Prisma.UsersWhereInput[] = orKeys.filter((key) => filters[key]).map((key) => createCondition(key, filters[key]));
 
     if (search) {
-      orConditions.push({
-        OR: [{ firstName: { contains: search } }, { lastName: { contains: search } }, { email: { contains: search } }],
-      });
+      orConditions.push({ firstName: { contains: search } }, { lastName: { contains: search } }, { email: { contains: search } });
     }
 
     const whereClause = {
@@ -128,7 +93,7 @@ const getAllUsersCountController = async (req: Request, res: Response, next: Nex
       OR: orConditions.length > 0 ? orConditions : undefined,
     };
 
-    const usersCount: number = await userModel.getAllUsersCount({ whereClause });
+    const usersCount = await userModel.getAllUsersCount({ whereClause });
     return res.status(200).json(usersCount);
   } catch (err) {
     next(err);
@@ -137,15 +102,27 @@ const getAllUsersCountController = async (req: Request, res: Response, next: Nex
 
 const getUserController = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
   try {
-    const userId: number = parseInt(req.params.userId);
+    const userId = parseInt(req.params.userId);
+
     if (isNaN(userId)) {
       return res.status(400).json({ message: "Invalid user ID" });
     }
-    const user = await userModel.getUser(userId);
-    if (user) {
-      return res.status(200).json(user);
-    } else {
+
+    const userSensitiveData = await userModel.getUser(userId);
+
+    if (!userSensitiveData) {
       return res.status(404).json({ message: "User not found" });
+    } else {
+      const userData: UserData = {
+        userId: userSensitiveData.userId,
+        firstName: userSensitiveData.firstName,
+        lastName: userSensitiveData.lastName,
+        email: userSensitiveData.email,
+        roleId: userSensitiveData.roleId,
+        roleName: userSensitiveData.role.role,
+      };
+
+      return res.status(200).json(userData);
     }
   } catch (err) {
     next(err);
@@ -154,9 +131,19 @@ const getUserController = async (req: Request, res: Response, next: NextFunction
 
 const createUserController = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
   try {
-    const user: Omit<UserData, "userId"> = req.body;
-    const newUser = await userModel.createUser(user);
-    return res.status(201).json(newUser);
+    const parsedUser = userDataSchema.omit({ userId: true }).parse(req.body);
+    const createdUserSensitiveData = await userModel.createUser(parsedUser);
+
+    const createdUserData: UserData = {
+      userId: createdUserSensitiveData.userId,
+      firstName: createdUserSensitiveData.firstName,
+      lastName: createdUserSensitiveData.lastName,
+      email: createdUserSensitiveData.email,
+      roleId: createdUserSensitiveData.roleId,
+      roleName: createdUserSensitiveData.role.role,
+    };
+
+    return res.status(201).json(createdUserData);
   } catch (err) {
     next(err);
   }
@@ -164,8 +151,18 @@ const createUserController = async (req: Request, res: Response, next: NextFunct
 
 const updateUserController = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
   try {
-    const user: NewUser = req.body;
-    const updatedUser = await userModel.updateUser(user);
+    const parsedUser = userDataSchema.parse(req.body);
+    const updatedUserSensitiveData = await userModel.updateUser(parsedUser.userId, parsedUser);
+
+    const updatedUser: UserData = {
+      userId: updatedUserSensitiveData.userId,
+      firstName: updatedUserSensitiveData.firstName,
+      lastName: updatedUserSensitiveData.lastName,
+      email: updatedUserSensitiveData.email,
+      roleId: updatedUserSensitiveData.roleId,
+      roleName: updatedUserSensitiveData.role.role,
+    };
+
     return res.status(200).json(updatedUser);
   } catch (err) {
     next(err);
@@ -175,7 +172,16 @@ const updateUserController = async (req: Request, res: Response, next: NextFunct
 const deleteUserController = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
   try {
     const userId: number = parseInt(req.params.userId);
-    const deletedUser: UserPublicDataType = await userModel.deleteUser(userId);
+    const deletedUserSensitiveData = await userModel.deleteUser(userId);
+
+    const deletedUser: UserData = {
+      userId: deletedUserSensitiveData.userId,
+      firstName: deletedUserSensitiveData.firstName,
+      lastName: deletedUserSensitiveData.lastName,
+      email: deletedUserSensitiveData.email,
+      roleId: deletedUserSensitiveData.roleId,
+      roleName: deletedUserSensitiveData.role.role,
+    };
     return res.status(200).json(deletedUser);
   } catch (err) {
     next(err);

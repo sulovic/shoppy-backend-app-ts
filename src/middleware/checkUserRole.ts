@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 
 interface RequestWithAuth extends Request {
-  auth?: AuthUser;
+  auth?: UserData;
 }
 
 const checkUserRole =
