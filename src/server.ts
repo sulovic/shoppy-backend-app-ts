@@ -1,31 +1,29 @@
 import dotenv from "dotenv";
 import express from "express";
-import type { Request, Response, NextFunction } from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import corsConfig from "./config/cors.ts";
-import { Prisma } from "@prisma/client";
+import { envSchema } from "./schemas/schemas.ts";
 import rateLimiter from "./middleware/rateLimiter.ts";
-import verifyAccessToken from "./utils/verifyAccessToken.ts";
 import { requestLogger, errorLogger } from "./middleware/loggerMiddleware.ts";
-import { ZodError } from "zod";
 import userRouter from "./routes/users.ts";
 import errorHandler from "./middleware/errorHandler.ts";
 
 dotenv.config();
+
+envSchema.parse(process.env);
+
 const app = express();
 
 const port = process.env.PORT || 3010;
-
 
 app.use(cors(corsConfig as any));
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(cookieParser());
-app.use(rateLimiter(1, 100))
+app.use(rateLimiter(1, 100));
 app.use(requestLogger);
 app.use(errorLogger);
-
 
 app.use("/users", userRouter);
 
@@ -73,8 +71,6 @@ app.use("/public/reklamacije", require("./routes/reklamacije/reklamacijePublic")
 
 app.use(errorHandler);
 
-
-
-const server = app.listen(Number(port), () => {
+app.listen(Number(port), () => {
   console.log(`TS server running at http://localhost:${port}/`);
 });

@@ -1,5 +1,17 @@
 import { z } from "zod";
 
+export const envSchema = z.object({
+  PORT: z.string().default("3000"),
+  DATABASE_USERS_URL: z.string().url(),
+  DATABASE_REKLAMACIJE_URL: z.string().url(),
+  DATABASE_OTPAD_URL: z.string().url(),
+  DATABASE_ODSUSTVA_URL: z.string().url(),
+  DATABASE_NABAVKE_URL: z.string().url(),
+  ACCESS_TOKEN_SECRET: z.string().min(10),
+  REFRESH_TOKEN_SECRET: z.string().min(10),
+  GOOGLE_CLIENT_ID: z.string().min(10),
+});
+
 export const userSensitiveDataSchema = z.object({
   userId: z.number().int(),
   firstName: z.string().min(3, "First name is required"),

@@ -1,4 +1,3 @@
-import { connect } from "http2";
 import { PrismaClient, Prisma } from "../prisma/users/client/client.js";
 
 const prisma = new PrismaClient();
@@ -42,6 +41,7 @@ const getUser = async (userId: number) => {
 };
 
 const createUser = async (user: Prisma.UsersCreateInput) => {
+  console.log("In model", user);
   return await prisma.users.create({
     data: user,
     include: {
