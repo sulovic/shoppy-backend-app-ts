@@ -1,15 +1,23 @@
 import { z } from "zod";
 
 export const envSchema = z.object({
-  PORT: z.string().default("3000"),
-  DATABASE_USERS_URL: z.string().url(),
-  DATABASE_REKLAMACIJE_URL: z.string().url(),
-  DATABASE_OTPAD_URL: z.string().url(),
-  DATABASE_ODSUSTVA_URL: z.string().url(),
-  DATABASE_NABAVKE_URL: z.string().url(),
+  PORT: z.string().default("5000"),
+  DATABASE_USERS_URL: z.string(),
+  DATABASE_REKLAMACIJE_URL: z.string(),
+  DATABASE_OTPAD_URL: z.string(),
+  DATABASE_ODSUSTVA_URL: z.string(),
+  DATABASE_NABAVKE_URL: z.string(),
   ACCESS_TOKEN_SECRET: z.string().min(10),
   REFRESH_TOKEN_SECRET: z.string().min(10),
-  GOOGLE_CLIENT_ID: z.string().min(10),
+  GOOGLE_CLIENT_ID: z.string().optional(),
+  GOOGLE_CLIENT_SECRET: z.string().optional(),
+  GOOGLE_CALLBACK_URL: z.string().optional(),
+  GITHUB_CLIENT_ID: z.string().optional(),
+  GITHUB_CLIENT_SECRET: z.string().optional(),
+  GITHUB_CALLBACK_URL: z.string().optional(),
+  FACEBOOK_CLIENT_ID: z.string().optional(),
+  FACEBOOK_CLIENT_SECRET: z.string().optional(),
+  FACEBOOK_CALLBACK_URL: z.string().optional(),
 });
 
 export const userSensitiveDataSchema = z.object({

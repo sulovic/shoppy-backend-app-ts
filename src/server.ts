@@ -6,8 +6,11 @@ import corsConfig from "./config/cors.ts";
 import { envSchema } from "./schemas/schemas.ts";
 import rateLimiter from "./middleware/rateLimiter.ts";
 import { requestLogger, errorLogger } from "./middleware/loggerMiddleware.ts";
-import userRouter from "./routes/users.ts";
 import errorHandler from "./middleware/errorHandler.ts";
+// Routers
+import userRouter from "./routes/users.ts";
+import loginRouter from "./routes/auth/login.ts";
+import logoutRouter from "./routes/auth/logout.ts";
 
 dotenv.config();
 
@@ -26,13 +29,14 @@ app.use(requestLogger);
 app.use(errorLogger);
 
 app.use("/users", userRouter);
+app.use("/auth/login", rateLimiter(3, 10), loginRouter);
+app.use("/auth/logout", logoutRouter);
 
 /*
 // Auth routes
 
-app.use("/login", rateLimiter(3, 10), require("./routes/auth/login"));
 app.use("/refresh", require("./routes/auth/refresh"));
-app.use("/logout", require("./routes/auth/logout"));
+
 
 // User routes
 

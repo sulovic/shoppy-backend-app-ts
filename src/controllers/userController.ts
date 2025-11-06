@@ -1,6 +1,6 @@
 import userModel from "../models/userModel.ts";
 import type { Request, Response, NextFunction } from "express";
-import { userDataSchema, queryParamsSchema, userSensitiveDataSchema } from "../schemas/schemas.ts";
+import { queryParamsSchema, userSensitiveDataSchema } from "../schemas/schemas.ts";
 import { Prisma } from "../prisma/users/client/client.js";
 
 const getAllUsersController = async (req: Request, res: Response, next: NextFunction) => {
@@ -135,11 +135,10 @@ const createUserController = async (req: Request, res: Response, next: NextFunct
 
     const userDataForCreation: Prisma.UsersCreateInput = {
       ...parsedUser,
-      role: { connect: { roleId } }
+      role: { connect: { roleId } },
     };
 
     const createdUserSensitiveData = await userModel.createUser(userDataForCreation);
-
 
     const createdUserData: UserData = {
       userId: createdUserSensitiveData.userId,
@@ -163,7 +162,7 @@ const updateUserController = async (req: Request, res: Response, next: NextFunct
 
     const userDataForUpdate: Prisma.UsersUpdateInput = {
       ...parsedUser,
-      role: { connect: { roleId } }
+      role: { connect: { roleId } },
     };
 
     const updatedUserSensitiveData = await userModel.updateUser(userId, userDataForUpdate);
