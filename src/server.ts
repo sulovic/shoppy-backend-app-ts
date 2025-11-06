@@ -7,10 +7,13 @@ import { envSchema } from "./schemas/schemas.ts";
 import rateLimiter from "./middleware/rateLimiter.ts";
 import { requestLogger, errorLogger } from "./middleware/loggerMiddleware.ts";
 import errorHandler from "./middleware/errorHandler.ts";
+import verifyAccessToken from "./middleware/verifyAccessToken.ts";
 // Routers
-import userRouter from "./routes/users.ts";
 import loginRouter from "./routes/auth/login.ts";
 import logoutRouter from "./routes/auth/logout.ts";
+import refreshRouter from "./routes/auth/refresh.ts";
+
+import userRouter from "./routes/users.ts";
 
 dotenv.config();
 
@@ -28,19 +31,17 @@ app.use(rateLimiter(1, 100));
 app.use(requestLogger);
 app.use(errorLogger);
 
-app.use("/users", userRouter);
+// Auth routes
 app.use("/auth/login", rateLimiter(3, 10), loginRouter);
 app.use("/auth/logout", logoutRouter);
+app.use("/auth/refresh", refreshRouter);
+
+app.use("/users", verifyAccessToken, userRouter);
 
 /*
-// Auth routes
-
-app.use("/refresh", require("./routes/auth/refresh"));
 
 
-// User routes
 
-app.use("/users", verifyAccessToken, require("./routes/users"));
 
 
 // Odsustva otpada routes

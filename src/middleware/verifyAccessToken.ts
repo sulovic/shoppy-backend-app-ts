@@ -7,34 +7,28 @@ interface RequestWithAuth extends Request {
 
 const verifyAccessToken = async (req: RequestWithAuth, res: Response, next: NextFunction) => {
   try {
-    const authHeader = req?.headers?.authorization;
+    const authHeader = req.headers?.authorization;
 
     if (!authHeader) {
       return res.status(401).json({ error: "Unauthorized - Missing Authorization Header" });
     }
-    const accessToken: string = authHeader.split(" ")[1];
+    const [scheme, accessToken] = authHeader.split(" ");
 
-    if (!accessToken) {
-      return res.status(401).json({ error: "Unauthorized - Missing Access Token" });
+    if (scheme !== "Bearer" || !accessToken) {
+      return res.status(401).json({ error: "Unauthorized - Invalid Authorization format" });
     }
 
     // Verify the accessToken signature
 
-    const decodedAccessToken = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET!) as JWTPayload;
+    const decodedAccessToken: JWTPayload = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET!);
 
     //Attach authUser for future use
 
     req.auth = decodedAccessToken.user;
 
     next();
-  } catch (error: any) {
-    if (error.name === "JsonWebTokenError") {
-      return res.status(401).json({ error: "Unauthorized - Invalid Access Token" });
-    } else if (error.name === "TokenExpiredError") {
-      return res.status(401).json({ error: "Unauthorized - Access Token Expired" });
-    } else {
-      return res.status(500).json({ error: "Internal Server Error" });
-    }
+  } catch (error) {
+    next(error);
   }
 };
 

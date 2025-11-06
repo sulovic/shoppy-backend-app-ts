@@ -1,6 +1,6 @@
 generator odsustvaClient {
   provider = "prisma-client-js"
-  output   = "client"
+  output   = "../../../prisma_clients/odsustva/client"
 }
 
 datasource db {

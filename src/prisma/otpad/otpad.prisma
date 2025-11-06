@@ -1,6 +1,6 @@
 generator otpadClient {
   provider = "prisma-client-js"
-  output   = "client"
+  output   = "../../../prisma_clients/otpad/client"
 }
 
 datasource db {

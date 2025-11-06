@@ -1,6 +1,6 @@
 generator reklamacijeClient {
   provider = "prisma-client-js"
-  output   = "client"
+  output   = "../../../prisma_clients/reklamacije/client"
 }
 
 datasource db {

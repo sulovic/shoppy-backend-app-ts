@@ -1,7 +1,7 @@
 import userModel from "../models/userModel.ts";
 import type { Request, Response, NextFunction } from "express";
 import { queryParamsSchema, userSensitiveDataSchema } from "../schemas/schemas.ts";
-import { Prisma } from "../prisma/users/client/client.js";
+import { Prisma } from "../../prisma_clients/users/client/client.js";
 
 const getAllUsersController = async (req: Request, res: Response, next: NextFunction) => {
   try {

@@ -4,15 +4,12 @@
 # Ignore node_modules
 node_modules/
 
-# Ignore Prisma client and migrations
-src/prisma/*/client/
-src/prisma/*/migrations/
+# Ignore Prisma client
+prisma_clients/
 
 # Ignore Logs
 logs/
 *.log
-
-
 
 # Build directories
 dist/

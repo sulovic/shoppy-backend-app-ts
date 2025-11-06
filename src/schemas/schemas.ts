@@ -47,3 +47,8 @@ export const userDataSchema = z.object({
   roleId: z.number().int(),
   roleName: z.string(),
 });
+
+export const jwtPayloadSchema = userDataSchema.extend({
+  iat: z.number(),
+  exp: z.number(),
+});
