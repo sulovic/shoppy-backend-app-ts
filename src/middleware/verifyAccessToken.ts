@@ -24,7 +24,7 @@ const verifyAccessToken = async (req: RequestWithAuth, res: Response, next: Next
 
     //Attach authUser for future use
 
-    req.auth = decodedAccessToken.user;
+    req.auth = decodedAccessToken;
 
     next();
   } catch (error) {

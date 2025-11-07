@@ -1,0 +1,22 @@
+/* usersRoles: {
+   BASE: 1001,
+   POWER: 3001,
+   ADMIN: 5001
+}
+   config min priviledges for each route/action
+*/
+
+const priviledgesConfig = {
+  users: {
+    GET: 3000,
+    POST: 5000,
+    PUT: 5000,
+    DELETE: 5000,
+  },
+  uploads: {
+    POST: 3000,
+    DELETE: 3000,
+  },
+};
+
+export default priviledgesConfig;

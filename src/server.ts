@@ -8,6 +8,8 @@ import rateLimiter from "./middleware/rateLimiter.ts";
 import { requestLogger, errorLogger } from "./middleware/loggerMiddleware.ts";
 import errorHandler from "./middleware/errorHandler.ts";
 import verifyAccessToken from "./middleware/verifyAccessToken.ts";
+import checkUserRole from "./middleware/checkUserRole.ts";
+
 // Routers
 import loginRouter from "./routes/auth/login.ts";
 import logoutRouter from "./routes/auth/logout.ts";
@@ -42,7 +44,7 @@ app.use("/auth/google", googleLoginRouter);
 app.use("/auth/github", githubLoginRouter);
 app.use("/auth/facebook", facebookLoginRouter);
 
-app.use("/users", verifyAccessToken, userRouter);
+app.use("/users", verifyAccessToken, checkUserRole, userRouter);
 
 /*
 
