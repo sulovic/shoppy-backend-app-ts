@@ -12,6 +12,9 @@ import verifyAccessToken from "./middleware/verifyAccessToken.ts";
 import loginRouter from "./routes/auth/login.ts";
 import logoutRouter from "./routes/auth/logout.ts";
 import refreshRouter from "./routes/auth/refresh.ts";
+import googleLoginRouter from "./routes/auth/googleLogin.ts";
+import githubLoginRouter from "./routes/auth/githubLogin.ts";
+import facebookLoginRouter from "./routes/auth/facebookLogin.ts";
 
 import userRouter from "./routes/users.ts";
 
@@ -35,21 +38,21 @@ app.use(errorLogger);
 app.use("/auth/login", rateLimiter(3, 10), loginRouter);
 app.use("/auth/logout", logoutRouter);
 app.use("/auth/refresh", refreshRouter);
+app.use("/auth/google", googleLoginRouter);
+app.use("/auth/github", githubLoginRouter);
+app.use("/auth/facebook", facebookLoginRouter);
 
 app.use("/users", verifyAccessToken, userRouter);
 
 /*
 
 
-
-
-
-// Odsustva otpada routes
+// Odsustva  routes
 
 app.use("/odsustva/evidencija", verifyAccessToken, require("./routes/odsustva/evidencija"));
 app.use("/odsustva/dodeljena", verifyAccessToken, require("./routes/odsustva/dodeljena"));
 
-// Nabavke otpada routes
+// Nabavke  routes
 
 app.use("/nabavke/porudzbine", verifyAccessToken, require("./routes/nabavke/porudzbine"));
 app.use("/nabavke/proizvodi", verifyAccessToken, require("./routes/nabavke/proizvodi"));

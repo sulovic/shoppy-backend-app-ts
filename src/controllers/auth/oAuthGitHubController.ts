@@ -1,18 +1,18 @@
 // controllers/oauth/githubController.ts
 import type { Request, Response, NextFunction } from "express";
 import userModel from "../../models/userModel.ts";
-import { generateAccessToken, generateRefreshToken } from "../../utils/generateTokens.js";
+import { generateAccessToken, generateRefreshToken } from "../../utils/generateTokens.ts";
 import oAuthProvidersConfig from "../../config/oAuthProviders.ts";
 
 const config = oAuthProvidersConfig.github;
 
-export const redirectToGitHub = (req: Request, res: Response) => {
+const redirectToGitHub = (req: Request, res: Response) => {
   const redirectUri = `${req.protocol}://${req.get("host")}${config.redirectURL}`;
   const url = `${config.authUrl}?client_id=${config.clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(config.scope)}`;
   res.redirect(url);
 };
 
-export const handleGitHubCallback = async (req: Request, res: Response, next: NextFunction) => {
+const handleGitHubCallback = async (req: Request, res: Response, next: NextFunction) => {
   try {
     // exchange code for access token
     const { code } = req.query;
@@ -74,3 +74,5 @@ export const handleGitHubCallback = async (req: Request, res: Response, next: Ne
     next(err);
   }
 };
+
+export default { redirectToGitHub, handleGitHubCallback };

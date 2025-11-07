@@ -5,7 +5,7 @@ const oAuthProvidersConfig = {
     userInfoUrl: "https://www.googleapis.com/oauth2/v3/userinfo",
     clientId: process.env.GOOGLE_CLIENT_ID!,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    redirectURL: process.env.GOOGLE_REDIRECT_URL!,
+    redirectURL: process.env.GOOGLE_CALLBACK_URL!,
     scope: "openid email profile",
   },
   github: {
@@ -14,7 +14,7 @@ const oAuthProvidersConfig = {
     userInfoUrl: "https://api.github.com/user",
     clientId: process.env.GITHUB_CLIENT_ID!,
     clientSecret: process.env.GITHUB_CLIENT_SECRET!,
-    redirectURL: process.env.GITHUB_REDIRECT_URL!,
+    redirectURL: process.env.GITHUB_CALLBACK_URL!,
     scope: "user:email",
   },
   facebook: {
@@ -23,7 +23,7 @@ const oAuthProvidersConfig = {
     userInfoUrl: "https://graph.facebook.com/me?fields=id,name,email",
     clientId: process.env.FACEBOOK_CLIENT_ID!,
     clientSecret: process.env.FACEBOOK_CLIENT_SECRET!,
-    redirectURL: process.env.FACEBOOK_REDIRECT_URL!,
+    redirectURL: process.env.FACEBOOK_CALLBACK_URL!,
     scope: "email,public_profile",
   },
 };

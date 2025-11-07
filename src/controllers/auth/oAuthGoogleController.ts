@@ -1,19 +1,19 @@
 // controllers/oauth/googleController.ts
 import type { Request, Response, NextFunction } from "express";
 import userModel from "../../models/userModel.ts";
-import { generateAccessToken, generateRefreshToken } from "../../utils/generateTokens.js";
+import { generateAccessToken, generateRefreshToken } from "../../utils/generateTokens.ts";
 import oAuthProvidersConfig from "../../config/oAuthProviders.ts";
 import jwt from "jsonwebtoken";
 
 const config = oAuthProvidersConfig.google;
 
-export const redirectToGoogle = (req: Request, res: Response) => {
+const redirectToGoogle = (req: Request, res: Response) => {
   const redirectUri = `${req.protocol}://${req.get("host")}${config.redirectURL}`;
   const url = `${config.authUrl}?client_id=${config.clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${encodeURIComponent(config.scope)}`;
   res.redirect(url);
 };
 
-export const handleGoogleCallback = async (req: Request, res: Response, next: NextFunction) => {
+const handleGoogleCallback = async (req: Request, res: Response, next: NextFunction) => {
   try {
     // exchange code for access token
 
@@ -22,9 +22,9 @@ export const handleGoogleCallback = async (req: Request, res: Response, next: Ne
 
     const tokenResponse = await fetch(config.tokenUrl, {
       method: "POST",
-      headers: { "Content-Type": "application/json", Accept: "application/json" },
-      body: JSON.stringify({
-        code,
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        code: code as string,
         client_id: config.clientId,
         client_secret: config.clientSecret,
         redirect_uri: `${req.protocol}://${req.get("host")}${config.redirectURL}`,
@@ -33,12 +33,13 @@ export const handleGoogleCallback = async (req: Request, res: Response, next: Ne
     });
     const tokenData = await tokenResponse.json();
     const idToken = tokenData.id_token;
+
     if (!idToken) return res.status(401).json({ message: "Token exchange failed" });
 
     //  Find user in DB and generate tokens
 
-    const decoded: any = jwt.decode(idToken);
-    const email = decoded.email;
+    const decodedIdToken: any = jwt.decode(idToken);
+    const email = decodedIdToken.email;
 
     const users = await userModel.getAllUsers({ whereClause: { email } });
     const foundUser = users[0];
@@ -69,3 +70,5 @@ export const handleGoogleCallback = async (req: Request, res: Response, next: Ne
     next(err);
   }
 };
+
+export default { redirectToGoogle, handleGoogleCallback };
