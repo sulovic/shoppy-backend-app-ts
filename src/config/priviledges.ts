@@ -14,6 +14,12 @@ const priviledgesConfig = {
     PUT: 5000,
     DELETE: 5000,
   },
+  reklamacije: {
+    GET: 1000,
+    POST: 1000,
+    PUT: 1000,
+    DELETE: 5000,
+  },
   uploads: {
     POST: 3000,
     DELETE: 3000,

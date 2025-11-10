@@ -9,7 +9,8 @@ const getAllUsersController = async (req: Request, res: Response, next: NextFunc
 
     const { sortBy, sortOrder, limit, page, search, ...filters } = queryParams;
 
-    const take = limit ? parseInt(limit, 10) : undefined;
+    // default limit to 100 if not set
+    const take = limit ? parseInt(limit, 10) : 100;
 
     const skip = page && limit ? (parseInt(page, 10) - 1) * parseInt(limit, 10) : undefined;
 
