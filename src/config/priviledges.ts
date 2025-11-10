@@ -1,4 +1,5 @@
-/* usersRoles: {
+/* 
+usersRoles: {
    BASE: 1001,
    POWER: 3001,
    ADMIN: 5001

@@ -19,6 +19,8 @@ import githubLoginRouter from "./routes/auth/githubLogin.ts";
 import facebookLoginRouter from "./routes/auth/facebookLogin.ts";
 
 import userRouter from "./routes/users.ts";
+import reklamacijeRouter from "./routes/reklamacije/reklamacije.ts";
+import reklamacijePublicRouter from "./routes/reklamacije/reklamacijePublic.ts";
 
 dotenv.config();
 
@@ -44,10 +46,15 @@ app.use("/auth/google", googleLoginRouter);
 app.use("/auth/github", githubLoginRouter);
 app.use("/auth/facebook", facebookLoginRouter);
 
+// User routes
 app.use("/users", verifyAccessToken, checkUserRole, userRouter);
 
-/*
+// Reklamacije routes
+app.use("/reklamacije", verifyAccessToken, checkUserRole, reklamacijeRouter);
 
+app.use("/public/reklamacije", reklamacijePublicRouter);
+
+/*
 
 // Odsustva  routes
 
@@ -73,9 +80,6 @@ app.use("/reklamacije", verifyAccessToken, require("./routes/reklamacije/reklama
 // Uploads routes
 
 app.use("/uploads", verifyAccessToken, require("./routes/uploads"));
-
-// Public routes
-app.use("/public/reklamacije", require("./routes/reklamacije/reklamacijePublic"));
 
 */
 

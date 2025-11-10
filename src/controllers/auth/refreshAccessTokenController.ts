@@ -1,4 +1,4 @@
-import userModel from "../../models/userModel.ts";
+import userModel from "../../models/usersModel.ts";
 import type { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { generateAccessToken } from "../../utils/generateTokens.ts";

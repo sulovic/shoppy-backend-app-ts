@@ -43,8 +43,4 @@ function errorLogger(err: Error, req: Request, res: Response, next: NextFunction
   next(err);
 }
 
-export {
-  requestLogger,
-  errorLogger,
-  logger,
-};
+export { requestLogger, errorLogger, logger };

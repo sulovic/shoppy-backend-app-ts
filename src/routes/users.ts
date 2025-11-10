@@ -1,10 +1,7 @@
 import express from "express";
-import userController from "../controllers/userController.ts";
-
+import userController from "../controllers/usersController.ts";
 
 const router = express.Router();
-
-//implement check user role
 
 router.get("/", userController.getAllUsersController);
 router.get("/count", userController.getAllUsersCountController);

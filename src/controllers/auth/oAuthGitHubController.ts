@@ -1,6 +1,6 @@
 // controllers/oauth/githubController.ts
 import type { Request, Response, NextFunction } from "express";
-import userModel from "../../models/userModel.ts";
+import userModel from "../../models/usersModel.ts";
 import { generateAccessToken, generateRefreshToken } from "../../utils/generateTokens.ts";
 import oAuthProvidersConfig from "../../config/oAuthProviders.ts";
 

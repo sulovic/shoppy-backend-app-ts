@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import userModel from "../models/userModel.ts";
+import userModel from "../models/usersModel.ts";
 
 export const generateAccessToken = async (user: UserData) => {
   const accessToken: string = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET as string, {
