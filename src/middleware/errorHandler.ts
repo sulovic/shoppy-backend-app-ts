@@ -1,5 +1,6 @@
 import type { Request, Response, ErrorRequestHandler, NextFunction } from "express";
 import { ZodError } from "zod";
+import multer from "multer";
 
 /**
  * Centralized error handler middleware.
@@ -53,6 +54,30 @@ const errorHandler: ErrorRequestHandler = (err: Error | any, req: Request, res: 
 
   if (err.name === "Google auth Error") {
     res.status(401).json({ error: "Unauthorized - Google auth Error" });
+    return;
+  }
+
+  // Multer errors (file size, too many files, etc.)
+  if (err instanceof multer.MulterError) {
+    switch (err.code) {
+      case "LIMIT_FILE_SIZE":
+        res.status(413).json({ error: "File too large" });
+        return;
+      case "LIMIT_FILE_COUNT":
+        res.status(413).json({ error: "Too many files uploaded" });
+        return;
+      case "LIMIT_UNEXPECTED_FILE":
+        res.status(400).json({ error: "Unexpected file field" });
+        return;
+      default:
+        res.status(400).json({ error: `Multer error: ${err.message}` });
+        return;
+    }
+  }
+
+  // Custom file upload errors (like invalid MIME or filename)
+  if (err.message === "File type not allowed") {
+    res.status(400).json({ error: "Invalid file type or extension" });
     return;
   }
 

@@ -21,6 +21,8 @@ import facebookLoginRouter from "./routes/auth/facebookLogin.ts";
 import userRouter from "./routes/users.ts";
 import reklamacijeRouter from "./routes/reklamacije/reklamacije.ts";
 import reklamacijePublicRouter from "./routes/reklamacije/reklamacijePublic.ts";
+import uploadsRouter from "./routes/uploads.ts";  
+
 
 dotenv.config();
 
@@ -54,6 +56,12 @@ app.use("/reklamacije", verifyAccessToken, checkUserRole, reklamacijeRouter);
 
 app.use("/public/reklamacije", reklamacijePublicRouter);
 
+
+// Uploads routes
+
+app.use("/uploads", verifyAccessToken, checkUserRole, uploadsRouter);
+
+
 /*
 
 // Odsustva  routes
@@ -77,9 +85,7 @@ app.use("/otpad/delovodnik", verifyAccessToken, require("./routes/otpad/delovodn
 // Reklamacije routes
 app.use("/reklamacije", verifyAccessToken, require("./routes/reklamacije/reklamacije"));
 
-// Uploads routes
 
-app.use("/uploads", verifyAccessToken, require("./routes/uploads"));
 
 */
 
