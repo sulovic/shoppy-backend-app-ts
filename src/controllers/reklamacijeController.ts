@@ -1,7 +1,7 @@
 import reklamacijeModel from "../models/reklamacijeModel.ts";
 import type { Request, Response, NextFunction } from "express";
 import { queryParamsSchema, reklamacijaSchema } from "../schemas/schemas.ts";
-import { Prisma, StatusReklamacije } from "../../prisma_clients/reklamacije/client/client.js";
+import { Prisma } from "../../prisma_clients/reklamacije/client/client.js";
 
 const getAllReklamacijeController = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -9,7 +9,8 @@ const getAllReklamacijeController = async (req: Request, res: Response, next: Ne
 
     const { sortBy, sortOrder, limit, page, search, ...filters } = queryParams;
 
-    const take = limit ? parseInt(limit, 10) : undefined;
+    // default limit to 100 if not set
+    const take = limit ? parseInt(limit, 10) : 100;
 
     const skip = page && limit ? (parseInt(page, 10) - 1) * parseInt(limit, 10) : undefined;
 
