@@ -21,8 +21,7 @@ import facebookLoginRouter from "./routes/auth/facebookLogin.ts";
 import userRouter from "./routes/users.ts";
 import reklamacijeRouter from "./routes/reklamacije/reklamacije.ts";
 import reklamacijePublicRouter from "./routes/reklamacije/reklamacijePublic.ts";
-import uploadsRouter from "./routes/uploads.ts";  
-
+import uploadsRouter from "./routes/uploads.ts";
 
 dotenv.config();
 
@@ -35,10 +34,12 @@ const port = process.env.PORT || 3010;
 app.use(cors(corsConfig as any));
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
+app.set("query parser", "extended");
 app.use(cookieParser());
 app.use(rateLimiter(1, 100));
-app.use(requestLogger);
-app.use(errorLogger);
+
+//app.use(requestLogger);
+//app.use(errorLogger);
 
 // Auth routes
 app.use("/auth/login", rateLimiter(3, 10), loginRouter);
@@ -56,11 +57,9 @@ app.use("/reklamacije", verifyAccessToken, checkUserRole, reklamacijeRouter);
 
 app.use("/public/reklamacije", reklamacijePublicRouter);
 
-
 // Uploads routes
 
 app.use("/uploads", verifyAccessToken, checkUserRole, uploadsRouter);
-
 
 /*
 

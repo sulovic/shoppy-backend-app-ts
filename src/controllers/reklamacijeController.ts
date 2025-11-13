@@ -7,32 +7,44 @@ const getAllReklamacijeController = async (req: Request, res: Response, next: Ne
   try {
     const queryParams = queryParamsSchema.parse(req?.query);
 
-    const { sortBy, sortOrder, limit, page, search, ...filters } = queryParams;
+    const { sortBy, sortOrder, limit, page, search, filters } = queryParams;
 
     // default limit to 100 if not set
     const take = limit ? parseInt(limit, 10) : 100;
 
     const skip = page && limit ? (parseInt(page, 10) - 1) * parseInt(limit, 10) : undefined;
 
-    const orderBy = sortBy ? { [sortBy]: sortOrder || "asc" } : undefined;
+    const orderBy = sortBy ? { [sortBy]: sortOrder || "desc" } : { ["idReklamacije"]: sortOrder || "desc" };
 
-    const andKeys = ["idReklamacije"];
-    const orKeys: string[] = [];
+    const filterKeys = ["zemljaReklamacije", "statusReklamacije", "odgovornaOsoba"];
 
-    const createCondition = (key: string, value: string) => {
-      const values = value.split(",").map((v) => (isNaN(Number(v)) ? v : Number(v)));
-      return values.length === 1 ? { [key]: values[0] } : { [key]: { in: values } };
-    };
+    const andConditions: Prisma.ReklamacijeWhereInput[] = [];
+    const orConditions: Prisma.ReklamacijeWhereInput[] = [];
 
-    const andConditions: Prisma.ReklamacijeWhereInput[] = andKeys.filter((key) => filters[key]).map((key) => createCondition(key, filters[key]));
+    if (filters) {
+      for (const key in filters) {
+        const value = filters[key];
+        if (!filterKeys.includes(key)) {
+          return res.status(400).json({ message: `Invalid filter key: ${key}` });
+        }
 
-    const orConditions: Prisma.ReklamacijeWhereInput[] = orKeys.filter((key) => filters[key]).map((key) => createCondition(key, filters[key]));
-
-    if (search) {
-      orConditions.push({ imePrezime: { contains: search } }, { email: { contains: search } }, { telefon: { contains: search } }, { brojRacuna: { contains: search } }, { nazivProizvoda: { contains: search } });
+        andConditions.push({ [key]: { in: [value] } });
+      }
     }
 
-    const whereClause = {
+    if (search) {
+      orConditions.push(
+        { brojReklamacije: { contains: search, mode: "insensitive" } },
+        { imePrezime: { contains: search, mode: "insensitive" } },
+        { email: { contains: search, mode: "insensitive" } },
+        { telefon: { contains: search, mode: "insensitive" } },
+        { adresa: { contains: search, mode: "insensitive" } },
+        { brojRacuna: { contains: search, mode: "insensitive" } },
+        { nazivProizvoda: { contains: search, mode: "insensitive" } }
+      );
+    }
+
+    const whereClause: Prisma.ReklamacijeWhereInput = {
       AND: andConditions.length > 0 ? andConditions : undefined,
       OR: orConditions.length > 0 ? orConditions : undefined,
     };
@@ -54,28 +66,34 @@ const getAllReklamacijeCountController = async (req: Request, res: Response, nex
   try {
     const queryParams = queryParamsSchema.parse(req?.query);
 
-    const { sortBy, sortOrder, limit, page, search, ...filters } = queryParams;
+    const { search, filters } = queryParams;
 
-    const take = limit ? parseInt(limit, 10) : undefined;
+    const filterKeys = ["zemljaReklamacije", "statusReklamacije", "odgovornaOsoba"];
 
-    const skip = page && limit ? (parseInt(page, 10) - 1) * parseInt(limit, 10) : undefined;
+    const andConditions: Prisma.ReklamacijeWhereInput[] = [];
+    const orConditions: Prisma.ReklamacijeWhereInput[] = [];
 
-    const orderBy = sortBy ? { [sortBy]: sortOrder || "asc" } : undefined;
+    if (filters) {
+      for (const key in filters) {
+        const value = filters[key];
+        if (!filterKeys.includes(key)) {
+          return res.status(400).json({ message: `Invalid filter key: ${key}` });
+        }
 
-    const andKeys = ["idReklamacije"];
-    const orKeys: string[] = [];
-
-    const createCondition = (key: string, value: string) => {
-      const values = value.split(",").map((v) => (isNaN(Number(v)) ? v : Number(v)));
-      return values.length === 1 ? { [key]: values[0] } : { [key]: { in: values } };
-    };
-
-    const andConditions: Prisma.ReklamacijeWhereInput[] = andKeys.filter((key) => filters[key]).map((key) => createCondition(key, filters[key]));
-
-    const orConditions: Prisma.ReklamacijeWhereInput[] = orKeys.filter((key) => filters[key]).map((key) => createCondition(key, filters[key]));
+        andConditions.push({ [key]: { in: [value] } });
+      }
+    }
 
     if (search) {
-      orConditions.push({ imePrezime: { contains: search } }, { email: { contains: search } }, { telefon: { contains: search } }, { brojRacuna: { contains: search } }, { nazivProizvoda: { contains: search } });
+      orConditions.push(
+        { brojReklamacije: { contains: search, mode: "insensitive" } },
+        { imePrezime: { contains: search, mode: "insensitive" } },
+        { email: { contains: search, mode: "insensitive" } },
+        { telefon: { contains: search, mode: "insensitive" } },
+        { adresa: { contains: search, mode: "insensitive" } },
+        { brojRacuna: { contains: search, mode: "insensitive" } },
+        { nazivProizvoda: { contains: search, mode: "insensitive" } }
+      );
     }
 
     const whereClause = {
@@ -98,6 +116,8 @@ const getReklamacijaController = async (req: Request, res: Response, next: NextF
       return res.status(400).json({ message: "Invalid reklamacija ID" });
     }
 
+    console.log(idReklamacije);
+
     const reklamacijaData = await reklamacijeModel.getReklamacija(idReklamacije);
 
     if (!reklamacijaData) {
@@ -112,19 +132,19 @@ const getReklamacijaController = async (req: Request, res: Response, next: NextF
 
 const getPublicReklamacijaController = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
   try {
-    const idReklamacije = parseInt(req.params.idReklamacije);
+    const brojReklamacije = req.params.brojReklamacije;
 
-    if (isNaN(idReklamacije)) {
-      return res.status(400).json({ message: "Invalid reklamacija ID" });
+    if (!brojReklamacije) {
+      return res.status(400).json({ message: "Invalid Broj reklamacije" });
     }
 
-    const reklamacijaData = await reklamacijeModel.getReklamacija(idReklamacije);
+    const reklamacijeData = await reklamacijeModel.getAllReklamacije({ whereClause: { brojReklamacije } });
 
-    if (!reklamacijaData) {
+    if (!reklamacijeData || reklamacijeData.length != 1) {
       return res.status(404).json({ message: "Reklamacija not found" });
     }
 
-    const { komentar, smsSent, files, ...reklamacijaPublicData } = reklamacijaData;
+    const { komentar, smsSent, files, ...reklamacijaPublicData } = reklamacijeData[0];
 
     res.status(200).json(reklamacijaPublicData);
   } catch (err) {

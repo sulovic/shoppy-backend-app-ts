@@ -36,7 +36,7 @@ const errorHandler: ErrorRequestHandler = (err: Error | any, req: Request, res: 
   if (err instanceof ZodError) {
     res.status(400).json({
       error: "Validation error",
-      details: err.message,
+      details: JSON.parse(err.message),
     });
     return;
   }

@@ -2,6 +2,7 @@ import userModel from "../models/usersModel.ts";
 import type { Request, Response, NextFunction } from "express";
 import { queryParamsSchema, userSensitiveDataSchema } from "../schemas/schemas.ts";
 import { Prisma } from "../../prisma_clients/users/client/client.js";
+import e from "express";
 
 const getAllUsersController = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -14,19 +15,23 @@ const getAllUsersController = async (req: Request, res: Response, next: NextFunc
 
     const skip = page && limit ? (parseInt(page, 10) - 1) * parseInt(limit, 10) : undefined;
 
-    const orderBy = sortBy ? { [sortBy]: sortOrder || "asc" } : undefined;
+    const orderBy = sortBy ? { [sortBy]: sortOrder || "desc" } : { ["userId"]: sortOrder || "desc" };
 
-    const andKeys = ["userId", "roleId"];
-    const orKeys: string[] = [];
+    const filterKeys = ["roleId"];
 
-    const createCondition = (key: string, value: string) => {
-      const values = value.split(",").map((v) => (isNaN(Number(v)) ? v : Number(v)));
-      return values.length === 1 ? { [key]: values[0] } : { [key]: { in: values } };
-    };
+    const andConditions: Prisma.UsersWhereInput[] = [];
+    const orConditions: Prisma.UsersWhereInput[] = [];
 
-    const andConditions: Prisma.UsersWhereInput[] = andKeys.filter((key) => filters[key]).map((key) => createCondition(key, filters[key]));
+    if (filters) {
+      for (const key in filters) {
+        const value = filters[key];
+        if (!filterKeys.includes(key)) {
+          return res.status(400).json({ message: `Invalid filter key: ${key}` });
+        }
 
-    const orConditions: Prisma.UsersWhereInput[] = orKeys.filter((key) => filters[key]).map((key) => createCondition(key, filters[key]));
+        andConditions.push({ [key]: { equals: parseInt(value, 10) } });
+      }
+    }
 
     if (search) {
       orConditions.push({ firstName: { contains: search } }, { lastName: { contains: search } }, { email: { contains: search } });
@@ -66,12 +71,6 @@ const getAllUsersCountController = async (req: Request, res: Response, next: Nex
     const queryParams = queryParamsSchema.parse(req?.query);
 
     const { sortBy, sortOrder, limit, page, search, ...filters } = queryParams;
-
-    const take = limit ? parseInt(limit, 10) : undefined;
-
-    const skip = page && limit ? (parseInt(page, 10) - 1) * parseInt(limit, 10) : undefined;
-
-    const orderBy = sortBy ? { [sortBy]: sortOrder || "asc" } : undefined;
 
     const andKeys = ["userId", "roleId"];
     const orKeys: string[] = [];
