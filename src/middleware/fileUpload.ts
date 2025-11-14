@@ -9,10 +9,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const tempUploadDir = path.resolve(__dirname, "../public/tmp");
-const uploadBaseDir = path.resolve(__dirname, "../public");
 
 await fs.mkdir(tempUploadDir, { recursive: true });
-await fs.mkdir(uploadBaseDir, { recursive: true });
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -52,6 +50,13 @@ const upload = multer({
 
 const fileUpload = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const subdir = req.params.subdir;
+
+    if (!subdir || !filesUploadConfig.allowedFolders.includes(subdir)) {
+      res.status(400).json({ error: "Subdirectory not allowed." });
+      return;
+    }
+
     await new Promise<void>((resolve, reject) => {
       upload.any()(req, res, (err) => (err ? reject(err) : resolve()));
     });
@@ -66,14 +71,8 @@ const fileUpload = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     // Get selected directory
-    const uploadDir = req.body.uploadDir;
 
-    if (!uploadDir || !filesUploadConfig.allowedFolders.includes(uploadDir)) {
-      res.status(400).json({ error: "Invalid upload directory" });
-      return;
-    }
-
-    const finalUploadDir = path.join(uploadBaseDir, uploadDir);
+    const finalUploadDir = path.join(__dirname, "../public", subdir);
     await fs.mkdir(finalUploadDir, { recursive: true });
 
     for (const file of files) {

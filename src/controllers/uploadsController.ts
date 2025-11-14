@@ -6,11 +6,9 @@ import { fileURLToPath } from "url";
 const uploadController = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const files = req.files as Express.Multer.File[];
-    const uploadDir = req.body.uploadDir;
 
     const filesInfo = files.map((file) => ({
       filename: file.filename,
-      path: `${uploadDir}/${file.filename}`,
       size: file.size,
       mimetype: file.mimetype,
     }));
@@ -27,6 +25,7 @@ const uploadController = async (req: Request, res: Response, next: NextFunction)
 const deleteFileController = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { files } = req.body as { files: string[] };
+    const subdir = req.params.subdir;
 
     if (!files || files.length === 0) {
       return res.status(400).json({ error: "No filenames provided" });
@@ -34,7 +33,7 @@ const deleteFileController = async (req: Request, res: Response, next: NextFunct
 
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);
-    const uploadDir = path.resolve(__dirname, "../public");
+    const uploadDir = path.resolve(__dirname, "../public", subdir);
 
     const errors: string[] = [];
     const deletedFiles: string[] = [];
