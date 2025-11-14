@@ -9,17 +9,20 @@ const getAllReklamacijeController = async (req: Request, res: Response, next: Ne
 
     const { sortBy, sortOrder, limit, page, search, filters } = queryParams;
 
-    // default limit to 100 if not set
-    const take = limit ? parseInt(limit, 10) : 100;
+    // default limit to 100 and page to 1 if not provided
+    const limitNum = parseInt(limit || "100", 10);
+    const pageNum = parseInt(page || "1", 10);
 
-    const skip = page && limit ? (parseInt(page, 10) - 1) * parseInt(limit, 10) : undefined;
+    const take = limitNum;
+    const skip = (pageNum - 1) * limitNum;
 
     const orderBy = sortBy ? { [sortBy]: sortOrder || "desc" } : { ["idReklamacije"]: sortOrder || "desc" };
 
-    const filterKeys = ["zemljaReklamacije", "statusReklamacije", "odgovornaOsoba"];
-
     const andConditions: Prisma.ReklamacijeWhereInput[] = [];
     const orConditions: Prisma.ReklamacijeWhereInput[] = [];
+
+    const filterKeys = ["zemljaReklamacije", "statusReklamacije", "odgovornaOsoba"];
+    const searchKeys = ["brojReklamacije", "imePrezime", "email", "telefon", "adresa", "brojRacuna", "nazivProizvoda"];
 
     if (filters) {
       for (const key in filters) {
@@ -34,13 +37,12 @@ const getAllReklamacijeController = async (req: Request, res: Response, next: Ne
 
     if (search) {
       orConditions.push(
-        { brojReklamacije: { contains: search, mode: "insensitive" } },
-        { imePrezime: { contains: search, mode: "insensitive" } },
-        { email: { contains: search, mode: "insensitive" } },
-        { telefon: { contains: search, mode: "insensitive" } },
-        { adresa: { contains: search, mode: "insensitive" } },
-        { brojRacuna: { contains: search, mode: "insensitive" } },
-        { nazivProizvoda: { contains: search, mode: "insensitive" } }
+        ...searchKeys.map((key) => ({
+          [key]: {
+            contains: search,
+            mode: "insensitive",
+          },
+        }))
       );
     }
 
@@ -68,10 +70,11 @@ const getAllReklamacijeCountController = async (req: Request, res: Response, nex
 
     const { search, filters } = queryParams;
 
-    const filterKeys = ["zemljaReklamacije", "statusReklamacije", "odgovornaOsoba"];
-
     const andConditions: Prisma.ReklamacijeWhereInput[] = [];
     const orConditions: Prisma.ReklamacijeWhereInput[] = [];
+
+    const filterKeys = ["zemljaReklamacije", "statusReklamacije", "odgovornaOsoba"];
+    const searchKeys = ["brojReklamacije", "imePrezime", "email", "telefon", "adresa", "brojRacuna", "nazivProizvoda"];
 
     if (filters) {
       for (const key in filters) {
@@ -86,13 +89,12 @@ const getAllReklamacijeCountController = async (req: Request, res: Response, nex
 
     if (search) {
       orConditions.push(
-        { brojReklamacije: { contains: search, mode: "insensitive" } },
-        { imePrezime: { contains: search, mode: "insensitive" } },
-        { email: { contains: search, mode: "insensitive" } },
-        { telefon: { contains: search, mode: "insensitive" } },
-        { adresa: { contains: search, mode: "insensitive" } },
-        { brojRacuna: { contains: search, mode: "insensitive" } },
-        { nazivProizvoda: { contains: search, mode: "insensitive" } }
+        ...searchKeys.map((key) => ({
+          [key]: {
+            contains: search,
+            mode: "insensitive",
+          },
+        }))
       );
     }
 
@@ -115,8 +117,6 @@ const getReklamacijaController = async (req: Request, res: Response, next: NextF
     if (isNaN(idReklamacije)) {
       return res.status(400).json({ message: "Invalid reklamacija ID" });
     }
-
-    console.log(idReklamacije);
 
     const reklamacijaData = await reklamacijeModel.getReklamacija(idReklamacije);
 

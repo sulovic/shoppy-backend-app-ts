@@ -2,25 +2,27 @@ import userModel from "../models/usersModel.ts";
 import type { Request, Response, NextFunction } from "express";
 import { queryParamsSchema, userSensitiveDataSchema } from "../schemas/schemas.ts";
 import { Prisma } from "../../prisma_clients/users/client/client.js";
-import e from "express";
 
 const getAllUsersController = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const queryParams = queryParamsSchema.parse(req?.query);
 
-    const { sortBy, sortOrder, limit, page, search, ...filters } = queryParams;
+    const { sortBy, sortOrder, limit, page, search, filters } = queryParams;
 
-    // default limit to 100 if not set
-    const take = limit ? parseInt(limit, 10) : 100;
+    // default limit to 100 and page to 1 if not provided
+    const limitNum = parseInt(limit || "100", 10);
+    const pageNum = parseInt(page || "1", 10);
 
-    const skip = page && limit ? (parseInt(page, 10) - 1) * parseInt(limit, 10) : undefined;
+    const take = limitNum;
+    const skip = (pageNum - 1) * limitNum;
 
     const orderBy = sortBy ? { [sortBy]: sortOrder || "desc" } : { ["userId"]: sortOrder || "desc" };
 
-    const filterKeys = ["roleId"];
-
     const andConditions: Prisma.UsersWhereInput[] = [];
     const orConditions: Prisma.UsersWhereInput[] = [];
+
+    const filterKeys = ["roleId"];
+    const searchKeys = ["firstName", "lastName", "email"];
 
     if (filters) {
       for (const key in filters) {
@@ -29,12 +31,19 @@ const getAllUsersController = async (req: Request, res: Response, next: NextFunc
           return res.status(400).json({ message: `Invalid filter key: ${key}` });
         }
 
-        andConditions.push({ [key]: { equals: parseInt(value, 10) } });
+        andConditions.push({ [key]: { in: [value] } });
       }
     }
 
     if (search) {
-      orConditions.push({ firstName: { contains: search } }, { lastName: { contains: search } }, { email: { contains: search } });
+      orConditions.push(
+        ...searchKeys.map((key) => ({
+          [key]: {
+            contains: search,
+            mode: "insensitive",
+          },
+        }))
+      );
     }
 
     const whereClause = {
@@ -70,22 +79,34 @@ const getAllUsersCountController = async (req: Request, res: Response, next: Nex
   try {
     const queryParams = queryParamsSchema.parse(req?.query);
 
-    const { sortBy, sortOrder, limit, page, search, ...filters } = queryParams;
+    const { search, filters } = queryParams;
 
-    const andKeys = ["userId", "roleId"];
-    const orKeys: string[] = [];
+    const andConditions: Prisma.UsersWhereInput[] = [];
+    const orConditions: Prisma.UsersWhereInput[] = [];
 
-    const createCondition = (key: string, value: string) => {
-      const values = value.split(",").map((v) => (isNaN(Number(v)) ? v : Number(v)));
-      return values.length === 1 ? { [key]: values[0] } : { [key]: { in: values } };
-    };
+    const filterKeys = ["roleId"];
+    const searchKeys = ["firstName", "lastName", "email"];
 
-    const andConditions: Prisma.UsersWhereInput[] = andKeys.filter((key) => filters[key]).map((key) => createCondition(key, filters[key]));
+    if (filters) {
+      for (const key in filters) {
+        const value = filters[key];
+        if (!filterKeys.includes(key)) {
+          return res.status(400).json({ message: `Invalid filter key: ${key}` });
+        }
 
-    const orConditions: Prisma.UsersWhereInput[] = orKeys.filter((key) => filters[key]).map((key) => createCondition(key, filters[key]));
+        andConditions.push({ [key]: { in: [value] } });
+      }
+    }
 
     if (search) {
-      orConditions.push({ firstName: { contains: search } }, { lastName: { contains: search } }, { email: { contains: search } });
+      orConditions.push(
+        ...searchKeys.map((key) => ({
+          [key]: {
+            contains: search,
+            mode: "insensitive",
+          },
+        }))
+      );
     }
 
     const whereClause = {
