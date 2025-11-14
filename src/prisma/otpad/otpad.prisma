@@ -13,8 +13,9 @@ model JciPodaci {
   zemlja       Zemlja
   datum        DateTime
   operacija    Operacija
-  brojJci      String
+  brojJci      String         @unique
   jciProizvodi JciProizvodi[]
+  files        Json?
 
   @@index([zemlja, operacija, brojJci])
 }

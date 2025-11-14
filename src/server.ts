@@ -22,6 +22,7 @@ import userRouter from "./routes/users.ts";
 import reklamacijeRouter from "./routes/reklamacije/reklamacije.ts";
 import reklamacijePublicRouter from "./routes/reklamacije/reklamacijePublic.ts";
 import uploadsRouter from "./routes/uploads.ts";
+import otpadRouter from "./routes/otpad.ts";
 
 dotenv.config();
 
@@ -54,8 +55,10 @@ app.use("/users", verifyAccessToken, checkUserRole, userRouter);
 
 // Reklamacije routes
 app.use("/reklamacije", verifyAccessToken, checkUserRole, reklamacijeRouter);
-
 app.use("/public/reklamacije", reklamacijePublicRouter);
+
+//Otpad routes
+app.use("/otpad", verifyAccessToken, checkUserRole, otpadRouter);
 
 // Uploads routes
 

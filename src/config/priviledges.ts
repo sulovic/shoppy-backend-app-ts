@@ -24,6 +24,12 @@ const priviledgesConfig = {
     POST: 3000,
     DELETE: 3000,
   },
+  jci: {
+    GET: 1000,
+    POST: 1000,
+    PUT: 1000,
+    DELETE: 5000,
+  },
 };
 
 export default priviledgesConfig;
