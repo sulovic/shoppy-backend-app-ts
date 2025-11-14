@@ -5,7 +5,7 @@ import cors from "cors";
 import corsConfig from "./config/cors.ts";
 import { envSchema } from "./schemas/schemas.ts";
 import rateLimiter from "./middleware/rateLimiter.ts";
-import { requestLogger, errorLogger } from "./middleware/loggerMiddleware.ts";
+//import { requestLogger, errorLogger } from "./middleware/loggerMiddleware.ts";
 import errorHandler from "./middleware/errorHandler.ts";
 import verifyAccessToken from "./middleware/verifyAccessToken.ts";
 import checkUserRole from "./middleware/checkUserRole.ts";

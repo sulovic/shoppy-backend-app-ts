@@ -8,6 +8,8 @@
     "start": "node dist/server.js",
     "dev": "nodemon --watch src --ext ts --exec \"ts-node --esm src/server.ts\"",
     "typecheck": "tsc --noEmit",
+    "lint": "eslint 'src/**/*.{ts,js}'",
+    "lint:fix": "eslint 'src/**/*.{ts,js}' --fix",
     "prisma:generate:all": "npx prisma generate --schema ./src/prisma/users/users.prisma && npx prisma generate --schema ./src/prisma/nabavke/nabavke.prisma && npx prisma generate --schema ./src/prisma/odsustva/odsustva.prisma && npx prisma generate --schema ./src/prisma/reklamacije/reklamacije.prisma && npx prisma generate --schema ./src/prisma/otpad/otpad.prisma",
     "postinstall": "npm run prisma:generate:all"
   },
@@ -35,6 +37,9 @@
     "@types/jsonwebtoken": "^9.0.2",
     "@types/multer": "^1.4.7",
     "@types/node": "^20.19.23",
+    "@typescript-eslint/eslint-plugin": "^8.46.4",
+    "@typescript-eslint/parser": "^8.46.4",
+    "eslint": "^9.39.1",
     "nodemon": "^3.1.10",
     "ts-node": "^10.9.1",
     "ts-node-dev": "^2.0.0",

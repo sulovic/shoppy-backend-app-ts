@@ -58,7 +58,7 @@ const getAllReklamacijeController = async (req: Request, res: Response, next: Ne
       skip,
     });
 
-    return res.status(200).json(reklamacijeData);
+    return res.status(200).json({ data: reklamacijeData });
   } catch (err) {
     next(err);
   }
@@ -104,7 +104,7 @@ const getAllReklamacijeCountController = async (req: Request, res: Response, nex
     };
 
     const reklamacijeCount = await reklamacijeModel.getAllReklamacijeCount({ whereClause });
-    return res.status(200).json(reklamacijeCount);
+    return res.status(200).json({ count: reklamacijeCount });
   } catch (err) {
     next(err);
   }
@@ -124,7 +124,7 @@ const getReklamacijaController = async (req: Request, res: Response, next: NextF
       return res.status(404).json({ message: "Reklamacija not found" });
     }
 
-    return res.status(200).json(reklamacijaData);
+    return res.status(200).json({ data: reklamacijaData });
   } catch (err) {
     next(err);
   }
@@ -144,9 +144,8 @@ const getPublicReklamacijaController = async (req: Request, res: Response, next:
       return res.status(404).json({ message: "Reklamacija not found" });
     }
 
-    const { komentar, smsSent, files, ...reklamacijaPublicData } = reklamacijeData[0];
-
-    res.status(200).json(reklamacijaPublicData);
+    const { komentar: _komentar, smsSent: _smsSent, files: _files, ...reklamacijaPublicData } = reklamacijeData[0];
+    res.status(200).json({ data: reklamacijaPublicData });
   } catch (err) {
     next(err);
   }
@@ -154,11 +153,14 @@ const getPublicReklamacijaController = async (req: Request, res: Response, next:
 
 const createReklamacijaController = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
   try {
-    const parsedReklamacija: Prisma.ReklamacijeCreateInput = reklamacijaSchema.omit({ idReklamacije: true }).parse(req.body);
+    const parsedReklamacija = reklamacijaSchema.omit({ idReklamacije: true }).parse(req.body);
 
-    const createdReklamacija = await reklamacijeModel.createReklamacija(parsedReklamacija);
+    // convert files null to Prisma.JsonNull
+    const prismaParsedReklamacija: Prisma.ReklamacijeCreateInput = { ...parsedReklamacija, files: parsedReklamacija.files ?? Prisma.JsonNull };
 
-    return res.status(201).json(createdReklamacija);
+    const createdReklamacija = await reklamacijeModel.createReklamacija(prismaParsedReklamacija);
+
+    return res.status(201).json({ message: "Reklamacija created", data: createdReklamacija });
   } catch (err) {
     next(err);
   }
@@ -168,11 +170,14 @@ const updateReklamacijaController = async (req: Request, res: Response, next: Ne
   try {
     const idReklamacije: number = parseInt(req.params.idReklamacije);
 
-    const paresedReklamacija: Prisma.ReklamacijeUpdateInput = reklamacijaSchema.omit({ idReklamacije: true }).parse(req.body);
+    const parsedReklamacija = reklamacijaSchema.omit({ idReklamacije: true }).parse(req.body);
 
-    const updatedReklamacija = await reklamacijeModel.updateReklamacija(idReklamacije, paresedReklamacija);
+    // convert files null to Prisma.JsonNull
+    const prismaParsedReklamacija: Prisma.ReklamacijeCreateInput = { ...parsedReklamacija, files: parsedReklamacija.files ?? Prisma.JsonNull };
 
-    return res.status(200).json(updatedReklamacija);
+    const updatedReklamacija = await reklamacijeModel.updateReklamacija(idReklamacije, prismaParsedReklamacija);
+
+    return res.status(200).json({ message: "Reklamacija updated", data: updatedReklamacija });
   } catch (err) {
     next(err);
   }
@@ -184,7 +189,7 @@ const deleteReklamacijaController = async (req: Request, res: Response, next: Ne
 
     const deletedReklamacija = await reklamacijeModel.deleteReklamacija(idReklamacije);
 
-    return res.status(200).json(deletedReklamacija);
+    return res.status(200).json({ message: "Reklamacija deleted", data: deletedReklamacija });
   } catch (err) {
     next(err);
   }

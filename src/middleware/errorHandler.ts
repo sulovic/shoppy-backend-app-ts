@@ -9,7 +9,7 @@ import multer from "multer";
  * - Extendable with logging and monitoring hooks.
  */
 
-const errorHandler: ErrorRequestHandler = (err: Error | any, req: Request, res: Response, next: NextFunction): void => {
+const errorHandler: ErrorRequestHandler = (err: Error | any, req: Request, res: Response, _next: NextFunction): void => {
   // JSON parse errors
   if (err instanceof SyntaxError && (err as any).status === 400 && "body" in err) {
     res.status(400).json({ error: "Invalid JSON format" });

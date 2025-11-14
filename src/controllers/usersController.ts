@@ -69,7 +69,7 @@ const getAllUsersController = async (req: Request, res: Response, next: NextFunc
       };
     });
 
-    return res.status(200).json(usersData);
+    return res.status(200).json({ data: usersData });
   } catch (err) {
     next(err);
   }
@@ -115,7 +115,7 @@ const getAllUsersCountController = async (req: Request, res: Response, next: Nex
     };
 
     const usersCount = await userModel.getAllUsersCount({ whereClause });
-    return res.status(200).json(usersCount);
+    return res.status(200).json({ count: usersCount });
   } catch (err) {
     next(err);
   }
@@ -143,7 +143,7 @@ const getUserController = async (req: Request, res: Response, next: NextFunction
         roleName: userSensitiveData.role.role,
       };
 
-      return res.status(200).json(userData);
+      return res.status(200).json({ data: userData });
     }
   } catch (err) {
     next(err);
@@ -170,7 +170,7 @@ const createUserController = async (req: Request, res: Response, next: NextFunct
       roleName: createdUserSensitiveData.role.role,
     };
 
-    return res.status(201).json(createdUserData);
+    return res.status(201).json({ message: "User created successfully", data: createdUserData });
   } catch (err) {
     next(err);
   }
@@ -197,7 +197,7 @@ const updateUserController = async (req: Request, res: Response, next: NextFunct
       roleName: updatedUserSensitiveData.role.role,
     };
 
-    return res.status(200).json(updatedUser);
+    return res.status(200).json({ message: "User updated successfully", data: updatedUser });
   } catch (err) {
     next(err);
   }
@@ -216,7 +216,7 @@ const deleteUserController = async (req: Request, res: Response, next: NextFunct
       roleId: deletedUserSensitiveData.roleId,
       roleName: deletedUserSensitiveData.role.role,
     };
-    return res.status(200).json(deletedUser);
+    return res.status(200).json({ message: "User deleted successfully", data: deletedUser });
   } catch (err) {
     next(err);
   }

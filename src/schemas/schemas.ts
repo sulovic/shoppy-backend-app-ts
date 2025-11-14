@@ -76,5 +76,5 @@ export const reklamacijaSchema = z.object({
   komentar: z.string().nullable().optional(),
   smsSent: z.boolean().default(false),
   statusReklamacije: z.enum(["PRIJEM", "OBRADA", "OPRAVDANA", "NEOPRAVDANA", "DODATNI_ROK"], "Status reklamacije is required"),
-  files: z.array(z.string().min(1, "File name is required")).optional(),
+  files: z.array(z.string().min(1, "File name is required")).nullable().optional(),
 });

@@ -2,7 +2,6 @@ import path from "path";
 import fs from "fs/promises";
 import type { Request, Response, NextFunction } from "express";
 import { fileURLToPath } from "url";
-import filesUploadConfig from "../config/filesUploadConfig.ts";
 
 const uploadController = async (req: Request, res: Response, next: NextFunction) => {
   try {

@@ -19,7 +19,7 @@ if (process.env.NODE_ENV !== "production") {
 
 // Request logger middleware
 function requestLogger(req: Request, res: Response, next: NextFunction) {
-  const { password, ...safeBody } = req.body || {};
+  const { password: _password, ...safeBody } = req.body || {};
   logger.info({
     message: "Request logged",
     method: req.method,
