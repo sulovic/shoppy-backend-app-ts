@@ -84,7 +84,7 @@ const errorHandler: ErrorRequestHandler = (err: Error | any, req: Request, res: 
   // Prisma errors
   if (err?.name?.includes("PrismaClientKnownRequestError")) {
     if (err.code === "P2002") {
-      res.status(409).json({ error: "Duplicate entry detected." });
+      res.status(409).json({ error: "Duplicate entry detected.", err });
       return;
     }
     if (err.code === "P2003") {

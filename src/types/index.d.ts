@@ -10,6 +10,8 @@ import {
   ProizvodMasaOtpadaSchema,
   ProizvodiSchema,
   VrsteOtpadaSchema,
+  JciProizvodiSchema,
+  JciPodaciSchema,
 } from "../schemas/schemas.ts";
 
 declare global {
@@ -24,6 +26,8 @@ declare global {
   type ProizvodMasaOtpada = z.infer<typeof ProizvodMasaOtpadaSchema>;
   type Proizvodi = z.infer<typeof ProizvodiSchema>;
   type VrsteOtpada = z.infer<typeof VrsteOtpadaSchema>;
+  type JciProizvodi = z.infer<typeof JciProizvodiSchema>;
+  type JciPodaci = z.infer<typeof JciPodaciSchema>;
   namespace NodeJS {
     interface ProcessEnv extends Env {}
   }

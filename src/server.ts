@@ -19,8 +19,8 @@ import githubLoginRouter from "./routes/auth/githubLogin.ts";
 import facebookLoginRouter from "./routes/auth/facebookLogin.ts";
 
 import userRouter from "./routes/users.ts";
-import reklamacijeRouter from "./routes/reklamacije/reklamacije.ts";
-import reklamacijePublicRouter from "./routes/reklamacije/reklamacijePublic.ts";
+import reklamacijeRouter from "./routes/reklamacije.ts";
+import reklamacijePublicRouter from "./routes/reklamacijePublic.ts";
 import uploadsRouter from "./routes/uploads.ts";
 import otpadRouter from "./routes/otpad.ts";
 

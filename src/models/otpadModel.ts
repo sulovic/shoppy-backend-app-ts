@@ -16,17 +16,8 @@ const getAllJci = async ({ whereClause, orderBy, take, skip }: { whereClause?: P
           kolicina: true,
           proizvod: {
             select: {
+              id: true,
               proizvod: true,
-              ProizvodMasaOtpada: {
-                select: {
-                  VrstaOtpada: {
-                    select: {
-                      vrstaOtpada: true,
-                    },
-                  },
-                  masa: true,
-                },
-              },
             },
           },
         },
@@ -46,12 +37,38 @@ const getJci = async (id: number) => {
     where: {
       id,
     },
+    include: {
+      jciProizvodi: {
+        select: {
+          kolicina: true,
+          proizvod: {
+            select: {
+              id: true,
+              proizvod: true,
+            },
+          },
+        },
+      },
+    },
   });
 };
 
 const createJci = async (jci: Prisma.JciPodaciCreateInput) => {
   return await prisma.jciPodaci.create({
     data: jci,
+    include: {
+      jciProizvodi: {
+        select: {
+          kolicina: true,
+          proizvod: {
+            select: {
+              id: true,
+              proizvod: true,
+            },
+          },
+        },
+      },
+    },
   });
 };
 

@@ -83,6 +83,11 @@ export const reklamacijaSchema = z.object({
 
 // Otpad Schemas
 
+export const JciProizvodiSchema = z.object({
+  id: z.number().int(),
+  proizvod: z.string().min(3, "Proizvod is required"),
+});
+
 export const JciPodaciSchema = z.object({
   id: z.number().int(),
   zemlja: z.enum(["SRBIJA", "CRNA_GORA"], "Zemlja is required"),
@@ -90,18 +95,12 @@ export const JciPodaciSchema = z.object({
   operacija: z.enum(["UVOZ", "IZVOZ"], "Operacija is required"),
   brojJci: z.string("Broj JCI is required"),
   files: z.array(z.string().min(1, "File name is required")).nullable().optional(),
-});
-
-export const JciProizvodiSchema = z.object({
-  id: z.number().int(),
-  kolicina: z.number("Kolicina is required"),
-  proizvodId: z.number("proizvodId is required").int(),
-  jciPodaciId: z.number("jciPodaciId is required").int(),
-});
-
-export const ProizvodiSchema = z.object({
-  id: z.number().int(),
-  proizvod: z.string().min(3, "Proizvod is required"),
+  jciProizvodi: z.array(
+    z.object({
+      kolicina: z.number("Kolicina is required"),
+      proizvod: JciProizvodiSchema,
+    })
+  ),
 });
 
 export const VrsteOtpadaSchema = z.object({
