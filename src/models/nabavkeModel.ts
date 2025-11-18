@@ -31,18 +31,63 @@ const createPorudzbina = async (porudzbina: Prisma.PorudzbineCreateInput) => {
   });
 };
 
-const updatePorudzbina = async (id: number, user: Prisma.PorudzbineUpdateInput) => {
+const updatePorudzbina = async (id: number, porudzbina: Prisma.PorudzbineUpdateInput) => {
   return await prisma.porudzbine.update({
     where: {
       id,
     },
-    data: user,
+    data: porudzbina,
   });
 };
 
 const deletePorudzbina = async (id: number) => {
-  //Soft deletion
   return await prisma.porudzbine.delete({
+    where: {
+      id,
+    },
+  });
+};
+
+const getAllProizvodi = async ({ whereClause, orderBy, take, skip }: { whereClause?: Prisma.ProizvodiWhereInput; orderBy?: Prisma.ProizvodiOrderByWithRelationInput; take?: number; skip?: number }) => {
+  return await prisma.proizvodi.findMany({
+    where: { ...whereClause },
+    orderBy: orderBy,
+    take: take,
+    skip: skip,
+  });
+};
+
+const getAllProizvodiCount = async ({ whereClause }: { whereClause?: Prisma.ProizvodiWhereInput }) => {
+  return await prisma.proizvodi.count({
+    where: { ...whereClause },
+  });
+};
+
+const getProizvod = async (id: number) => {
+  return await prisma.proizvodi.findUnique({
+    where: {
+      id,
+    },
+  });
+};
+
+const createProizvod = async (proizvod: Prisma.ProizvodiCreateInput) => {
+  return await prisma.proizvodi.create({
+    data: proizvod,
+  });
+};
+
+const updateProizvod = async (id: number, proizvod: Prisma.ProizvodiUpdateInput) => {
+  return await prisma.proizvodi.update({
+    where: {
+      id,
+    },
+    data: proizvod,
+  });
+};
+
+const deleteProizvod = async (id: number) => {
+  return await prisma.proizvodi.delete({
     where: {
       id,
     },
@@ -57,5 +102,13 @@ export default {
     createPorudzbina,
     updatePorudzbina,
     deletePorudzbina,
+  },
+  proizvodi: {
+    getAllProizvodi,
+    getAllProizvodiCount,
+    getProizvod,
+    createProizvod,
+    updateProizvod,
+    deleteProizvod,
   },
 };

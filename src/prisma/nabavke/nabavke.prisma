@@ -28,12 +28,16 @@ model Porudzbine {
 
 model Sadrzaj {
     id           Int        @id @default(autoincrement())
-    porudzbina   Porudzbine @relation(fields: [porudzbinaId], references: [id])
+    porudzbina   Porudzbine @relation(fields: [porudzbinaId], references: [id], onDelete: Cascade)
     porudzbinaId Int
-    proizvod     Proizvodi  @relation(fields: [proizvodId], references: [id])
+    proizvod     Proizvodi  @relation(fields: [proizvodId], references: [id], onDelete: Restrict)
     proizvodId   Int
     kolicina     Int
     cena         Float
+
+    @@unique([porudzbinaId, proizvodId])
+    @@index([porudzbinaId])
+    @@index([proizvodId])
 }
 
 model Proizvodi {
