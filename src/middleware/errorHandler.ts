@@ -88,11 +88,11 @@ const errorHandler: ErrorRequestHandler = (err: Error | any, req: Request, res: 
       return;
     }
     if (err.code === "P2003") {
-      res.status(400).json({ error: "Invalid foreign key reference." });
+      res.status(400).json({ error: "Invalid foreign key reference.", err });
       return;
     }
     if (err.code === "P2009") {
-      res.status(400).json({ error: "Data validation error. Please check your input data." });
+      res.status(400).json({ error: "Data validation error. Please check your input data.", err });
       return;
     }
     if (err.code === "P2025") {

@@ -14,8 +14,8 @@ model JciPodaci {
   datum        DateTime
   operacija    Operacija
   brojJci      String         @unique
-  jciProizvodi JciProizvodi[]
   files        Json?
+  jciProizvodi JciProizvodi[]
 
   @@index([zemlja, operacija, brojJci])
 }
@@ -23,10 +23,10 @@ model JciPodaci {
 model JciProizvodi {
   id          Int       @id @default(autoincrement())
   kolicina    Float
-  proizvod    Proizvodi @relation(fields: [proizvodId], references: [id])
-  jci         JciPodaci @relation(fields: [jciPodaciId], references: [id])
   proizvodId  Int
   jciPodaciId Int
+  jci         JciPodaci @relation(fields: [jciPodaciId], references: [id], onDelete: Cascade)
+  proizvod    Proizvodi @relation(fields: [proizvodId], references: [id])
 }
 
 model Proizvodi {
@@ -44,11 +44,11 @@ model VrsteOtpada {
 
 model ProizvodMasaOtpada {
   id            Int         @id @default(autoincrement())
-  Proizvod      Proizvodi   @relation(fields: [proizvodId], references: [id])
-  VrstaOtpada   VrsteOtpada @relation(fields: [vrstaOtpadaId], references: [id])
   masa          Float
   proizvodId    Int
   vrstaOtpadaId Int
+  Proizvod      Proizvodi   @relation(fields: [proizvodId], references: [id])
+  VrstaOtpada   VrsteOtpada @relation(fields: [vrstaOtpadaId], references: [id])
 }
 
 enum Operacija {

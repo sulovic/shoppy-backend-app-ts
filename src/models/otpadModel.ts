@@ -1,7 +1,6 @@
 import { PrismaClient, Prisma } from "../../prisma_clients/otpad/client/client.js";
 
 const prisma = new PrismaClient();
-
 // JCI models
 
 const getAllJci = async ({ whereClause, orderBy, take, skip }: { whereClause?: Prisma.JciPodaciWhereInput; orderBy?: Prisma.JciPodaciOrderByWithRelationInput; take?: number; skip?: number }) => {
@@ -78,6 +77,19 @@ const updateJci = async (id: number, jci: Prisma.JciPodaciUpdateInput) => {
       id,
     },
     data: jci,
+    include: {
+      jciProizvodi: {
+        select: {
+          kolicina: true,
+          proizvod: {
+            select: {
+              id: true,
+              proizvod: true,
+            },
+          },
+        },
+      },
+    },
   });
 };
 
@@ -85,6 +97,19 @@ const deleteJci = async (id: number) => {
   return await prisma.jciPodaci.delete({
     where: {
       id,
+    },
+    include: {
+      jciProizvodi: {
+        select: {
+          kolicina: true,
+          proizvod: {
+            select: {
+              id: true,
+              proizvod: true,
+            },
+          },
+        },
+      },
     },
   });
 };

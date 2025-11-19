@@ -2,7 +2,6 @@ import otpadModel from "../models/otpadModel.ts";
 import type { Request, Response, NextFunction } from "express";
 import { queryParamsSchema, JciPodaciSchema } from "../schemas/schemas.ts";
 import { Prisma } from "../../prisma_clients/otpad/client/client.js";
-import { create } from "domain";
 
 const getAllJciController = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -22,8 +21,8 @@ const getAllJciController = async (req: Request, res: Response, next: NextFuncti
     const andConditions: Prisma.JciPodaciWhereInput[] = [];
     const orConditions: Prisma.JciPodaciWhereInput[] = [];
 
-    const filterKeys = ["zemljaReklamacije", "statusReklamacije", "odgovornaOsoba"];
-    const searchKeys = ["brojReklamacije", "imePrezime", "email", "telefon", "adresa", "brojRacuna", "nazivProizvoda"];
+    const filterKeys = ["zemlja", "operacija"];
+    const searchKeys = ["brojJci"];
 
     if (filters) {
       for (const key in filters) {
@@ -52,14 +51,14 @@ const getAllJciController = async (req: Request, res: Response, next: NextFuncti
       OR: orConditions.length > 0 ? orConditions : undefined,
     };
 
-    const reklamacijeData = await otpadModel.jci.getAllJci({
+    const jciData = await otpadModel.jci.getAllJci({
       whereClause,
       orderBy,
       take,
       skip,
     });
 
-    return res.status(200).json({ data: reklamacijeData });
+    return res.status(200).json({ data: jciData });
   } catch (err) {
     next(err);
   }
@@ -74,8 +73,8 @@ const getAllJciCountController = async (req: Request, res: Response, next: NextF
     const andConditions: Prisma.JciPodaciWhereInput[] = [];
     const orConditions: Prisma.JciPodaciWhereInput[] = [];
 
-    const filterKeys = ["zemljaReklamacije", "statusReklamacije", "odgovornaOsoba"];
-    const searchKeys = ["brojReklamacije", "imePrezime", "email", "telefon", "adresa", "brojRacuna", "nazivProizvoda"];
+    const filterKeys = ["zemlja", "operacija"];
+    const searchKeys = ["brojJci"];
 
     if (filters) {
       for (const key in filters) {
@@ -133,7 +132,6 @@ const getJciController = async (req: Request, res: Response, next: NextFunction)
 
 const createJciController = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
   try {
-    // works only async?
     const parsedJci = JciPodaciSchema.omit({ id: true }).parse(req.body);
 
     // convert JciPodaci type to Prisma expected format
@@ -150,15 +148,57 @@ const createJciController = async (req: Request, res: Response, next: NextFuncti
 
     const createdJci = await otpadModel.jci.createJci(prismaParsedJci);
 
-    return res.status(201).json({ message: "Reklamacija created", data: createdJci });
+    return res.status(201).json({ message: "JCI created", data: createdJci });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const updateJciController = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+  try {
+    const id: number = parseInt(req.params.id);
+
+    const parsedJci = JciPodaciSchema.omit({ id: true }).parse(req.body);
+
+    const prismaParsedJci: Prisma.JciPodaciUpdateInput = {
+      ...parsedJci,
+      files: parsedJci.files ?? Prisma.JsonNull,
+      jciProizvodi: {
+        deleteMany: {}, // delete all existing jciProizvodi and replace them
+        create: parsedJci.jciProizvodi.map((jp) => ({
+          kolicina: jp.kolicina,
+          proizvod: { connect: { id: jp.proizvod.id } },
+        })),
+      },
+    };
+
+    const updatedJci = await otpadModel.jci.updateJci(id, prismaParsedJci);
+
+    return res.status(200).json({ message: "JCI updated", data: updatedJci });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const deleteJciController = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+  try {
+    const id = parseInt(req.params.id);
+
+    const deletedJci = await otpadModel.jci.deleteJci(id);
+
+    return res.status(200).json({ message: "JCI deleted", data: deletedJci });
   } catch (err) {
     next(err);
   }
 };
 
 export default {
-  getAllJciController,
-  getAllJciCountController,
-  getJciController,
-  createJciController,
+  jci: {
+    getAllJciController,
+    getAllJciCountController,
+    getJciController,
+    createJciController,
+    updateJciController,
+    deleteJciController,
+  },
 };

@@ -3,9 +3,12 @@ import otpadController from "../controllers/otpadController.ts";
 
 const router = express.Router();
 
-router.get("/jci", otpadController.getAllJciController);
-router.get("/jci/count", otpadController.getAllJciCountController);
-router.get("/jci/:id", otpadController.getJciController);
-router.post("/jci", otpadController.createJciController);
+//JCI routes
+router.get("/jci", otpadController.jci.getAllJciController);
+router.get("/jci/count", otpadController.jci.getAllJciCountController);
+router.get("/jci/:id", otpadController.jci.getJciController);
+router.post("/jci", otpadController.jci.createJciController);
+router.put("/jci/:id", otpadController.jci.updateJciController);
+router.delete("/jci/:id", otpadController.jci.deleteJciController);
 
 export default router;
