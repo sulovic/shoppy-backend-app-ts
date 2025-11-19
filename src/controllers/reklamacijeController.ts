@@ -170,6 +170,10 @@ const updateReklamacijaController = async (req: Request, res: Response, next: Ne
   try {
     const idReklamacije: number = parseInt(req.params.idReklamacije);
 
+    if (isNaN(idReklamacije)) {
+      return res.status(400).json({ message: "Invalid reklamacija ID" });
+    }
+
     const parsedReklamacija = reklamacijaSchema.omit({ idReklamacije: true }).parse(req.body);
 
     // convert files null to Prisma.JsonNull
@@ -186,6 +190,10 @@ const updateReklamacijaController = async (req: Request, res: Response, next: Ne
 const deleteReklamacijaController = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
   try {
     const idReklamacije: number = parseInt(req.params.idReklamacije);
+
+    if (isNaN(idReklamacije)) {
+      return res.status(400).json({ message: "Invalid JCI ID" });
+    }
 
     const deletedReklamacija = await reklamacijeModel.deleteReklamacija(idReklamacije);
 

@@ -179,6 +179,11 @@ const createUserController = async (req: Request, res: Response, next: NextFunct
 const updateUserController = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
   try {
     const userId: number = parseInt(req.params.userId);
+
+    if (isNaN(userId)) {
+      return res.status(400).json({ message: "Invalid user ID" });
+    }
+
     const { roleId, ...parsedUser } = userSensitiveDataSchema.omit({ userId: true }).parse(req.body);
 
     const userDataForUpdate: Prisma.UsersUpdateInput = {
@@ -206,6 +211,11 @@ const updateUserController = async (req: Request, res: Response, next: NextFunct
 const deleteUserController = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
   try {
     const userId: number = parseInt(req.params.userId);
+
+    if (isNaN(userId)) {
+      return res.status(400).json({ message: "Invalid user ID" });
+    }
+
     const deletedUserSensitiveData = await userModel.deleteUser(userId);
 
     const deletedUser: UserData = {

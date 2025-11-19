@@ -164,7 +164,7 @@ const deleteProizvod = async (id: number) => {
 
 // Vrste otpada models
 
-const getVrsteOtpada = async ({ whereClause, orderBy, take, skip }: { whereClause?: Prisma.VrsteOtpadaWhereInput; orderBy?: Prisma.VrsteOtpadaOrderByWithRelationInput; take?: number; skip?: number }) => {
+const getAllVrsteOtpada = async ({ whereClause, orderBy, take, skip }: { whereClause?: Prisma.VrsteOtpadaWhereInput; orderBy?: Prisma.VrsteOtpadaOrderByWithRelationInput; take?: number; skip?: number }) => {
   return await prisma.vrsteOtpada.findMany({
     where: { ...whereClause },
     orderBy: orderBy,
@@ -173,7 +173,7 @@ const getVrsteOtpada = async ({ whereClause, orderBy, take, skip }: { whereClaus
   });
 };
 
-const getVrsteOtpadaCount = async ({ whereClause }: { whereClause?: Prisma.VrsteOtpadaWhereInput }) => {
+const getAllVrsteOtpadaCount = async ({ whereClause }: { whereClause?: Prisma.VrsteOtpadaWhereInput }) => {
   return await prisma.vrsteOtpada.count({
     where: { ...whereClause },
   });
@@ -213,5 +213,5 @@ const deleteVrstaOtpada = async (id: number) => {
 export default {
   jci: { getAllJci, getAllJciCount, getJci, createJci, updateJci, deleteJci },
   proizvodi: { getAllProizvodi, getAllProizvodiCount, getProizvod, createProizvod, updateProizvod, deleteProizvod },
-  vrsteOtpada: { getVrsteOtpada, getVrsteOtpadaCount, getVrstaOtpada, createVrstaOtpada, updateVrstaOtpada, deleteVrstaOtpada },
+  vrsteOtpada: { getAllVrsteOtpada, getAllVrsteOtpadaCount, getVrstaOtpada, createVrstaOtpada, updateVrstaOtpada, deleteVrstaOtpada },
 };

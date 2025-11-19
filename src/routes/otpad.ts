@@ -11,4 +11,13 @@ router.post("/jci", otpadController.jci.createJciController);
 router.put("/jci/:id", otpadController.jci.updateJciController);
 router.delete("/jci/:id", otpadController.jci.deleteJciController);
 
+//Vrste otpada routes
+
+router.get("/vrste-otpada", otpadController.vrsteOtpada.getAllVrsteOtpadaController);
+router.get("/vrste-otpada/count", otpadController.vrsteOtpada.getAllVrsteOtpadaCountController);
+router.get("/vrste-otpada/:id", otpadController.vrsteOtpada.getVrstaOtpadaController);
+router.post("/vrste-otpada", otpadController.vrsteOtpada.createVrstaOtpadaController);
+router.put("/vrste-otpada/:id", otpadController.vrsteOtpada.updateVrstaOtpadaController);
+router.delete("/vrste-otpada/:id", otpadController.vrsteOtpada.deleteVrstaOtpadaController);
+
 export default router;

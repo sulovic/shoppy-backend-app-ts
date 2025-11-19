@@ -1,7 +1,9 @@
 import otpadModel from "../models/otpadModel.ts";
 import type { Request, Response, NextFunction } from "express";
-import { queryParamsSchema, JciPodaciSchema } from "../schemas/schemas.ts";
+import { queryParamsSchema, JciPodaciSchema, VrstaOtpadaSchema } from "../schemas/schemas.ts";
 import { Prisma } from "../../prisma_clients/otpad/client/client.js";
+
+// JCI Controllers
 
 const getAllJciController = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -158,6 +160,10 @@ const updateJciController = async (req: Request, res: Response, next: NextFuncti
   try {
     const id: number = parseInt(req.params.id);
 
+    if (isNaN(id)) {
+      return res.status(400).json({ message: "Invalid JCI ID" });
+    }
+
     const parsedJci = JciPodaciSchema.omit({ id: true }).parse(req.body);
 
     const prismaParsedJci: Prisma.JciPodaciUpdateInput = {
@@ -184,9 +190,189 @@ const deleteJciController = async (req: Request, res: Response, next: NextFuncti
   try {
     const id = parseInt(req.params.id);
 
+    if (isNaN(id)) {
+      return res.status(400).json({ message: "Invalid JCI ID" });
+    }
+
     const deletedJci = await otpadModel.jci.deleteJci(id);
 
     return res.status(200).json({ message: "JCI deleted", data: deletedJci });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// Vrste otpada controllers
+
+const getAllVrsteOtpadaController = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const queryParams = queryParamsSchema.parse(req?.query);
+
+    const { sortBy, sortOrder, limit, page, search, filters } = queryParams;
+
+    // default limit to 100 and page to 1 if not provided
+    const limitNum = parseInt(limit || "100", 10);
+    const pageNum = parseInt(page || "1", 10);
+
+    const take = limitNum;
+    const skip = (pageNum - 1) * limitNum;
+
+    const orderBy = sortBy ? { [sortBy]: sortOrder || "desc" } : { ["id"]: sortOrder || "desc" };
+
+    const andConditions: Prisma.VrsteOtpadaWhereInput[] = [];
+    const orConditions: Prisma.VrsteOtpadaWhereInput[] = [];
+
+    const filterKeys = [""];
+    const searchKeys = ["vrstaOtpada"];
+
+    if (filters) {
+      for (const key in filters) {
+        const value = filters[key];
+        if (!filterKeys.includes(key)) {
+          return res.status(400).json({ message: `Invalid filter key: ${key}` });
+        }
+
+        andConditions.push({ [key]: { in: [value] } });
+      }
+    }
+
+    if (search) {
+      orConditions.push(
+        ...searchKeys.map((key) => ({
+          [key]: {
+            contains: search,
+            mode: "insensitive",
+          },
+        }))
+      );
+    }
+
+    const whereClause: Prisma.VrsteOtpadaWhereInput = {
+      AND: andConditions.length > 0 ? andConditions : undefined,
+      OR: orConditions.length > 0 ? orConditions : undefined,
+    };
+
+    const vrsteOtpadaData = await otpadModel.vrsteOtpada.getAllVrsteOtpada({
+      whereClause,
+      orderBy,
+      take,
+      skip,
+    });
+
+    return res.status(200).json({ data: vrsteOtpadaData });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const getAllVrsteOtpadaCountController = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const queryParams = queryParamsSchema.parse(req?.query);
+
+    const { search, filters } = queryParams;
+
+    const andConditions: Prisma.VrsteOtpadaWhereInput[] = [];
+    const orConditions: Prisma.VrsteOtpadaWhereInput[] = [];
+
+    const filterKeys = [""];
+    const searchKeys = ["vrstaOtpada"];
+
+    if (filters) {
+      for (const key in filters) {
+        const value = filters[key];
+        if (!filterKeys.includes(key)) {
+          return res.status(400).json({ message: `Invalid filter key: ${key}` });
+        }
+
+        andConditions.push({ [key]: { in: [value] } });
+      }
+    }
+
+    if (search) {
+      orConditions.push(
+        ...searchKeys.map((key) => ({
+          [key]: {
+            contains: search,
+            mode: "insensitive",
+          },
+        }))
+      );
+    }
+
+    const whereClause: Prisma.VrsteOtpadaWhereInput = {
+      AND: andConditions.length > 0 ? andConditions : undefined,
+      OR: orConditions.length > 0 ? orConditions : undefined,
+    };
+
+    const vrsteOtpadaCount = await otpadModel.vrsteOtpada.getAllVrsteOtpadaCount({ whereClause });
+
+    return res.status(200).json({ count: vrsteOtpadaCount });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const getVrstaOtpadaController = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+  try {
+    const id = parseInt(req.params.id);
+
+    if (isNaN(id)) {
+      return res.status(400).json({ message: "Invalid Vrsta otpada ID" });
+    }
+
+    const vrstaOtpada = await otpadModel.vrsteOtpada.getVrstaOtpada(id);
+
+    if (!vrstaOtpada) {
+      return res.status(404).json({ message: "Vrsta otpada not found" });
+    }
+
+    return res.status(200).json({ data: vrstaOtpada });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const createVrstaOtpadaController = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+  try {
+    const parsedVrstaOtpada = VrstaOtpadaSchema.omit({ id: true }).parse(req.body);
+
+    const createdVrstaOtpada = await otpadModel.vrsteOtpada.createVrstaOtpada(parsedVrstaOtpada);
+
+    return res.status(201).json({ data: createdVrstaOtpada });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const updateVrstaOtpadaController = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+  try {
+    const id = parseInt(req.params.id);
+
+    if (isNaN(id)) {
+      return res.status(400).json({ message: "Invalid Vrsta otpada ID" });
+    }
+
+    const parsedVrstaOtpada = VrstaOtpadaSchema.parse(req.body);
+
+    const updatedVrstaOtpada = await otpadModel.vrsteOtpada.updateVrstaOtpada(id, parsedVrstaOtpada);
+
+    return res.status(200).json({ data: updatedVrstaOtpada });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const deleteVrstaOtpadaController = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+  try {
+    const id = parseInt(req.params.id);
+
+    if (isNaN(id)) {
+      return res.status(400).json({ message: "Invalid Vrsta otpada ID" });
+    }
+
+    const deletedVrstaOtpada = await otpadModel.vrsteOtpada.deleteVrstaOtpada(id);
+
+    return res.status(200).json({ message: "Vrsta otpada deleted", data: deletedVrstaOtpada });
   } catch (err) {
     next(err);
   }
@@ -200,5 +386,13 @@ export default {
     createJciController,
     updateJciController,
     deleteJciController,
+  },
+  vrsteOtpada: {
+    getAllVrsteOtpadaController,
+    getAllVrsteOtpadaCountController,
+    getVrstaOtpadaController,
+    createVrstaOtpadaController,
+    updateVrstaOtpadaController,
+    deleteVrstaOtpadaController,
   },
 };

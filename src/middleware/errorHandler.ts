@@ -92,7 +92,7 @@ const errorHandler: ErrorRequestHandler = (err: Error | any, req: Request, res: 
       return;
     }
     if (err.code === "P2009") {
-      res.status(400).json({ error: "Data validation error. Please check your input data.", err });
+      res.status(400).json({ error: "Data validation error. Please check your input data." });
       return;
     }
     if (err.code === "P2025") {
@@ -120,7 +120,7 @@ const errorHandler: ErrorRequestHandler = (err: Error | any, req: Request, res: 
     res.status(400).json({ error: "Invalid request." });
     return;
   } else if (err?.name?.includes("PrismaClientValidationError")) {
-    res.status(400).json({ error: "Data validation error. Please check your input data." });
+    res.status(400).json({ error: "Data validation error. Please check your input data.", err });
     return;
   } else if (err?.name?.includes("PrismaClientRustPanicError")) {
     res.status(500).json({ error: "Prisma Client Rust Panic." });

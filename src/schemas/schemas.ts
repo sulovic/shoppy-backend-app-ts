@@ -103,7 +103,7 @@ export const JciPodaciSchema = z.object({
   ),
 });
 
-export const VrsteOtpadaSchema = z.object({
+export const VrstaOtpadaSchema = z.object({
   id: z.number().int(),
   vrstaOtpada: z.string().min(3, "Vrsta otpada is required"),
 });
