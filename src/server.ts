@@ -74,22 +74,12 @@ app.use("/uploads", verifyAccessToken, checkUserRole, uploadsRouter);
 app.use("/odsustva/evidencija", verifyAccessToken, require("./routes/odsustva/evidencija"));
 app.use("/odsustva/dodeljena", verifyAccessToken, require("./routes/odsustva/dodeljena"));
 
-// Nabavke  routes
-
-app.use("/nabavke/porudzbine", verifyAccessToken, require("./routes/nabavke/porudzbine"));
-app.use("/nabavke/proizvodi", verifyAccessToken, require("./routes/nabavke/proizvodi"));
-app.use("/nabavke/sadrzaj", verifyAccessToken, require("./routes/nabavke/sadrzaj"));
-
 // Evidencija Tokova otpada routes
 
 app.use("/otpad/vrste-otpada", verifyAccessToken, require("./routes/otpad/vrste"));
 app.use("/otpad/proizvodi", verifyAccessToken, require("./routes/otpad/proizvodi"));
 app.use("/otpad/evidencija", verifyAccessToken, require("./routes/otpad/evidencija"));
 app.use("/otpad/delovodnik", verifyAccessToken, require("./routes/otpad/delovodnik"));
-
-// Reklamacije routes
-app.use("/reklamacije", verifyAccessToken, require("./routes/reklamacije/reklamacije"));
-
 
 
 */

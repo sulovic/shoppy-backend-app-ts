@@ -83,9 +83,20 @@ export const reklamacijaSchema = z.object({
 
 // Otpad Schemas
 
+export const VrstaOtpadaSchema = z.object({
+  id: z.number().int(),
+  vrstaOtpada: z.string().min(3, "Vrsta otpada is required"),
+});
+
 export const JciProizvodiSchema = z.object({
   id: z.number().int(),
   proizvod: z.string().min(3, "Proizvod is required"),
+  ProizvodMasaOtpada: z.array(
+    z.object({
+      masa: z.number("Masa is required"),
+      VrstaOtpada: VrstaOtpadaSchema,
+    })
+  ),
 });
 
 export const JciPodaciSchema = z.object({
@@ -101,11 +112,6 @@ export const JciPodaciSchema = z.object({
       proizvod: JciProizvodiSchema,
     })
   ),
-});
-
-export const VrstaOtpadaSchema = z.object({
-  id: z.number().int(),
-  vrstaOtpada: z.string().min(3, "Vrsta otpada is required"),
 });
 
 // Nabavke Schemas

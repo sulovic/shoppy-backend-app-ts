@@ -244,14 +244,14 @@ const getAllProizvodiController = async (req: Request, res: Response, next: Next
       OR: orConditions.length > 0 ? orConditions : undefined,
     };
 
-    const porudzbineData = await nabavkeModel.proizvodi.getAllProizvodi({
+    const proizvodiData = await nabavkeModel.proizvodi.getAllProizvodi({
       whereClause,
       orderBy,
       take,
       skip,
     });
 
-    return res.status(200).json({ data: porudzbineData });
+    return res.status(200).json({ data: proizvodiData });
   } catch (err) {
     next(err);
   }
@@ -296,8 +296,8 @@ const getAllProizvodiCountController = async (req: Request, res: Response, next:
       OR: orConditions.length > 0 ? orConditions : undefined,
     };
 
-    const porudzbineCount = await nabavkeModel.proizvodi.getAllProizvodiCount({ whereClause });
-    return res.status(200).json({ count: porudzbineCount });
+    const proizvodiCount = await nabavkeModel.proizvodi.getAllProizvodiCount({ whereClause });
+    return res.status(200).json({ count: proizvodiCount });
   } catch (err) {
     next(err);
   }

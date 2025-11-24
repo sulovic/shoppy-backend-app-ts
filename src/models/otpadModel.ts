@@ -116,48 +116,112 @@ const deleteJci = async (id: number) => {
 
 //Proizvodi models
 
-const getAllProizvodi = async ({ whereClause, orderBy, take, skip }: { whereClause?: Prisma.JciProizvodiWhereInput; orderBy?: Prisma.JciProizvodiOrderByWithRelationInput; take?: number; skip?: number }) => {
-  return await prisma.jciProizvodi.findMany({
+const getAllProizvodi = async ({ whereClause, orderBy, take, skip }: { whereClause?: Prisma.ProizvodiWhereInput; orderBy?: Prisma.ProizvodiOrderByWithRelationInput; take?: number; skip?: number }) => {
+  return await prisma.proizvodi.findMany({
     where: { ...whereClause },
     orderBy: orderBy,
     take: take,
     skip: skip,
+    select: {
+      ProizvodMasaOtpada: {
+        select: {
+          masa: true,
+          VrstaOtpada: {
+            select: {
+              vrstaOtpada: true,
+            },
+          },
+        },
+      },
+    },
   });
 };
 
-const getAllProizvodiCount = async ({ whereClause }: { whereClause?: Prisma.JciProizvodiWhereInput }) => {
-  return await prisma.jciProizvodi.count({
+const getAllProizvodiCount = async ({ whereClause }: { whereClause?: Prisma.ProizvodiWhereInput }) => {
+  return await prisma.proizvodi.count({
     where: { ...whereClause },
   });
 };
 
 const getProizvod = async (id: number) => {
-  return await prisma.jciProizvodi.findUnique({
+  return await prisma.proizvodi.findUnique({
     where: {
       id,
+    },
+    select: {
+      ProizvodMasaOtpada: {
+        select: {
+          masa: true,
+          VrstaOtpada: {
+            select: {
+              id: true,
+              vrstaOtpada: true,
+            },
+          },
+        },
+      },
     },
   });
 };
 
-const createProizvod = async (proizvod: Prisma.JciProizvodiCreateInput) => {
-  return await prisma.jciProizvodi.create({
+const createProizvod = async (proizvod: Prisma.ProizvodiCreateInput) => {
+  return await prisma.proizvodi.create({
     data: proizvod,
+    select: {
+      ProizvodMasaOtpada: {
+        select: {
+          masa: true,
+          VrstaOtpada: {
+            select: {
+              id: true,
+              vrstaOtpada: true,
+            },
+          },
+        },
+      },
+    },
   });
 };
 
-const updateProizvod = async (id: number, proizvod: Prisma.JciProizvodiUpdateInput) => {
-  return await prisma.jciProizvodi.update({
+const updateProizvod = async (id: number, proizvod: Prisma.ProizvodiUpdateInput) => {
+  return await prisma.proizvodi.update({
     where: {
       id,
     },
     data: proizvod,
+    select: {
+      ProizvodMasaOtpada: {
+        select: {
+          masa: true,
+          VrstaOtpada: {
+            select: {
+              id: true,
+              vrstaOtpada: true,
+            },
+          },
+        },
+      },
+    },
   });
 };
 
 const deleteProizvod = async (id: number) => {
-  return await prisma.jciProizvodi.delete({
+  return await prisma.proizvodi.delete({
     where: {
       id,
+    },
+    select: {
+      ProizvodMasaOtpada: {
+        select: {
+          masa: true,
+          VrstaOtpada: {
+            select: {
+              id: true,
+              vrstaOtpada: true,
+            },
+          },
+        },
+      },
     },
   });
 };
@@ -170,12 +234,20 @@ const getAllVrsteOtpada = async ({ whereClause, orderBy, take, skip }: { whereCl
     orderBy: orderBy,
     take: take,
     skip: skip,
+    select: {
+      id: true,
+      vrstaOtpada: true,
+    },
   });
 };
 
 const getAllVrsteOtpadaCount = async ({ whereClause }: { whereClause?: Prisma.VrsteOtpadaWhereInput }) => {
   return await prisma.vrsteOtpada.count({
     where: { ...whereClause },
+    select: {
+      id: true,
+      vrstaOtpada: true,
+    },
   });
 };
 
@@ -184,12 +256,20 @@ const getVrstaOtpada = async (id: number) => {
     where: {
       id,
     },
+    select: {
+      id: true,
+      vrstaOtpada: true,
+    },
   });
 };
 
 const createVrstaOtpada = async (vrstaOtpada: Prisma.VrsteOtpadaCreateInput) => {
   return await prisma.vrsteOtpada.create({
     data: vrstaOtpada,
+    select: {
+      id: true,
+      vrstaOtpada: true,
+    },
   });
 };
 
@@ -199,6 +279,10 @@ const updateVrstaOtpada = async (id: number, vrstaOtpada: Prisma.VrsteOtpadaUpda
       id,
     },
     data: vrstaOtpada,
+    select: {
+      id: true,
+      vrstaOtpada: true,
+    },
   });
 };
 
@@ -206,6 +290,10 @@ const deleteVrstaOtpada = async (id: number) => {
   return await prisma.vrsteOtpada.delete({
     where: {
       id,
+    },
+    select: {
+      id: true,
+      vrstaOtpada: true,
     },
   });
 };
