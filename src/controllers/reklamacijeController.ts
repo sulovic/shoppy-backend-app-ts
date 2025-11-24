@@ -177,7 +177,7 @@ const updateReklamacijaController = async (req: Request, res: Response, next: Ne
     const parsedReklamacija = reklamacijaSchema.omit({ idReklamacije: true }).parse(req.body);
 
     // convert files null to Prisma.JsonNull
-    const prismaParsedReklamacija: Prisma.ReklamacijeCreateInput = { ...parsedReklamacija, files: parsedReklamacija.files ?? Prisma.JsonNull };
+    const prismaParsedReklamacija: Prisma.ReklamacijeUpdateInput = { ...parsedReklamacija, files: parsedReklamacija.files ?? Prisma.JsonNull };
 
     const updatedReklamacija = await reklamacijeModel.updateReklamacija(idReklamacije, prismaParsedReklamacija);
 

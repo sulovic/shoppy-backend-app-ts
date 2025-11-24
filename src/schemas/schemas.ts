@@ -78,7 +78,7 @@ export const reklamacijaSchema = z.object({
   komentar: z.string().nullable().optional(),
   smsSent: z.boolean().default(false),
   statusReklamacije: z.enum(["PRIJEM", "OBRADA", "OPRAVDANA", "NEOPRAVDANA", "DODATNI_ROK"], "Status reklamacije is required"),
-  files: z.array(z.string().min(1, "File name is required")).nullable().optional(),
+  files: z.array(z.string().min(5, "File name is required")).nullable().optional(),
 });
 
 // Otpad Schemas
@@ -108,9 +108,33 @@ export const VrstaOtpadaSchema = z.object({
   vrstaOtpada: z.string().min(3, "Vrsta otpada is required"),
 });
 
-export const ProizvodMasaOtpadaSchema = z.object({
+// Nabavke Schemas
+
+export const NabavkeProizvodSchema = z.object({
   id: z.number().int(),
-  masa: z.number("Masa is required"),
-  proizvodId: z.number("proizvodId is required").int(),
-  vrstaOtpadaId: z.number("vrstaOtpadaId is required").int(),
+  naziv: z.string().min(5, "Naziv proizvoda is required"),
+  SKU: z.string().min(5, "SKU proizvoda is required"),
+});
+
+export const NabavkeSadrzajSchema = z.object({
+  id: z.number().int(),
+  kolicina: z.number("Kolicina is required"),
+  proizvod: NabavkeProizvodSchema,
+  cena: z.number("Cena is required"),
+});
+
+export const PorudzbinaSchema = z.object({
+  id: z.number().int(),
+  proFaktura: z.string().min(3, "Broj pro-fakture is required"),
+  dobavljac: z.string().min(5, "Dobavljač is required"),
+  spediter: z.string().min(5, "Spediter is required").nullable().optional(),
+  datumPorudzbine: z.coerce.date("Datum porudžbine is required"),
+  datumPolaska: z.coerce.date().nullable().optional(),
+  datumPrijema: z.coerce.date().nullable().optional(),
+  brojKontejnera: z.string().min(3).nullable().optional(),
+  komentar: z.string().nullable().optional(),
+  status: z.enum(["NACRT", "PROIZVODNJA", "TRANZIT", "PRIMLJENA"]),
+  zemlja: z.enum(["SRBIJA", "CRNA_GORA"]),
+  sadrzaj: z.array(NabavkeSadrzajSchema),
+  files: z.array(z.string().min(5, "File name is required")).nullable().optional(),
 });
