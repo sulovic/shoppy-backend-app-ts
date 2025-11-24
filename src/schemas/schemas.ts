@@ -120,7 +120,8 @@ export const NabavkeProizvodSchema = z.object({
 export const NabavkeSadrzajSchema = z.object({
   id: z.number().int(),
   kolicina: z.number("Kolicina is required"),
-  proizvod: z.array(NabavkeProizvodSchema),
+  proizvod: NabavkeProizvodSchema,
+  cena: z.number("Cena is required"),
 });
 
 export const PorudzbinaSchema = z.object({
