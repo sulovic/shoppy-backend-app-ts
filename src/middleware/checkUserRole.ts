@@ -15,7 +15,14 @@ const checkUserRole = async (req: RequestWithAuth, res: Response, next: NextFunc
 
     // Get min role based on path and method, default to 5000
 
-    const path = req.originalUrl.split("?")[0].split("/").filter(Boolean)[0];
+    const segments = req.originalUrl.split("?")[0].split("/").filter(Boolean);
+
+    // Remove "count" from the end if present
+    if (segments.at(-1) === "count") {
+      segments.pop();
+    }
+
+    const path = segments.join(".");
 
     const minRole = priviledgesConfig[path]?.[req.method] || 5000;
 

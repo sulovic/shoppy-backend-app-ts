@@ -30,6 +30,20 @@ const priviledgesConfig = {
     PUT: 1000,
     DELETE: 5000,
   },
+  nabavke: {
+    prizvodi: {
+      GET: 1000,
+      POST: 1000,
+      PUT: 1000,
+      DELETE: 5000,
+    },
+    porudzbine: {
+      GET: 1000,
+      POST: 1000,
+      PUT: 1000,
+      DELETE: 5000,
+    },
+  },
 };
 
 export default priviledgesConfig;
