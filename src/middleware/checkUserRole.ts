@@ -1,5 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import priviledgesConfig from "../config/priviledges.ts";
+import { userDataSchema } from "../schemas/schemas.ts";
 
 interface RequestWithAuth extends Request {
   auth?: UserData;
@@ -7,24 +8,29 @@ interface RequestWithAuth extends Request {
 
 const checkUserRole = async (req: RequestWithAuth, res: Response, next: NextFunction) => {
   try {
-    const authUser: UserData = req.auth;
-
-    if (!authUser || !authUser?.roleId) {
+    if (!req.auth) {
       return res.status(401).json({ error: "Unauthorized - No authUser found" });
     }
 
+    const authUser = userDataSchema.parse(req.auth);
+
     // Get min role based on path and method, default to 5000
 
-    const segments = req.originalUrl.split("?")[0].split("/").filter(Boolean);
+    const segments = req.originalUrl
+      .split("?")[0]
+      .split("/")
+      .filter((s) => s !== "count") // Ignore count
+      .filter(Boolean);
 
-    // Remove "count" from the end if present
-    if (segments.at(-1) === "count") {
-      segments.pop();
+    let current: any = priviledgesConfig;
+
+    for (const segment of segments) {
+      current = current?.[segment];
     }
 
-    const path = segments.join(".");
+    const minRole = current?.[req.method] ?? 5000;
 
-    const minRole = priviledgesConfig[path]?.[req.method] || 5000;
+    console.log("Current", current, "MinRole", minRole, "Method", req.method, "AuthUser", authUser.roleId);
 
     // Verify minimum role condition
 

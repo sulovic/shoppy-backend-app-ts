@@ -1,5 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import { userDataSchema } from "../schemas/schemas.ts";
 
 interface RequestWithAuth extends Request {
   auth?: UserData;
@@ -24,7 +25,9 @@ const verifyAccessToken = async (req: RequestWithAuth, res: Response, next: Next
 
     //Attach authUser for future use
 
-    req.auth = decodedAccessToken;
+    const authUser = userDataSchema.parse(decodedAccessToken);
+
+    req.auth = authUser;
 
     next();
   } catch (error) {
