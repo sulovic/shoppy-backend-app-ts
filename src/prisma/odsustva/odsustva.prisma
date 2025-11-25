@@ -5,7 +5,6 @@ generator odsustvaClient {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_ODSUSTVA_URL")
 }
 
 model EvidencijaOdsustva {

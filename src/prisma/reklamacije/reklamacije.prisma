@@ -5,7 +5,6 @@ generator reklamacijeClient {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_REKLAMACIJE_URL")
 }
 
 model Reklamacije {

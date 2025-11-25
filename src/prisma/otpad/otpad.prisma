@@ -5,7 +5,6 @@ generator otpadClient {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_OTPAD_URL")
 }
 
 model JciPodaci {

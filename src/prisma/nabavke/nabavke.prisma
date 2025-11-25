@@ -5,7 +5,6 @@ generator nabavkeClient {
 
 datasource db {
     provider = "postgresql"
-    url      = env("DATABASE_NABAVKE_URL")
 }
 
 model Porudzbine {
