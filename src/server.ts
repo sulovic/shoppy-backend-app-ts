@@ -1,4 +1,4 @@
-import dotenv from "dotenv";
+import "dotenv/config";
 import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
@@ -24,8 +24,6 @@ import reklamacijePublicRouter from "./routes/reklamacijePublic.ts";
 import uploadsRouter from "./routes/uploads.ts";
 import otpadRouter from "./routes/otpad.ts";
 import nabavkeRouter from "./routes/nabavke.ts";
-
-dotenv.config();
 
 envSchema.parse(process.env);
 

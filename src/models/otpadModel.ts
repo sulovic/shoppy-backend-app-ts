@@ -1,6 +1,12 @@
 import { PrismaClient, Prisma } from "../../prisma_clients/otpad/client/client.js";
+import { PrismaPg } from "@prisma/adapter-pg";
 
-const prisma = new PrismaClient();
+const adapter = new PrismaPg({
+  connectionString: process.env.DATABASE_OTPAD_URL,
+});
+
+const prisma = new PrismaClient({ adapter });
+
 // JCI models
 
 const getAllJci = async ({ whereClause, orderBy, take, skip }: { whereClause?: Prisma.JciPodaciWhereInput; orderBy?: Prisma.JciPodaciOrderByWithRelationInput; take?: number; skip?: number }) => {

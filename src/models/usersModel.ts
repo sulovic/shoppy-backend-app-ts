@@ -1,6 +1,13 @@
 import { PrismaClient, Prisma } from "../../prisma_clients/users/client/client.js";
+import { PrismaPg } from "@prisma/adapter-pg";
 
-const prisma = new PrismaClient();
+const connectionString = process.env.DATABASE_USERS_URL;
+
+const adapter = new PrismaPg({
+  connectionString,
+});
+
+const prisma = new PrismaClient({ adapter });
 
 const getAllUsers = async ({ whereClause, orderBy, take, skip }: { whereClause?: Prisma.UsersWhereInput; orderBy?: Prisma.UsersOrderByWithRelationInput; take?: number; skip?: number }) => {
   return await prisma.users.findMany({

@@ -1,6 +1,11 @@
 import { PrismaClient, Prisma } from "../../prisma_clients/nabavke/client/client.js";
+import { PrismaPg } from "@prisma/adapter-pg";
 
-const prisma = new PrismaClient();
+const adapter = new PrismaPg({
+  connectionString: process.env.DATABASE_NABAVKE_URL,
+});
+
+const prisma = new PrismaClient({ adapter });
 
 const getAllPorudzbine = async ({ whereClause, orderBy, take, skip }: { whereClause?: Prisma.PorudzbineWhereInput; orderBy?: Prisma.PorudzbineOrderByWithRelationInput; take?: number; skip?: number }) => {
   return await prisma.porudzbine.findMany({
