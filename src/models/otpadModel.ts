@@ -298,8 +298,25 @@ const deleteVrstaOtpada = async (id: number) => {
   });
 };
 
+// Delovodnik model
+
+const getDelovodnikModel = async ({ whereSQL }: { whereSQL: Prisma.Sql }) => {
+  const query = Prisma.sql`
+          SELECT datum, zemlja, operacija, brojJci, sum(kolicina*masa) AS ukupno, vrstaOtpada FROM JciPodaci 
+          JOIN JciProizvodi ON JciPodaci.id = JciProizvodi.jciPodaciId 
+          JOIN Proizvodi ON JciProizvodi.proizvodId = Proizvodi.id 
+          JOIN ProizvodMasaOtpada ON Proizvodi.id = ProizvodMasaOtpada.proizvodiId
+          JOIN VrsteOtpada ON ProizvodMasaOtpada.vrsteOtpadaId = VrsteOtpada.id 
+          ${whereSQL}
+          GROUP BY brojJci, vrstaOtpada
+          ORDER BY datum DESC
+          `;
+  return await prisma.$queryRaw(query);
+};
+
 export default {
   jci: { getAllJci, getAllJciCount, getJci, createJci, updateJci, deleteJci },
   proizvodi: { getAllProizvodi, getAllProizvodiCount, getProizvod, createProizvod, updateProizvod, deleteProizvod },
   vrsteOtpada: { getAllVrsteOtpada, getAllVrsteOtpadaCount, getVrstaOtpada, createVrstaOtpada, updateVrstaOtpada, deleteVrstaOtpada },
+  delovodnik: { getDelovodnikModel },
 };

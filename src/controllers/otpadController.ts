@@ -49,8 +49,7 @@ const getAllJciController = async (req: Request, res: Response, next: NextFuncti
     }
 
     const whereClause: Prisma.JciPodaciWhereInput = {
-      AND: andConditions.length > 0 ? andConditions : undefined,
-      OR: orConditions.length > 0 ? orConditions : undefined,
+      AND: [...andConditions, orConditions.length > 0 ? { OR: orConditions } : {}],
     };
 
     const jciData = await otpadModel.jci.getAllJci({
@@ -101,8 +100,7 @@ const getAllJciCountController = async (req: Request, res: Response, next: NextF
     }
 
     const whereClause: Prisma.JciPodaciWhereInput = {
-      AND: andConditions.length > 0 ? andConditions : undefined,
-      OR: orConditions.length > 0 ? orConditions : undefined,
+      AND: [...andConditions, orConditions.length > 0 ? { OR: orConditions } : {}],
     };
 
     const jciCount = await otpadModel.jci.getAllJciCount({ whereClause });
@@ -222,7 +220,7 @@ const getAllVrsteOtpadaController = async (req: Request, res: Response, next: Ne
     const andConditions: Prisma.VrsteOtpadaWhereInput[] = [];
     const orConditions: Prisma.VrsteOtpadaWhereInput[] = [];
 
-    const filterKeys = [""];
+    const filterKeys: string[] = [];
     const searchKeys = ["vrstaOtpada"];
 
     if (filters) {
@@ -248,8 +246,7 @@ const getAllVrsteOtpadaController = async (req: Request, res: Response, next: Ne
     }
 
     const whereClause: Prisma.VrsteOtpadaWhereInput = {
-      AND: andConditions.length > 0 ? andConditions : undefined,
-      OR: orConditions.length > 0 ? orConditions : undefined,
+      AND: [...andConditions, orConditions.length > 0 ? { OR: orConditions } : {}],
     };
 
     const vrsteOtpadaData = await otpadModel.vrsteOtpada.getAllVrsteOtpada({
@@ -274,7 +271,7 @@ const getAllVrsteOtpadaCountController = async (req: Request, res: Response, nex
     const andConditions: Prisma.VrsteOtpadaWhereInput[] = [];
     const orConditions: Prisma.VrsteOtpadaWhereInput[] = [];
 
-    const filterKeys = [""];
+    const filterKeys: string[] = [];
     const searchKeys = ["vrstaOtpada"];
 
     if (filters) {
@@ -300,8 +297,7 @@ const getAllVrsteOtpadaCountController = async (req: Request, res: Response, nex
     }
 
     const whereClause: Prisma.VrsteOtpadaWhereInput = {
-      AND: andConditions.length > 0 ? andConditions : undefined,
-      OR: orConditions.length > 0 ? orConditions : undefined,
+      AND: [...andConditions, orConditions.length > 0 ? { OR: orConditions } : {}],
     };
 
     const vrsteOtpadaCount = await otpadModel.vrsteOtpada.getAllVrsteOtpadaCount({ whereClause });
@@ -395,8 +391,8 @@ const getAllProizvodiController = async (req: Request, res: Response, next: Next
 
     const orderBy = sortBy ? { [sortBy]: sortOrder || "desc" } : { ["id"]: sortOrder || "desc" };
 
-    const andConditions: Prisma.JciProizvodiWhereInput[] = [];
-    const orConditions: Prisma.JciProizvodiWhereInput[] = [];
+    const andConditions: Prisma.ProizvodiWhereInput[] = [];
+    const orConditions: Prisma.ProizvodiWhereInput[] = [];
 
     const filterKeys: string[] = [];
     const searchKeys = ["proizvod"];
@@ -423,9 +419,8 @@ const getAllProizvodiController = async (req: Request, res: Response, next: Next
       );
     }
 
-    const whereClause: Prisma.JciProizvodiWhereInput = {
-      AND: andConditions.length > 0 ? andConditions : undefined,
-      OR: orConditions.length > 0 ? orConditions : undefined,
+    const whereClause: Prisma.ProizvodiWhereInput = {
+      AND: [...andConditions, orConditions.length > 0 ? { OR: orConditions } : {}],
     };
 
     const proizvodiData = await otpadModel.proizvodi.getAllProizvodi({
@@ -447,8 +442,8 @@ const getAllProizvodiCountController = async (req: Request, res: Response, next:
 
     const { search, filters } = queryParams;
 
-    const andConditions: Prisma.JciProizvodiWhereInput[] = [];
-    const orConditions: Prisma.JciProizvodiWhereInput[] = [];
+    const andConditions: Prisma.ProizvodiWhereInput[] = [];
+    const orConditions: Prisma.ProizvodiWhereInput[] = [];
 
     const filterKeys: string[] = [];
     const searchKeys = ["proizvod"];
@@ -475,9 +470,8 @@ const getAllProizvodiCountController = async (req: Request, res: Response, next:
       );
     }
 
-    const whereClause: Prisma.JciProizvodiWhereInput = {
-      AND: andConditions.length > 0 ? andConditions : undefined,
-      OR: orConditions.length > 0 ? orConditions : undefined,
+    const whereClause: Prisma.ProizvodiWhereInput = {
+      AND: [...andConditions, orConditions.length > 0 ? { OR: orConditions } : {}],
     };
 
     const proizvodiCount = await otpadModel.proizvodi.getAllProizvodiCount({ whereClause });
@@ -498,7 +492,7 @@ const getProizvodController = async (req: Request, res: Response, next: NextFunc
     const proizvodData = await otpadModel.proizvodi.getProizvod(id);
 
     if (!proizvodData) {
-      return res.status(404).json({ message: "JCI not found" });
+      return res.status(404).json({ message: "Proizvod not found" });
     }
 
     return res.status(200).json({ data: proizvodData });
@@ -533,47 +527,80 @@ const createProizvodController = async (req: Request, res: Response, next: NextF
   }
 };
 
-const updateJciController = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+const updateProizvodController = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
   try {
     const id: number = parseInt(req.params.id);
 
     if (isNaN(id)) {
-      return res.status(400).json({ message: "Invalid JCI ID" });
+      return res.status(400).json({ message: "Invalid Proizvod ID" });
     }
 
-    const parsedJci = JciPodaciSchema.omit({ id: true }).parse(req.body);
+    const parsedProizvod = JciProizvodiSchema.omit({ id: true }).parse(req.body);
 
-    const prismaParsedJci: Prisma.JciPodaciUpdateInput = {
-      ...parsedJci,
-      files: parsedJci.files ?? Prisma.JsonNull,
-      jciProizvodi: {
-        deleteMany: {}, // delete all existing jciProizvodi and replace them
-        create: parsedJci.jciProizvodi.map((jp) => ({
-          kolicina: jp.kolicina,
-          proizvod: { connect: { id: jp.proizvod.id } },
+    const prismaParsedProizvod: Prisma.ProizvodiUpdateInput = {
+      ...parsedProizvod,
+      ProizvodMasaOtpada: {
+        deleteMany: {},
+        create: parsedProizvod.ProizvodMasaOtpada.map((proizvodMasaOtpada) => ({
+          masa: proizvodMasaOtpada.masa,
+          VrstaOtpada: {
+            connect: { id: proizvodMasaOtpada.VrstaOtpada.id },
+          },
         })),
       },
     };
 
-    const updatedJci = await otpadModel.jci.updateJci(id, prismaParsedJci);
+    const updatedProizvod = await otpadModel.proizvodi.updateProizvod(id, prismaParsedProizvod);
 
-    return res.status(200).json({ message: "JCI updated", data: updatedJci });
+    return res.status(200).json({ message: "Proizvod updated", data: updatedProizvod });
   } catch (err) {
     next(err);
   }
 };
 
-const deleteJciController = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+const deleteProizvodController = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
   try {
     const id = parseInt(req.params.id);
 
     if (isNaN(id)) {
-      return res.status(400).json({ message: "Invalid JCI ID" });
+      return res.status(400).json({ message: "Invalid Proizvod ID" });
     }
 
-    const deletedJci = await otpadModel.jci.deleteJci(id);
+    const deletedProizvod = await otpadModel.proizvodi.deleteProizvod(id);
 
-    return res.status(200).json({ message: "JCI deleted", data: deletedJci });
+    return res.status(200).json({ message: "Proizvod deleted", data: deletedProizvod });
+  } catch (err) {
+    next(err);
+  }
+};
+
+//Delovodnik controller
+
+const getDelovodnikController = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const queryParams = queryParamsSchema.parse(req?.query);
+
+    const { search, filters } = queryParams;
+
+    const whereClauses: Prisma.Sql[] = [];
+
+    if (search) {
+      whereClauses.push(Prisma.sql`brojJci ILIKE ${"%" + search + "%"}`);
+    }
+
+    if (filters?.zemlja) {
+      whereClauses.push(Prisma.sql`zemlja = ${filters.zemlja}`);
+    }
+
+    if (filters?.operacija) {
+      whereClauses.push(Prisma.sql`operacija = ${filters.operacija}`);
+    }
+
+    const whereSQL = whereClauses.length > 0 ? Prisma.sql`WHERE ${Prisma.join(whereClauses, " AND ")}` : Prisma.sql``;
+
+    const delovodnikData = await otpadModel.delovodnik.getDelovodnikModel({ whereSQL });
+
+    return res.status(200).json({ data: delovodnikData });
   } catch (err) {
     next(err);
   }
@@ -595,5 +622,16 @@ export default {
     createVrstaOtpadaController,
     updateVrstaOtpadaController,
     deleteVrstaOtpadaController,
+  },
+  proizvodi: {
+    getAllProizvodiController,
+    getAllProizvodiCountController,
+    getProizvodController,
+    createProizvodController,
+    updateProizvodController,
+    deleteProizvodController,
+  },
+  delovodnik: {
+    getDelovodnikController,
   },
 };

@@ -48,8 +48,7 @@ const getAllPorudzbineController = async (req: Request, res: Response, next: Nex
     }
 
     const whereClause: Prisma.PorudzbineWhereInput = {
-      AND: andConditions.length > 0 ? andConditions : undefined,
-      OR: orConditions.length > 0 ? orConditions : undefined,
+      AND: [...andConditions, orConditions.length > 0 ? { OR: orConditions } : {}],
     };
 
     const porudzbineData = await nabavkeModel.porudzbine.getAllPorudzbine({
@@ -100,8 +99,7 @@ const getAllPorudzbineCountController = async (req: Request, res: Response, next
     }
 
     const whereClause = {
-      AND: andConditions.length > 0 ? andConditions : undefined,
-      OR: orConditions.length > 0 ? orConditions : undefined,
+      AND: [...andConditions, orConditions.length > 0 ? { OR: orConditions } : {}],
     };
 
     const porudzbineCount = await nabavkeModel.porudzbine.getAllPorudzbineCount({ whereClause });
@@ -240,8 +238,7 @@ const getAllProizvodiController = async (req: Request, res: Response, next: Next
     }
 
     const whereClause: Prisma.ProizvodiWhereInput = {
-      AND: andConditions.length > 0 ? andConditions : undefined,
-      OR: orConditions.length > 0 ? orConditions : undefined,
+      AND: [...andConditions, orConditions.length > 0 ? { OR: orConditions } : {}],
     };
 
     const proizvodiData = await nabavkeModel.proizvodi.getAllProizvodi({
@@ -292,8 +289,7 @@ const getAllProizvodiCountController = async (req: Request, res: Response, next:
     }
 
     const whereClause = {
-      AND: andConditions.length > 0 ? andConditions : undefined,
-      OR: orConditions.length > 0 ? orConditions : undefined,
+      AND: [...andConditions, orConditions.length > 0 ? { OR: orConditions } : {}],
     };
 
     const proizvodiCount = await nabavkeModel.proizvodi.getAllProizvodiCount({ whereClause });

@@ -20,4 +20,15 @@ router.post("/vrste-otpada", otpadController.vrsteOtpada.createVrstaOtpadaContro
 router.put("/vrste-otpada/:id", otpadController.vrsteOtpada.updateVrstaOtpadaController);
 router.delete("/vrste-otpada/:id", otpadController.vrsteOtpada.deleteVrstaOtpadaController);
 
+//Proizvodi routes
+router.get("/proizvodi", otpadController.proizvodi.getAllProizvodiController);
+router.get("/proizvodi/count", otpadController.proizvodi.getAllProizvodiCountController);
+router.get("/proizvodi/:id", otpadController.proizvodi.getProizvodController);
+router.post("/proizvodi", otpadController.proizvodi.createProizvodController);
+router.put("/proizvodi/:id", otpadController.proizvodi.updateProizvodController);
+router.delete("/proizvodi/:id", otpadController.proizvodi.deleteProizvodController);
+
+// Delovodnik routes
+router.get("/delovodnik", otpadController.delovodnik.getDelovodnikController);
+
 export default router;

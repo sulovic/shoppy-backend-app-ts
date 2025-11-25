@@ -47,8 +47,7 @@ const getAllReklamacijeController = async (req: Request, res: Response, next: Ne
     }
 
     const whereClause: Prisma.ReklamacijeWhereInput = {
-      AND: andConditions.length > 0 ? andConditions : undefined,
-      OR: orConditions.length > 0 ? orConditions : undefined,
+      AND: [...andConditions, orConditions.length > 0 ? { OR: orConditions } : {}],
     };
 
     const reklamacijeData = await reklamacijeModel.getAllReklamacije({
@@ -99,8 +98,7 @@ const getAllReklamacijeCountController = async (req: Request, res: Response, nex
     }
 
     const whereClause = {
-      AND: andConditions.length > 0 ? andConditions : undefined,
-      OR: orConditions.length > 0 ? orConditions : undefined,
+      AND: [...andConditions, orConditions.length > 0 ? { OR: orConditions } : {}],
     };
 
     const reklamacijeCount = await reklamacijeModel.getAllReklamacijeCount({ whereClause });
