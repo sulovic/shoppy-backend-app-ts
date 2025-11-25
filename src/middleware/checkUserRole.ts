@@ -20,6 +20,7 @@ const checkUserRole = async (req: RequestWithAuth, res: Response, next: NextFunc
       .split("?")[0]
       .split("/")
       .filter((s) => s !== "count") // Ignore count
+      .filter((s) => Number.isNaN(parseInt(s))) // Ignore numbers for GET by ID, PUT and DELETE
       .filter(Boolean);
 
     let current: any = priviledgesConfig;

@@ -129,11 +129,14 @@ const getAllProizvodi = async ({ whereClause, orderBy, take, skip }: { whereClau
     take: take,
     skip: skip,
     select: {
+      id: true,
+      proizvod: true,
       ProizvodMasaOtpada: {
         select: {
           masa: true,
           VrstaOtpada: {
             select: {
+              id: true,
               vrstaOtpada: true,
             },
           },
@@ -155,6 +158,8 @@ const getProizvod = async (id: number) => {
       id,
     },
     select: {
+      id: true,
+      proizvod: true,
       ProizvodMasaOtpada: {
         select: {
           masa: true,
@@ -174,6 +179,8 @@ const createProizvod = async (proizvod: Prisma.ProizvodiCreateInput) => {
   return await prisma.proizvodi.create({
     data: proizvod,
     select: {
+      id: true,
+      proizvod: true,
       ProizvodMasaOtpada: {
         select: {
           masa: true,
@@ -196,6 +203,8 @@ const updateProizvod = async (id: number, proizvod: Prisma.ProizvodiUpdateInput)
     },
     data: proizvod,
     select: {
+      id: true,
+      proizvod: true,
       ProizvodMasaOtpada: {
         select: {
           masa: true,
@@ -217,6 +226,8 @@ const deleteProizvod = async (id: number) => {
       id,
     },
     select: {
+      id: true,
+      proizvod: true,
       ProizvodMasaOtpada: {
         select: {
           masa: true,

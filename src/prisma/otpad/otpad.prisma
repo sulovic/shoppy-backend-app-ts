@@ -46,7 +46,7 @@ model ProizvodMasaOtpada {
   masa          Float
   proizvodId    Int
   vrstaOtpadaId Int
-  Proizvod      Proizvodi   @relation(fields: [proizvodId], references: [id])
+  Proizvod      Proizvodi   @relation(fields: [proizvodId], references: [id], onDelete: Cascade)
   VrstaOtpada   VrsteOtpada @relation(fields: [vrstaOtpadaId], references: [id])
 }
 
