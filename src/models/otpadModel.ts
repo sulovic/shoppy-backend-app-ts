@@ -308,15 +308,23 @@ const deleteVrstaOtpada = async (id: number) => {
 
 const getDelovodnikModel = async ({ whereSQL }: { whereSQL: Prisma.Sql }) => {
   const query = Prisma.sql`
-          SELECT datum, zemlja, operacija, brojJci, sum(kolicina*masa) AS ukupno, vrstaOtpada FROM JciPodaci 
-          JOIN JciProizvodi ON JciPodaci.id = JciProizvodi.jciPodaciId 
-          JOIN Proizvodi ON JciProizvodi.proizvodId = Proizvodi.id 
-          JOIN ProizvodMasaOtpada ON Proizvodi.id = ProizvodMasaOtpada.proizvodiId
-          JOIN VrsteOtpada ON ProizvodMasaOtpada.vrsteOtpadaId = VrsteOtpada.id 
-          ${whereSQL}
-          GROUP BY brojJci, vrstaOtpada
-          ORDER BY datum DESC
-          `;
+  SELECT 
+    "datum",
+    "zemlja",
+    SUM("kolicina" * "masa") AS "ukupno",
+    STRING_AGG(DISTINCT "operacija"::text, ', ') AS "operacije",
+    STRING_AGG(DISTINCT "brojJci"::text, ', ') AS "brojeviJci",
+    STRING_AGG(DISTINCT "vrstaOtpada"::text, ', ') AS "vrsteOtpada"
+  FROM "JciPodaci"
+  JOIN "JciProizvodi" ON "JciPodaci"."id" = "JciProizvodi"."jciPodaciId"
+  JOIN "Proizvodi" ON "JciProizvodi"."proizvodId" = "Proizvodi"."id"
+  JOIN "ProizvodMasaOtpada" ON "Proizvodi"."id" = "ProizvodMasaOtpada"."proizvodId"
+  JOIN "VrsteOtpada" ON "ProizvodMasaOtpada"."vrstaOtpadaId" = "VrsteOtpada"."id"
+  ${whereSQL}
+  GROUP BY "datum", "zemlja"
+  ORDER BY "datum" DESC;
+`;
+
   return await prisma.$queryRaw(query);
 };
 

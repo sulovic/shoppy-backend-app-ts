@@ -582,18 +582,28 @@ const getDelovodnikController = async (req: Request, res: Response, next: NextFu
 
     const { search, filters } = queryParams;
 
+    console.log(filters);
+
     const whereClauses: Prisma.Sql[] = [];
 
     if (search) {
-      whereClauses.push(Prisma.sql`brojJci ILIKE ${"%" + search + "%"}`);
+      whereClauses.push(Prisma.sql`"brojJci" ILIKE ${"%" + search + "%"}`);
+    }
+
+    if (filters?.godina) {
+      whereClauses.push(Prisma.sql`EXTRACT(YEAR FROM "datum") = ${filters.godina}`);
     }
 
     if (filters?.zemlja) {
-      whereClauses.push(Prisma.sql`zemlja = ${filters.zemlja}`);
+      whereClauses.push(Prisma.sql`"zemlja" = ${filters.zemlja}`);
     }
 
     if (filters?.operacija) {
-      whereClauses.push(Prisma.sql`operacija = ${filters.operacija}`);
+      whereClauses.push(Prisma.sql`"operacija" = ${filters.operacija}`);
+    }
+
+    if (filters?.vrstaOtpada) {
+      whereClauses.push(Prisma.sql`"vrstaOtpada" = ${filters.vrstaOtpada}`);
     }
 
     const whereSQL = whereClauses.length > 0 ? Prisma.sql`WHERE ${Prisma.join(whereClauses, " AND ")}` : Prisma.sql``;

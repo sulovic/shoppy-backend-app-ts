@@ -43,6 +43,15 @@ const priviledgesConfig = {
       PUT: 1000,
       DELETE: 5000,
     },
+    proizvodi: {
+      GET: 1000,
+      POST: 1000,
+      PUT: 1000,
+      DELETE: 5000,
+    },
+    delovodnik: {
+      GET: 1000,
+    },
   },
   nabavke: {
     proizvodi: {
