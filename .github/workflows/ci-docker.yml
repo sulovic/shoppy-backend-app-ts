@@ -46,7 +46,8 @@ jobs:
           cache: "npm"
 
       # 3. Install dependencies
-      - name: Install dependencies
+      - name: Install dependencies and prisma client
+        run: npm run prisma:generate:all
         run: npm ci --include=dev
 
       # 4. Run typecheck and lint
