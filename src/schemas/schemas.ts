@@ -11,13 +11,10 @@ export const envSchema = z.object({
   REFRESH_TOKEN_SECRET: z.string().min(10),
   GOOGLE_CLIENT_ID: z.string().nullable().optional(),
   GOOGLE_CLIENT_SECRET: z.string().nullable().optional(),
-  GOOGLE_CALLBACK_URL: z.string().nullable().optional(),
   GITHUB_CLIENT_ID: z.string().nullable().optional(),
   GITHUB_CLIENT_SECRET: z.string().nullable().optional(),
-  GITHUB_CALLBACK_URL: z.string().nullable().optional(),
   FACEBOOK_CLIENT_ID: z.string().nullable().optional(),
   FACEBOOK_CLIENT_SECRET: z.string().nullable().optional(),
-  FACEBOOK_CALLBACK_URL: z.string().nullable().optional(),
 });
 
 export const userSensitiveDataSchema = z.object({
