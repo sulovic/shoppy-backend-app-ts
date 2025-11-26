@@ -1,6 +1,6 @@
-import otpadModel from "../models/otpadModel.ts";
+import otpadModel from "../models/otpadModel.js";
 import type { Request, Response, NextFunction } from "express";
-import { queryParamsSchema, JciPodaciSchema, VrstaOtpadaSchema, JciProizvodiSchema } from "../schemas/schemas.ts";
+import { queryParamsSchema, JciPodaciSchema, VrstaOtpadaSchema, JciProizvodiSchema } from "../schemas/schemas.js";
 import { Prisma } from "../../prisma_clients/otpad/client/client.js";
 
 // JCI Controllers

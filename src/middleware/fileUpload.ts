@@ -1,6 +1,6 @@
 import multer from "multer";
 import path from "path";
-import filesUploadConfig from "../config/filesUploadConfig.ts";
+import filesUploadConfig from "../config/filesUploadConfig.js";
 import type { Request, Response, NextFunction } from "express";
 import { fileURLToPath } from "url";
 import fs from "fs/promises";

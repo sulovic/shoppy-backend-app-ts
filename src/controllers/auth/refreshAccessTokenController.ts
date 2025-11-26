@@ -1,7 +1,7 @@
-import userModel from "../../models/usersModel.ts";
+import userModel from "../../models/usersModel.js";
 import type { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import { generateAccessToken } from "../../utils/generateTokens.ts";
+import { generateAccessToken } from "../../utils/generateTokens.js";
 
 const refreshAccessTokenController = async (req: Request, res: Response, next: NextFunction) => {
   try {

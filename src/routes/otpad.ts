@@ -1,5 +1,5 @@
 import express from "express";
-import otpadController from "../controllers/otpadController.ts";
+import otpadController from "../controllers/otpadController.js";
 
 const router = express.Router();
 

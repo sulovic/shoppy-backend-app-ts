@@ -1,8 +1,8 @@
 // controllers/oauth/facebookController.ts
 import type { Request, Response, NextFunction } from "express";
-import userModel from "../../models/usersModel.ts";
-import { generateAccessToken, generateRefreshToken } from "../../utils/generateTokens.ts";
-import oAuthProvidersConfig from "../../config/oAuthProviders.ts";
+import userModel from "../../models/usersModel.js";
+import { generateAccessToken, generateRefreshToken } from "../../utils/generateTokens.js";
+import oAuthProvidersConfig from "../../config/oAuthProviders.js";
 
 const config = oAuthProvidersConfig.facebook;
 

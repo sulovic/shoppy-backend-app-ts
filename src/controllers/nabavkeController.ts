@@ -1,6 +1,6 @@
-import nabavkeModel from "../models/nabavkeModel.ts";
+import nabavkeModel from "../models/nabavkeModel.js";
 import type { Request, Response, NextFunction } from "express";
-import { queryParamsSchema, PorudzbinaSchema, NabavkeProizvodSchema } from "../schemas/schemas.ts";
+import { queryParamsSchema, PorudzbinaSchema, NabavkeProizvodSchema } from"../schemas/schemas.js";
 import { Prisma } from "../../prisma_clients/nabavke/client/client.js";
 
 // Porudzbine controllers

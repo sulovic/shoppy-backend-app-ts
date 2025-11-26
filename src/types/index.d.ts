@@ -12,7 +12,7 @@ import {
   VrstaOtpadaSchema,
   JciProizvodiSchema,
   JciPodaciSchema,
-} from "../schemas/schemas.ts";
+} from "../schemas/schemas.js";
 
 declare global {
   type QueryParams = z.infer<typeof queryParamsSchema>;

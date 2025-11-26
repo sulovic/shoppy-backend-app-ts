@@ -1,6 +1,6 @@
-import reklamacijeModel from "../models/reklamacijeModel.ts";
+import reklamacijeModel from "../models/reklamacijeModel.js";
 import type { Request, Response, NextFunction } from "express";
-import { queryParamsSchema, reklamacijaSchema } from "../schemas/schemas.ts";
+import { queryParamsSchema, reklamacijaSchema } from "../schemas/schemas.js";
 import { Prisma } from "../../prisma_clients/reklamacije/client/client.js";
 
 const getAllReklamacijeController = async (req: Request, res: Response, next: NextFunction) => {

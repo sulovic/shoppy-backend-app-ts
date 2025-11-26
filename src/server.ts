@@ -2,28 +2,28 @@ import "dotenv/config";
 import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import corsConfig from "./config/cors.ts";
-import { envSchema } from "./schemas/schemas.ts";
-import rateLimiter from "./middleware/rateLimiter.ts";
-//import { requestLogger, errorLogger } from "./middleware/loggerMiddleware.ts";
-import errorHandler from "./middleware/errorHandler.ts";
-import verifyAccessToken from "./middleware/verifyAccessToken.ts";
-import checkUserRole from "./middleware/checkUserRole.ts";
+import corsConfig from "./config/cors.js";
+import { envSchema } from "./schemas/schemas.js";
+import rateLimiter from "./middleware/rateLimiter.js";
+//import { requestLogger, errorLogger } from"./middleware/loggerMiddleware.js";
+import errorHandler from "./middleware/errorHandler.js";
+import verifyAccessToken from "./middleware/verifyAccessToken.js";
+import checkUserRole from "./middleware/checkUserRole.js";
 
 // Routers
-import loginRouter from "./routes/auth/login.ts";
-import logoutRouter from "./routes/auth/logout.ts";
-import refreshRouter from "./routes/auth/refresh.ts";
-import googleLoginRouter from "./routes/auth/googleLogin.ts";
-import githubLoginRouter from "./routes/auth/githubLogin.ts";
-import facebookLoginRouter from "./routes/auth/facebookLogin.ts";
+import loginRouter from "./routes/auth/login.js";
+import logoutRouter from "./routes/auth/logout.js";
+import refreshRouter from "./routes/auth/refresh.js";
+import googleLoginRouter from "./routes/auth/googleLogin.js";
+import githubLoginRouter from "./routes/auth/githubLogin.js";
+import facebookLoginRouter from "./routes/auth/facebookLogin.js";
 
-import userRouter from "./routes/users.ts";
-import reklamacijeRouter from "./routes/reklamacije.ts";
-import reklamacijePublicRouter from "./routes/reklamacijePublic.ts";
-import uploadsRouter from "./routes/uploads.ts";
-import otpadRouter from "./routes/otpad.ts";
-import nabavkeRouter from "./routes/nabavke.ts";
+import userRouter from "./routes/users.js";
+import reklamacijeRouter from "./routes/reklamacije.js";
+import reklamacijePublicRouter from "./routes/reklamacijePublic.js";
+import uploadsRouter from "./routes/uploads.js";
+import otpadRouter from "./routes/otpad.js";
+import nabavkeRouter from "./routes/nabavke.js";
 
 envSchema.parse(process.env);
 

@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
-import priviledgesConfig from "../config/priviledges.ts";
-import { userDataSchema } from "../schemas/schemas.ts";
+import priviledgesConfig from "../config/priviledges.js";
+import { userDataSchema } from "../schemas/schemas.js";
 
 interface RequestWithAuth extends Request {
   auth?: UserData;

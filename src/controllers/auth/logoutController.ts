@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
-import userModel from "../../models/usersModel.ts";
+import userModel from "../../models/usersModel.js";
 import jwt from "jsonwebtoken";
 
 const logoutController = async (req: Request, res: Response, next: NextFunction) => {

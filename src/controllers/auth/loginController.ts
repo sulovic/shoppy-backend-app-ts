@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
 import bcrypt from "bcrypt";
-import userModel from "../../models/usersModel.ts";
-import { generateAccessToken, generateRefreshToken } from "../../utils/generateTokens.ts";
+import userModel from "../../models/usersModel.js";
+import { generateAccessToken, generateRefreshToken } from "../../utils/generateTokens.js";
 
 const loginController = async (req: Request, res: Response, next: NextFunction) => {
   try {

@@ -4,13 +4,15 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "build": "tsc",
+    "build": "npm run typecheck && esbuild \"src/**/*.ts\" --outdir=dist --outbase=src --format=esm --platform=node --target=node20 --sourcemap",
     "start": "node dist/server.js",
-    "dev": "nodemon --watch src --ext ts --exec \"ts-node --esm src/server.ts\"",
+    "dev:esbuild": "esbuild \"src/**/*.ts\" --outdir=dist --outbase=src --format=esm --platform=node --target=node20 --sourcemap --watch --log-level=info",
+    "dev:watch": "concurrently \"npm:dev:esbuild\" \"nodemon --watch dist/server.js --ext js --exec \\\"node --enable-source-maps dist/server.js\\\"\"",
     "typecheck": "tsc --noEmit",
     "lint": "eslint 'src/**/*.{ts,js}'",
     "lint:fix": "eslint 'src/**/*.{ts,js}' --fix",
-    "prisma:generate:all": "ts-node prisma-generate.ts",
+    "prisma:generate:all": "node prisma-generate.js",
+    "dev": "npm run dev:watch",
     "postinstall": "npm run prisma:generate:all"
   },
   "dependencies": {
@@ -40,10 +42,10 @@
     "@types/node": "^24.10.1",
     "@typescript-eslint/eslint-plugin": "^8.48.0",
     "@typescript-eslint/parser": "^8.48.0",
+    "concurrently": "^8.2.0",
+    "esbuild": "^0.19.12",
     "eslint": "^9.39.1",
     "nodemon": "^3.1.11",
-    "ts-node": "^10.9.2",
-    "ts-node-dev": "^2.0.0",
     "typescript": "^5.9.3"
   }
 }

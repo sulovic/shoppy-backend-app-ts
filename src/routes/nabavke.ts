@@ -1,5 +1,5 @@
 import express from "express";
-import nabavkeController from "../controllers/nabavkeController.ts";
+import nabavkeController from "../controllers/nabavkeController.js";
 
 const router = express.Router();
 

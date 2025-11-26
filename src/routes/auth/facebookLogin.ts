@@ -1,5 +1,5 @@
 import express from "express";
-import oAuthFacebookController from "../../controllers/auth/oAuthFacebookController.ts";
+import oAuthFacebookController from "../../controllers/auth/oAuthFacebookController.js";
 const router = express.Router();
 
 router.get("/", oAuthFacebookController.redirectToFacebook);
