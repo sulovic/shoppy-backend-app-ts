@@ -12,8 +12,7 @@
     "lint": "eslint 'src/**/*.{ts,js}'",
     "lint:fix": "eslint 'src/**/*.{ts,js}' --fix",
     "prisma:generate:all": "node prisma-generate.js",
-    "dev": "npm run dev:watch",
-    "postinstall": "npm run prisma:generate:all"
+    "dev": "npm run dev:watch"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.0.0",

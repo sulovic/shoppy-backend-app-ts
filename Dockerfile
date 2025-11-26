@@ -51,7 +51,10 @@ RUN npm ci --omit=dev
 COPY . .
 
 # Build the TypeScript project
+RUN npm run prisma:generate:all
 RUN npm run build
+
+
 
 # Expose port (same as your app)
 EXPOSE 5000
