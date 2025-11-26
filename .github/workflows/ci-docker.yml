@@ -71,22 +71,25 @@ jobs:
       # 7. Build Docker image
       - name: Build Docker image
         run: |
-          docker build \
-          --build-arg PORT=${{ secrets.PORT }} \
-          --build-arg DATABASE_USERS_URL=${{ secrets.DATABASE_USERS_URL }} \
-          --build-arg DATABASE_REKLAMACIJE_URL=${{ secrets.DATABASE_REKLAMACIJE_URL }} \
-          --build-arg DATABASE_OTPAD_URL=${{ secrets.DATABASE_OTPAD_URL }} \
-          --build-arg DATABASE_ODSUSTVA_URL=${{ secrets.DATABASE_ODSUSTVA_URL }} \
-          --build-arg DATABASE_NABAVKE_URL=${{ secrets.DATABASE_NABAVKE_URL }} \
-          --build-arg ACCESS_TOKEN_SECRET=${{ secrets.ACCESS_TOKEN_SECRET }} \
-          --build-arg REFRESH_TOKEN_SECRET=${{ secrets.REFRESH_TOKEN_SECRET }} \
-          --build-arg GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }} \
-          --build-arg GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }} \
-          --build-arg GITHUB_CLIENT_ID=${{ secrets.GITHUB_CLIENT_ID }} \
-          --build-arg GITHUB_CLIENT_SECRET=${{ secrets.GITHUB_CLIENT_SECRET }} \
-          --build-arg FACEBOOK_CLIENT_ID=${{ secrets.FACEBOOK_CLIENT_ID }} \
-          --build-arg FACEBOOK_CLIENT_SECRET=${{ secrets.FACEBOOK_CLIENT_SECRET }} \
-          -t $IMAGE_NAME:latest .
+          printf "%s\n" \
+            "DATABASE_USERS_URL=${{ secrets.DATABASE_USERS_URL }}" \
+            "DATABASE_REKLAMACIJE_URL=${{ secrets.DATABASE_REKLAMACIJE_URL }}" \
+            "DATABASE_OTPAD_URL=${{ secrets.DATABASE_OTPAD_URL }}" \
+            "DATABASE_ODSUSTVA_URL=${{ secrets.DATABASE_ODSUSTVA_URL }}" \
+            "DATABASE_NABAVKE_URL=${{ secrets.DATABASE_NABAVKE_URL }}" \
+            "ACCESS_TOKEN_SECRET=${{ secrets.ACCESS_TOKEN_SECRET }}" \
+            "REFRESH_TOKEN_SECRET=${{ secrets.REFRESH_TOKEN_SECRET }}" \
+            "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" \
+            "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" \
+            "GITHUB_CLIENT_ID=${{ secrets.GITHUB_CLIENT_ID }}" \
+            "GITHUB_CLIENT_SECRET=${{ secrets.GITHUB_CLIENT_SECRET }}" \
+            "FACEBOOK_CLIENT_ID=${{ secrets.FACEBOOK_CLIENT_ID }}" \
+            "FACEBOOK_CLIENT_SECRET=${{ secrets.FACEBOOK_CLIENT_SECRET }}" \
+            > .env.build
+
+          DOCKER_BUILDKIT=1 docker build \
+            --secret id=envfile,src=.env.build \
+            -t $IMAGE_NAME:latest .
 
       # 8. Push Docker image to GHCR
       - name: Push Docker image

@@ -1,63 +1,48 @@
-# Use official Node.js 24 LTS slim image
-FROM node:24-slim
+# syntax=docker/dockerfile:1.4
 
-# Install PM2 globally
+##############################
+#       BUILDER STAGE
+##############################
+FROM node:24-slim AS builder
+
 RUN npm install -g pm2
 
-# Set working directory
 WORKDIR /usr/src/app
 
-# Build-time arguments
-ARG NODE_ENV=production
-ARG PORT
-ARG DATABASE_USERS_URL
-ARG DATABASE_REKLAMACIJE_URL
-ARG DATABASE_OTPAD_URL
-ARG DATABASE_ODSUSTVA_URL
-ARG DATABASE_NABAVKE_URL
-ARG ACCESS_TOKEN_SECRET
-ARG REFRESH_TOKEN_SECRET
-ARG GOOGLE_CLIENT_ID
-ARG GOOGLE_CLIENT_SECRET
-ARG GITHUB_CLIENT_ID
-ARG GITHUB_CLIENT_SECRET
-ARG FACEBOOK_CLIENT_ID
-ARG FACEBOOK_CLIENT_SECRET
-
-# Set runtime environment variables inside container
-ENV NODE_ENV=$NODE_ENV
-ENV PORT=$PORT
-ENV DATABASE_USERS_URL=$DATABASE_USERS_URL
-ENV DATABASE_REKLAMACIJE_URL=$DATABASE_REKLAMACIJE_URL
-ENV DATABASE_OTPAD_URL=$DATABASE_OTPAD_URL
-ENV DATABASE_ODSUSTVA_URL=$DATABASE_ODSUSTVA_URL
-ENV DATABASE_NABAVKE_URL=$DATABASE_NABAVKE_URL
-ENV ACCESS_TOKEN_SECRET=$ACCESS_TOKEN_SECRET
-ENV REFRESH_TOKEN_SECRET=$REFRESH_TOKEN_SECRET
-ENV GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID
-ENV GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET
-ENV GITHUB_CLIENT_ID=$GITHUB_CLIENT_ID
-ENV GITHUB_CLIENT_SECRET=$GITHUB_CLIENT_SECRET
-ENV FACEBOOK_CLIENT_ID=$FACEBOOK_CLIENT_ID
-ENV FACEBOOK_CLIENT_SECRET=$FACEBOOK_CLIENT_SECRET
-
-# Copy package.json & package-lock.json first (for caching)
+# Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci --omit=dev
+# Install ALL dependencies (dev needed for TS + Prisma)
+RUN npm ci
 
-# Copy the rest of the source
+# Copy source code
 COPY . .
 
-# Build the TypeScript project
-RUN npm run prisma:generate:all
-RUN npm run build
+# Use BuildKit secrets WITHOUT baking into image
+# Secrets are loaded into env only during this RUN step
+RUN --mount=type=secret,id=envfile \
+    set -a && . /run/secrets/envfile && set +a && \
+    npm run prisma:generate:all && \
+    npm run build
 
 
+##############################
+#     PRODUCTION STAGE
+##############################
+FROM node:24-slim AS prod
 
-# Expose port (same as your app)
+RUN npm install -g pm2
+
+WORKDIR /usr/src/app
+
+# Only install production deps
+COPY package*.json ./
+RUN npm ci --omit=dev
+
+# Copy built output
+COPY --from=builder /usr/src/app/dist ./dist
+
+# Runtime port (you can override with -p or env)
 EXPOSE 5000
 
-# Command to run the app
 CMD ["pm2-runtime", "./dist/server.js", "--name", "shoppy-apps-backend"]
