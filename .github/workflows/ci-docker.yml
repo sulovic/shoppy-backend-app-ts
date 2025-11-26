@@ -45,10 +45,11 @@ jobs:
           node-version: 24
           cache: "npm"
 
-      # 3. Install dependencies
+      # 3. Install dependencies and prisma client
       - name: Install dependencies and prisma client
-        run: npm run prisma:generate:all
-        run: npm ci --include=dev
+        run: |
+          npm ci --include=dev
+          npm run prisma:generate:all
 
       # 4. Run typecheck and lint
       - name: Typecheck & Lint
