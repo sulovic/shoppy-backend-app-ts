@@ -43,6 +43,9 @@ RUN npm ci --omit=dev
 COPY --from=builder /usr/src/app/dist ./dist
 
 # Runtime port (you can override with -p or env)
-EXPOSE 5000
+ARG PORT
+ENV PORT=$PORT
+
+EXPOSE $PORT
 
 CMD ["pm2-runtime", "./dist/server.js", "--name", "shoppy-apps-backend"]
