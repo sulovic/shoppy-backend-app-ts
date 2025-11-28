@@ -5,6 +5,9 @@
 ##############################
 FROM node:24-slim AS builder
 
+# Install openssl nedded by Prisma
+RUN apt-get update -y && apt-get install -y openssl libssl-dev
+
 RUN npm install -g pm2
 
 WORKDIR /usr/src/app
