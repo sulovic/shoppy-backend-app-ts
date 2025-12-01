@@ -122,7 +122,6 @@ jobs:
             docker run -d \
               --name shoppy-app-backend \
               --restart unless-stopped \
-              --network host \
               -e DATABASE_USERS_URL='${{ secrets.DATABASE_USERS_URL }}' \
               -e DATABASE_REKLAMACIJE_URL='${{ secrets.DATABASE_REKLAMACIJE_URL }}' \
               -e DATABASE_OTPAD_URL='${{ secrets.DATABASE_OTPAD_URL }}' \
