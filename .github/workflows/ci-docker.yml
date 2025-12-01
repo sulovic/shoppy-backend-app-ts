@@ -113,9 +113,9 @@ jobs:
 
       - name: Deploy container
         run: |
-          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} \
+          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "
             echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u sulovic --password-stdin && \
-            "docker pull $IMAGE_NAME:latest && \
+            docker pull $IMAGE_NAME:latest && \
             docker stop shoppy-app-backend || true && \
             docker rm shoppy-app-backend || true && \
             docker container prune -f && \
@@ -137,4 +137,5 @@ jobs:
               -e FACEBOOK_CLIENT_ID='${{ secrets.FACEBOOK_CLIENT_ID }}' \
               -e FACEBOOK_CLIENT_SECRET='${{ secrets.FACEBOOK_CLIENT_SECRET }}' \
               -e PORT='${{ secrets.PORT }}' \
-              $IMAGE_NAME:latest"
+              $IMAGE_NAME:latest
+          "
