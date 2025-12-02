@@ -5,7 +5,7 @@ import cors from "cors";
 import corsConfig from "./config/cors.js";
 import { envSchema } from "./schemas/schemas.js";
 import rateLimiter from "./middleware/rateLimiter.js";
-import { errorLogger } from "./middleware/loggerMiddleware.js";
+//import { errorLogger } from "./middleware/loggerMiddleware.js";
 import errorHandler from "./middleware/errorHandler.js";
 import verifyAccessToken from "./middleware/verifyAccessToken.js";
 import checkUserRole from "./middleware/checkUserRole.js";
@@ -45,15 +45,23 @@ app.use(rateLimiter(1, 100));
 
 // Loggers
 //app.use(requestLogger);
-app.use(errorLogger);
+//app.use(errorLogger);
 
 // Auth routes
-app.use("/auth/login", rateLimiter(3, 10), loginRouter);
+app.use(
+  "/auth/login",
+  (req, res, next) => {
+    console.log("Login body:", req.body, req.query);
+    next();
+  },
+  rateLimiter(3, 10),
+  loginRouter
+);
 app.use("/auth/logout", logoutRouter);
-app.use("/auth/refresh", refreshRouter);
-app.use("/auth/google", googleLoginRouter);
-app.use("/auth/github", githubLoginRouter);
-app.use("/auth/facebook", facebookLoginRouter);
+app.use("/auth/refresh", rateLimiter(3, 10), refreshRouter);
+app.use("/auth/google", rateLimiter(3, 10), googleLoginRouter);
+app.use("/auth/github", rateLimiter(3, 10), githubLoginRouter);
+app.use("/auth/facebook", rateLimiter(3, 10), facebookLoginRouter);
 
 // User routes
 app.use("/users", verifyAccessToken, checkUserRole, userRouter);
