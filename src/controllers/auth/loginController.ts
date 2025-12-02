@@ -6,6 +6,7 @@ import { generateAccessToken, generateRefreshToken } from "../../utils/generateT
 const loginController = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email, password }: { email: string; password?: string } = req.body;
+    console.log(req.body, req.query);
 
     if (!email || !password) {
       return res.status(400).json({ message: "Missing email or password" });
@@ -51,6 +52,7 @@ const loginController = async (req: Request, res: Response, next: NextFunction) 
       .status(200)
       .json({ message: "Login successful", accessToken });
   } catch (error) {
+    console.error(error);
     next(error);
   }
 };

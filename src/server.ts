@@ -48,15 +48,7 @@ app.use(rateLimiter(1, 100));
 //app.use(errorLogger);
 
 // Auth routes
-app.use(
-  "/auth/login",
-  (req, res, next) => {
-    console.log("Login body:", req.body, req.query);
-    next();
-  },
-  rateLimiter(3, 10),
-  loginRouter
-);
+app.use("/auth/login", rateLimiter(3, 10), loginRouter);
 app.use("/auth/logout", logoutRouter);
 app.use("/auth/refresh", rateLimiter(3, 10), refreshRouter);
 app.use("/auth/google", rateLimiter(3, 10), googleLoginRouter);
