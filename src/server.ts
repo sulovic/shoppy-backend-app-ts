@@ -5,7 +5,7 @@ import cors from "cors";
 import corsConfig from "./config/cors.js";
 import { envSchema } from "./schemas/schemas.js";
 import rateLimiter from "./middleware/rateLimiter.js";
-//import { errorLogger } from "./middleware/loggerMiddleware.js";
+import { errorLogger } from "./middleware/loggerMiddleware.js";
 import errorHandler from "./middleware/errorHandler.js";
 import verifyAccessToken from "./middleware/verifyAccessToken.js";
 import checkUserRole from "./middleware/checkUserRole.js";
@@ -45,7 +45,7 @@ app.use(rateLimiter(1, 100));
 
 // Loggers
 //app.use(requestLogger);
-//app.use(errorLogger);
+app.use(errorLogger);
 
 // Auth routes
 app.use("/auth/login", rateLimiter(3, 10), loginRouter);
