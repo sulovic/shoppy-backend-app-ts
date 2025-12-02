@@ -5,7 +5,7 @@ import cors from "cors";
 import corsConfig from "./config/cors.js";
 import { envSchema } from "./schemas/schemas.js";
 import rateLimiter from "./middleware/rateLimiter.js";
-//import { requestLogger, errorLogger } from"./middleware/loggerMiddleware.js";
+import { errorLogger } from "./middleware/loggerMiddleware.js";
 import errorHandler from "./middleware/errorHandler.js";
 import verifyAccessToken from "./middleware/verifyAccessToken.js";
 import checkUserRole from "./middleware/checkUserRole.js";
@@ -29,17 +29,23 @@ envSchema.parse(process.env);
 
 const app = express();
 
-const port = process.env.PORT || 3010;
+const port = process.env.PORT || 5777;
+
+// Nginx reverse proxy
+app.set("trust proxy", 1);
 
 app.use(cors(corsConfig as any));
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.set("query parser", "extended");
 app.use(cookieParser());
+
+// Rate limiter
 app.use(rateLimiter(1, 100));
 
+// Loggers
 //app.use(requestLogger);
-//app.use(errorLogger);
+app.use(errorLogger);
 
 // Auth routes
 app.use("/auth/login", rateLimiter(3, 10), loginRouter);
@@ -71,14 +77,6 @@ app.use("/uploads", verifyAccessToken, checkUserRole, uploadsRouter);
 
 app.use("/odsustva/evidencija", verifyAccessToken, require("./routes/odsustva/evidencija"));
 app.use("/odsustva/dodeljena", verifyAccessToken, require("./routes/odsustva/dodeljena"));
-
-// Evidencija Tokova otpada routes
-
-app.use("/otpad/vrste-otpada", verifyAccessToken, require("./routes/otpad/vrste"));
-app.use("/otpad/proizvodi", verifyAccessToken, require("./routes/otpad/proizvodi"));
-app.use("/otpad/evidencija", verifyAccessToken, require("./routes/otpad/evidencija"));
-app.use("/otpad/delovodnik", verifyAccessToken, require("./routes/otpad/delovodnik"));
-
 
 */
 
