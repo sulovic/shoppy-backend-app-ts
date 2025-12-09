@@ -11,7 +11,7 @@ const handleGoogleLogin = async (req: Request, res: Response, next: NextFunction
   try {
     // exchange code for access token
 
-    const { code } = req.query;
+    const { code, redirect_uri } = req.body;
     if (!code) return res.status(400).json({ message: "Missing code" });
 
     const tokenResponse = await fetch(config.tokenUrl, {
@@ -21,7 +21,7 @@ const handleGoogleLogin = async (req: Request, res: Response, next: NextFunction
         code: code as string,
         client_id: config.clientId,
         client_secret: config.clientSecret,
-        redirect_uri: `${req.protocol}://${req.get("host")}${config.redirectURL}`,
+        redirect_uri,
         grant_type: "authorization_code",
       }),
     });
