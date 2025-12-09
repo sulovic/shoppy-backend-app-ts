@@ -7,13 +7,7 @@ import jwt from "jsonwebtoken";
 
 const config = oAuthProvidersConfig.google;
 
-const redirectToGoogle = (req: Request, res: Response) => {
-  const redirectUri = `${req.protocol}://${req.get("host")}${config.redirectURL}`;
-  const url = `${config.authUrl}?client_id=${config.clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${encodeURIComponent(config.scope)}`;
-  res.redirect(url);
-};
-
-const handleGoogleCallback = async (req: Request, res: Response, next: NextFunction) => {
+const handleGoogleLogin = async (req: Request, res: Response, next: NextFunction) => {
   try {
     // exchange code for access token
 
@@ -31,6 +25,7 @@ const handleGoogleCallback = async (req: Request, res: Response, next: NextFunct
         grant_type: "authorization_code",
       }),
     });
+
     const tokenData = await tokenResponse.json();
     const idToken = tokenData.id_token;
 
@@ -72,4 +67,4 @@ const handleGoogleCallback = async (req: Request, res: Response, next: NextFunct
   }
 };
 
-export default { redirectToGoogle, handleGoogleCallback };
+export default { handleGoogleLogin };

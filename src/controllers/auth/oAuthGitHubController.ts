@@ -6,13 +6,7 @@ import oAuthProvidersConfig from "../../config/oAuthProviders.js";
 
 const config = oAuthProvidersConfig.github;
 
-const redirectToGitHub = (req: Request, res: Response) => {
-  const redirectUri = `${req.protocol}://${req.get("host")}${config.redirectURL}`;
-  const url = `${config.authUrl}?client_id=${config.clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(config.scope)}`;
-  res.redirect(url);
-};
-
-const handleGitHubCallback = async (req: Request, res: Response, next: NextFunction) => {
+const handleGithubLogin = async (req: Request, res: Response, next: NextFunction) => {
   try {
     // exchange code for access token
     const { code } = req.query;
@@ -76,4 +70,4 @@ const handleGitHubCallback = async (req: Request, res: Response, next: NextFunct
   }
 };
 
-export default { redirectToGitHub, handleGitHubCallback };
+export default { handleGithubLogin };

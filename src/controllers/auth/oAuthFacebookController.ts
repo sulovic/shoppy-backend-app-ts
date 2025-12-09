@@ -6,13 +6,7 @@ import oAuthProvidersConfig from "../../config/oAuthProviders.js";
 
 const config = oAuthProvidersConfig.facebook;
 
-const redirectToFacebook = (req: Request, res: Response) => {
-  const redirectUri = `${req.protocol}://${req.get("host")}${config.redirectURL}`;
-  const url = `${config.authUrl}?client_id=${config.clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(config.scope)}&response_type=code`;
-  res.redirect(url);
-};
-
-const handleFacebookCallback = async (req: Request, res: Response, next: NextFunction) => {
+const handleFacebookLogin = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { code } = req.query;
     if (!code) return res.status(400).json({ message: "Missing code" });
@@ -64,4 +58,4 @@ const handleFacebookCallback = async (req: Request, res: Response, next: NextFun
   }
 };
 
-export default { redirectToFacebook, handleFacebookCallback };
+export default { handleFacebookLogin };
