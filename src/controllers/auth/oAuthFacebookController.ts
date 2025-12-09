@@ -54,7 +54,8 @@ const handleFacebookCallback = async (req: Request, res: Response, next: NextFun
         httpOnly: true,
         maxAge: 24 * 60 * 60 * 1000,
         secure: true,
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        sameSite: "none",
+        path: "/",
       })
       .status(200)
       .json({ message: "Login successful", accessToken: accessJwt });

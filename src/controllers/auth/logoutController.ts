@@ -30,7 +30,8 @@ const logoutController = async (req: Request, res: Response, next: NextFunction)
       .clearCookie("refreshToken", {
         httpOnly: true,
         secure: true,
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        sameSite: "none",
+        path: "/",
       })
       .status(200)
       .json({ message: "Logout successful" });
