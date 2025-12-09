@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import userModel from "../models/usersModel.js";
 
-export const generateAccessToken = async (user: UserData) => {
+export const generateAccessToken = (user: UserData) => {
   const accessToken: string = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET as string, {
     expiresIn: "30m",
   });

@@ -50,7 +50,7 @@ const handleGoogleLogin = async (req: Request, res: Response, next: NextFunction
     };
 
     const accessToken = generateAccessToken(authUserData);
-    const refreshToken = generateRefreshToken(authUserData);
+    const refreshToken = await generateRefreshToken(authUserData);
 
     return res
       .cookie("refreshToken", refreshToken, {

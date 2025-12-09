@@ -40,7 +40,7 @@ const refreshAccessTokenController = async (req: Request, res: Response, next: N
       roleName: foundUser.role.role,
     };
 
-    const accessToken = await generateAccessToken(authUserData);
+    const accessToken = generateAccessToken(authUserData);
 
     return res.status(200).json({ message: "Token refresh successful", accessToken });
   } catch (error) {

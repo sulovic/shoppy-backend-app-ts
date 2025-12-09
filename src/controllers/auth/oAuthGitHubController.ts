@@ -53,7 +53,7 @@ const handleGithubLogin = async (req: Request, res: Response, next: NextFunction
     };
 
     const accessJwt = generateAccessToken(authUserData);
-    const refreshJwt = generateRefreshToken(authUserData);
+    const refreshJwt = await generateRefreshToken(authUserData);
 
     return res
       .cookie("refreshToken", refreshJwt, {

@@ -38,7 +38,7 @@ const loginController = async (req: Request, res: Response, next: NextFunction) 
       roleName: foundUser.role.role,
     };
 
-    const accessToken = await generateAccessToken(authUserData);
+    const accessToken = generateAccessToken(authUserData);
     const refreshToken = await generateRefreshToken(authUserData);
 
     return res
