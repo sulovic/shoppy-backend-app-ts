@@ -40,7 +40,7 @@ app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.set("query parser", "extended");
 app.use(cookieParser());
 
-// Rate limiter
+// Global rate limiter
 app.use(rateLimiter(1, 100));
 
 // Loggers
@@ -50,7 +50,7 @@ app.use(errorLogger);
 // Auth routes
 app.use("/auth/login", rateLimiter(3, 10), loginRouter);
 app.use("/auth/logout", logoutRouter);
-app.use("/auth/refresh", rateLimiter(3, 10), refreshRouter);
+app.use("/auth/refresh", rateLimiter(1, 10), refreshRouter);
 app.use("/auth/google", rateLimiter(3, 10), googleLoginRouter);
 app.use("/auth/github", rateLimiter(3, 10), githubLoginRouter);
 app.use("/auth/facebook", rateLimiter(3, 10), facebookLoginRouter);
