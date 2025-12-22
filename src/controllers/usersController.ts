@@ -93,7 +93,7 @@ const getAllUsersCountController = async (req: Request, res: Response, next: Nex
           return res.status(400).json({ message: `Invalid filter key: ${key}` });
         }
 
-        andConditions.push({ [key]: { in: [value] } });
+        andConditions.push({ [key]: { in: [key==="roleId" ? Number(value) : value] } });
       }
     }
 
