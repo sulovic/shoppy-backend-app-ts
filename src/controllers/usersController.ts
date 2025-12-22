@@ -31,7 +31,7 @@ const getAllUsersController = async (req: Request, res: Response, next: NextFunc
           return res.status(400).json({ message: `Invalid filter key: ${key}` });
         }
 
-        andConditions.push({ [key]: { in: [value] } });
+        andConditions.push({ [key]: { in: [key==="roleId" ? Number(value) : value] } });
       }
     }
 
