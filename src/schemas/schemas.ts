@@ -21,7 +21,11 @@ export const userSensitiveDataSchema = z.object({
   userId: z.number().int(),
   firstName: z.string().min(3, "First name is required"),
   lastName: z.string().min(3, "Last name is required"),
-  email: z.email("Invalid email"),
+  email: z
+    .string()
+    .min(5, "Email is required")
+    .max(254, "Email is too long")
+    .regex(/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/, "Email contains invalid characters or format"),
   passwordHash: z.string().nullable().nullable().optional(),
   refreshToken: z.string().nullable().nullable().optional(),
   roleId: z.number().int(),
@@ -40,7 +44,11 @@ export const userDataSchema = z.object({
   userId: z.number().int(),
   firstName: z.string().min(3, "First name is required"),
   lastName: z.string().min(3, "Last name is required"),
-  email: z.email("Invalid email"),
+  email: z
+    .string()
+    .min(5, "Email is required")
+    .max(254, "Email is too long")
+    .regex(/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/, "Email contains invalid characters or format"),
   roleId: z.number().int(),
   roleName: z.string(),
 });
@@ -65,7 +73,13 @@ export const reklamacijaSchema = z.object({
     .min(6, "Telefon is required and must have at least 6 characters")
     .max(20, "Telefon must have at most 20 characters")
     .regex(/^[\d+\s\-()/]+$/, "Telefon contains invalid characters"),
-  email: z.email("invalid email").nullable().optional(),
+  email: z
+    .string()
+    .min(5, "Email is too short")
+    .max(254, "Email is too long")
+    .regex(/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/, "Email contains invalid characters or format")
+    .nullable()
+    .optional(),
   datumKupovine: z.coerce.date().nullable().optional(),
   brojRacuna: z.string().min(3, "Broj racuna is required").nullable().optional(),
   nazivProizvoda: z.string().nullable().optional(),

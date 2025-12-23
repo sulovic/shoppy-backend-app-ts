@@ -1,7 +1,7 @@
 import path from "path";
 import fs from "fs/promises";
 import type { Request, Response, NextFunction } from "express";
-import { fileURLToPath } from "url";
+import filesUploadConfig from "../config/filesUploadConfig.ts";
 
 const uploadController = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -31,9 +31,13 @@ const deleteFileController = async (req: Request, res: Response, next: NextFunct
       return res.status(400).json({ error: "No filenames provided" });
     }
 
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = path.dirname(__filename);
-    const uploadDir = path.resolve(__dirname, "../public", subdir);
+    if (!filesUploadConfig.allowedFolders.includes(subdir)) {
+      return res.status(400).json({ error: "Subdirectory not allowed" });
+    }
+
+    const UPLOAD_BASE_DIR = "/app/uploads";
+
+    const uploadDir = path.join(UPLOAD_BASE_DIR, subdir);
 
     const errors: string[] = [];
     const deletedFiles: string[] = [];

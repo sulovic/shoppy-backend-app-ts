@@ -123,6 +123,7 @@ jobs:
               --name shoppy-app-backend \
               --restart unless-stopped \
               --network host \
+              -v /var/www/shoppy-apps-backend-ts/uploads:/app/uploads \
               -e DATABASE_USERS_URL='${{ secrets.DATABASE_USERS_URL }}' \
               -e DATABASE_REKLAMACIJE_URL='${{ secrets.DATABASE_REKLAMACIJE_URL }}' \
               -e DATABASE_OTPAD_URL='${{ secrets.DATABASE_OTPAD_URL }}' \

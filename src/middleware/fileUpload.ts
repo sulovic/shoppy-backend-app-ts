@@ -2,13 +2,10 @@ import multer from "multer";
 import path from "path";
 import filesUploadConfig from "../config/filesUploadConfig.js";
 import type { Request, Response, NextFunction } from "express";
-import { fileURLToPath } from "url";
 import fs from "fs/promises";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const tempUploadDir = path.resolve(__dirname, "../public/tmp");
+const UPLOAD_BASE_DIR = "/app/uploads";
+const tempUploadDir = path.join(UPLOAD_BASE_DIR, "tmp");
 
 await fs.mkdir(tempUploadDir, { recursive: true });
 
@@ -72,7 +69,7 @@ const fileUpload = async (req: Request, res: Response, next: NextFunction) => {
 
     // Get selected directory
 
-    const finalUploadDir = path.join(__dirname, "../public", subdir);
+    const finalUploadDir = path.join(UPLOAD_BASE_DIR, subdir);
     await fs.mkdir(finalUploadDir, { recursive: true });
 
     for (const file of files) {
