@@ -13,11 +13,13 @@ const checkUserRole = async (req: RequestWithAuth, res: Response, next: NextFunc
     }
 
     const originalMethod = (req.headers["x-original-method"] as string) || req.method;
+    const fullOriginalUri = (req.headers["x-original-uri"] as string) || req.url;
     const authUser = userDataSchema.parse(req.auth);
 
+    const strippedUri = fullOriginalUri.replace(/^\/api\/v1/, "");
     // Get min role based on path and method, default to 5000
 
-    const segments = req.originalUrl
+    const segments = strippedUri
       .split("?")[0]
       .split("/")
       .filter((s) => s !== "count") // Ignore count
