@@ -21,6 +21,7 @@ const priviledgesConfig = {
     DELETE: 5000,
   },
   uploads: {
+    GET: 1000,
     POST: 3000,
     DELETE: 3000,
   },

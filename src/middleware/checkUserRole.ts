@@ -12,6 +12,7 @@ const checkUserRole = async (req: RequestWithAuth, res: Response, next: NextFunc
       return res.status(401).json({ error: "Unauthorized - No authUser found" });
     }
 
+    const originalMethod = (req.headers["x-original-method"] as string) || req.method;
     const authUser = userDataSchema.parse(req.auth);
 
     // Get min role based on path and method, default to 5000
@@ -29,9 +30,7 @@ const checkUserRole = async (req: RequestWithAuth, res: Response, next: NextFunc
       current = current?.[segment];
     }
 
-    const minRole = current?.[req.method] ?? 5000;
-
-    console.log("Current", current, "MinRole", minRole, "Method", req.method, "AuthUser", authUser.roleId);
+    const minRole = current?.[originalMethod] ?? 5000;
 
     // Verify minimum role condition
 

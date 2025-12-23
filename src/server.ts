@@ -17,6 +17,7 @@ import refreshRouter from "./routes/auth/refresh.js";
 import googleLoginRouter from "./routes/auth/googleLogin.js";
 import githubLoginRouter from "./routes/auth/githubLogin.js";
 import facebookLoginRouter from "./routes/auth/facebookLogin.js";
+import verifyRouter from "./routes/auth/verify.js";
 
 import userRouter from "./routes/users.js";
 import reklamacijeRouter from "./routes/reklamacije.js";
@@ -54,6 +55,9 @@ app.use("/auth/refresh", rateLimiter(1, 10), refreshRouter);
 app.use("/auth/google", rateLimiter(3, 10), googleLoginRouter);
 app.use("/auth/github", rateLimiter(3, 10), githubLoginRouter);
 app.use("/auth/facebook", rateLimiter(3, 10), facebookLoginRouter);
+
+// Verify route for nginx
+app.use("/auth/verify", rateLimiter(1, 100), checkUserRole, verifyRouter);
 
 // User routes
 app.use("/users", verifyAccessToken, checkUserRole, userRouter);
