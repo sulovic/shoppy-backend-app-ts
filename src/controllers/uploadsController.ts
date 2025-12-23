@@ -1,7 +1,7 @@
 import path from "path";
 import fs from "fs/promises";
 import type { Request, Response, NextFunction } from "express";
-import filesUploadConfig from "../config/filesUploadConfig.ts";
+import filesUploadConfig from "../config/filesUploadConfig.js";
 
 const uploadController = async (req: Request, res: Response, next: NextFunction) => {
   try {
