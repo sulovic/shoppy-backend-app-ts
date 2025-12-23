@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
-import filesUploadConfig from "../config/filesUploadConfig.js";
+import filesUploadConfig from "../../config/filesUploadConfig.js";
 
 const verifyController = async (req: Request, res: Response, next: NextFunction) => {
   try {
