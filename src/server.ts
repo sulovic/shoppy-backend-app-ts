@@ -35,7 +35,14 @@ const port = process.env.PORT || 5777;
 // Nginx reverse proxy
 app.set("trust proxy", 1);
 
-app.use(cors(corsConfig as any));
+app.all("*", (req, res, next) => {
+  // This will log EVERY request Nginx sends to Node
+  console.log(`>>> NODE RECEIVED: ${req.method} ${req.url}`);
+  console.log(`>>> HEADERS:`, req.headers["x-original-uri"] || "No X-Original-URI");
+  next();
+});
+
+app.use(cors(corsConfig));
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.set("query parser", "extended");
