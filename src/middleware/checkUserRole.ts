@@ -8,6 +8,7 @@ interface RequestWithAuth extends Request {
 
 const checkUserRole = async (req: RequestWithAuth, res: Response, next: NextFunction) => {
   try {
+    console.log(req.auth, req.method, req.originalUrl, req.headers["x-original-method"], req.headers["x-original-uri"]);
     if (!req.auth) {
       return res.status(401).json({ error: "Unauthorized - No authUser found" });
     }
@@ -16,9 +17,8 @@ const checkUserRole = async (req: RequestWithAuth, res: Response, next: NextFunc
     const fullOriginalUri = (req.headers["x-original-uri"] as string) || req.originalUrl;
     const authUser = userDataSchema.parse(req.auth);
 
-    console.log(fullOriginalUri, originalMethod, authUser.roleId);
-
     const strippedUri = fullOriginalUri.replace(/^\/api\/v1/, "");
+
     // Get min role based on path and method, default to 5000
 
     const segments = strippedUri
@@ -26,15 +26,12 @@ const checkUserRole = async (req: RequestWithAuth, res: Response, next: NextFunc
       .split("/")
       .filter((s) => s !== "count") // Ignore count
       .filter((s) => Number.isNaN(parseInt(s))) // Ignore numbers for GET by ID, PUT and DELETE
+      .filter((s) => !s.includes(".")) // Ignore files
       .filter(Boolean);
 
-    let current: any = priviledgesConfig;
+    const curentSubPath = segments[-1];
 
-    for (const segment of segments) {
-      current = current?.[segment];
-    }
-
-    const minRole = current?.[originalMethod] ?? 5000;
+    const minRole = priviledgesConfig[curentSubPath][originalMethod] ?? 5000;
 
     // Verify minimum role condition
 

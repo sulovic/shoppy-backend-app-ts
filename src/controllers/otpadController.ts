@@ -582,8 +582,6 @@ const getDelovodnikController = async (req: Request, res: Response, next: NextFu
 
     const { search, filters } = queryParams;
 
-    console.log(filters);
-
     const whereClauses: Prisma.Sql[] = [];
 
     if (search) {

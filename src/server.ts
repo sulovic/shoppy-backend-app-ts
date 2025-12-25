@@ -57,16 +57,7 @@ app.use("/auth/github", rateLimiter(3, 10), githubLoginRouter);
 app.use("/auth/facebook", rateLimiter(3, 10), facebookLoginRouter);
 
 // Verify route for nginx
-app.use(
-  "/auth/verify",
-  (req, res, next) => {
-    console.log(req);
-    next();
-  },
-  rateLimiter(1, 100),
-  checkUserRole,
-  verifyRouter
-);
+app.use("/auth/verify", rateLimiter(1, 100), checkUserRole, verifyRouter);
 
 // User routes
 app.use("/users", verifyAccessToken, checkUserRole, userRouter);
