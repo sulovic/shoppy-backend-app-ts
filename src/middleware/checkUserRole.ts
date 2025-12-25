@@ -29,10 +29,11 @@ const checkUserRole = async (req: RequestWithAuth, res: Response, next: NextFunc
       .filter((s) => !s.includes(".")) // Ignore files
       .filter(Boolean);
 
-    const curentSubPath = segments[segments.length - 1] || "";
+    const currentSubPath = segments[segments.length - 1] || "";
 
-    const minRole = priviledgesConfig[curentSubPath][originalMethod] ?? 5000;
+    const minRole = priviledgesConfig[currentSubPath][originalMethod] ?? 5000;
 
+    console.log(`minRole: ${minRole}`, segments, currentSubPath);
     // Verify minimum role condition
 
     if (authUser.roleId < minRole) {
@@ -41,6 +42,7 @@ const checkUserRole = async (req: RequestWithAuth, res: Response, next: NextFunc
 
     next();
   } catch (error) {
+    console.log("Error in checkuserrole middleware", error);
     next(error);
   }
 };
