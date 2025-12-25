@@ -29,7 +29,7 @@ const checkUserRole = async (req: RequestWithAuth, res: Response, next: NextFunc
       .filter((s) => !s.includes(".")) // Ignore files
       .filter(Boolean);
 
-    const curentSubPath = segments[-1];
+    const curentSubPath = segments[segments.length - 1] || "";
 
     const minRole = priviledgesConfig[curentSubPath][originalMethod] ?? 5000;
 
