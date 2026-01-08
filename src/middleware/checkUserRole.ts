@@ -6,6 +6,15 @@ interface RequestWithAuth extends Request {
   auth?: UserData;
 }
 
+const getPrivilegeForPath = (config: any, segments: string[], method: string) => {
+  let current = config;
+  for (const seg of segments) {
+    if (!(seg in current)) return undefined;
+    current = current[seg];
+  }
+  return current?.[method];
+};
+
 const checkUserRole = async (req: RequestWithAuth, res: Response, next: NextFunction) => {
   try {
     console.log(req.auth, req.method, req.originalUrl, req.headers["x-original-method"], req.headers["x-original-uri"]);
@@ -29,11 +38,8 @@ const checkUserRole = async (req: RequestWithAuth, res: Response, next: NextFunc
       .filter((s) => !s.includes(".")) // Ignore files
       .filter(Boolean);
 
-    const currentSubPath = segments[segments.length - 1] || "";
+    const minRole = getPrivilegeForPath(priviledgesConfig, segments, originalMethod) ?? 5000;
 
-    const minRole = priviledgesConfig[currentSubPath][originalMethod] ?? 5000;
-
-    console.log(`minRole: ${minRole}`, segments, currentSubPath);
     // Verify minimum role condition
 
     if (authUser.roleId < minRole) {
