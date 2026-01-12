@@ -319,9 +319,9 @@ const getDelovodnikModel = async ({ whereSQL }: { whereSQL: Prisma.Sql }) => {
     "datum",
     "zemlja",
     SUM("kolicina" * "masa") AS "ukupno",
-    STRING_AGG(DISTINCT "operacija"::text, ', ') AS "operacije",
-    STRING_AGG(DISTINCT "brojJci"::text, ', ') AS "brojeviJci",
-    STRING_AGG(DISTINCT "vrstaOtpada"::text, ', ') AS "vrsteOtpada"
+    STRING_AGG(DISTINCT "operacija"::text, ', ') AS "operacija",
+    STRING_AGG(DISTINCT "brojJci"::text, ', ') AS "brojJci",
+    STRING_AGG(DISTINCT "vrstaOtpada"::text, ', ') AS "vrstaOtpada"
   FROM "JciPodaci"
   JOIN "JciProizvodi" ON "JciPodaci"."id" = "JciProizvodi"."jciPodaciId"
   JOIN "Proizvodi" ON "JciProizvodi"."proizvodId" = "Proizvodi"."id"
