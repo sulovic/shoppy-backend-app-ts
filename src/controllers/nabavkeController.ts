@@ -1,6 +1,6 @@
 import nabavkeModel from "../models/nabavkeModel.js";
 import type { Request, Response, NextFunction } from "express";
-import { queryParamsSchema, PorudzbinaSchema, NabavkeProizvodSchema } from"../schemas/schemas.js";
+import { queryParamsSchema, PorudzbinaSchema, NabavkeProizvodSchema } from "../schemas/schemas.js";
 import { Prisma } from "../../prisma_clients/nabavke/client/client.js";
 
 // Porudzbine controllers
@@ -22,7 +22,7 @@ const getAllPorudzbineController = async (req: Request, res: Response, next: Nex
     const andConditions: Prisma.PorudzbineWhereInput[] = [];
     const orConditions: Prisma.PorudzbineWhereInput[] = [];
 
-    const filterKeys = ["status", "zemlja"];
+    const filterKeys = ["status", "zemlja", "godina"];
     const searchKeys = ["proFaktura", "dobavljac", "spediter", "brojKontejnera"];
 
     if (filters) {
@@ -32,7 +32,22 @@ const getAllPorudzbineController = async (req: Request, res: Response, next: Nex
           return res.status(400).json({ message: `Invalid filter key: ${key}` });
         }
 
-        andConditions.push({ [key]: { in: [value] } });
+        if (key === "godina") {
+          const years = (Array.isArray(value) ? value : [value]).map((y: string) => Number(y));
+
+          // Convert years to date ranges
+          const yearFilters = years.map((y: number) => ({
+            datumPorudzbine: {
+              gte: new Date(y, 0, 1), // Jan 1, year y
+              lte: new Date(y, 11, 31), // Dec 31, year y
+            },
+          }));
+
+          // Combine with OR (any of the years)
+          andConditions.push({ OR: yearFilters });
+        } else {
+          andConditions.push({ [key]: { in: Array.isArray(value) ? value : [value] } });
+        }
       }
     }
 
@@ -73,7 +88,7 @@ const getAllPorudzbineCountController = async (req: Request, res: Response, next
     const andConditions: Prisma.PorudzbineWhereInput[] = [];
     const orConditions: Prisma.PorudzbineWhereInput[] = [];
 
-    const filterKeys = ["status", "zemlja"];
+    const filterKeys = ["status", "zemlja", "godina"];
     const searchKeys = ["proFaktura", "dobavljac", "spediter", "brojKontejnera"];
 
     if (filters) {
@@ -83,7 +98,22 @@ const getAllPorudzbineCountController = async (req: Request, res: Response, next
           return res.status(400).json({ message: `Invalid filter key: ${key}` });
         }
 
-        andConditions.push({ [key]: { in: [value] } });
+        if (key === "godina") {
+          const years = (Array.isArray(value) ? value : [value]).map((y: string) => Number(y));
+
+          // Convert years to date ranges
+          const yearFilters = years.map((y: number) => ({
+            datumPorudzbine: {
+              gte: new Date(y, 0, 1), // Jan 1, year y
+              lte: new Date(y, 11, 31), // Dec 31, year y
+            },
+          }));
+
+          // Combine with OR (any of the years)
+          andConditions.push({ OR: yearFilters });
+        } else {
+          andConditions.push({ [key]: { in: Array.isArray(value) ? value : [value] } });
+        }
       }
     }
 

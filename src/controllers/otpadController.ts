@@ -23,7 +23,7 @@ const getAllJciController = async (req: Request, res: Response, next: NextFuncti
     const andConditions: Prisma.JciPodaciWhereInput[] = [];
     const orConditions: Prisma.JciPodaciWhereInput[] = [];
 
-    const filterKeys = ["zemlja", "operacija"];
+    const filterKeys = ["zemlja", "operacija", "godina", "vrstaOtpada"];
     const searchKeys = ["brojJci"];
 
     if (filters) {
@@ -33,7 +33,22 @@ const getAllJciController = async (req: Request, res: Response, next: NextFuncti
           return res.status(400).json({ message: `Invalid filter key: ${key}` });
         }
 
-        andConditions.push({ [key]: { in: [value] } });
+        if (key === "godina") {
+          const years = (Array.isArray(value) ? value : [value]).map((y: string) => Number(y));
+
+          // Convert years to date ranges
+          const yearFilters = years.map((y: number) => ({
+            datum: {
+              gte: new Date(y, 0, 1), // Jan 1, year y
+              lte: new Date(y, 11, 31), // Dec 31, year y
+            },
+          }));
+
+          // Combine with OR (any of the years)
+          andConditions.push({ OR: yearFilters });
+        } else {
+          andConditions.push({ [key]: { in: Array.isArray(value) ? value : [value] } });
+        }
       }
     }
 
@@ -74,7 +89,7 @@ const getAllJciCountController = async (req: Request, res: Response, next: NextF
     const andConditions: Prisma.JciPodaciWhereInput[] = [];
     const orConditions: Prisma.JciPodaciWhereInput[] = [];
 
-    const filterKeys = ["zemlja", "operacija"];
+    const filterKeys = ["zemlja", "operacija", "godina", "vrstaOtpada"];
     const searchKeys = ["brojJci"];
 
     if (filters) {
@@ -84,7 +99,22 @@ const getAllJciCountController = async (req: Request, res: Response, next: NextF
           return res.status(400).json({ message: `Invalid filter key: ${key}` });
         }
 
-        andConditions.push({ [key]: { in: [value] } });
+        if (key === "godina") {
+          const years = (Array.isArray(value) ? value : [value]).map((y: string) => Number(y));
+
+          // Convert years to date ranges
+          const yearFilters = years.map((y: number) => ({
+            datum: {
+              gte: new Date(y, 0, 1), // Jan 1, year y
+              lte: new Date(y, 11, 31), // Dec 31, year y
+            },
+          }));
+
+          // Combine with OR (any of the years)
+          andConditions.push({ OR: yearFilters });
+        } else {
+          andConditions.push({ [key]: { in: Array.isArray(value) ? value : [value] } });
+        }
       }
     }
 

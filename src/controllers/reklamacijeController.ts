@@ -21,7 +21,7 @@ const getAllReklamacijeController = async (req: Request, res: Response, next: Ne
     const andConditions: Prisma.ReklamacijeWhereInput[] = [];
     const orConditions: Prisma.ReklamacijeWhereInput[] = [];
 
-    const filterKeys = ["zemljaReklamacije", "statusReklamacije", "odgovornaOsoba"];
+    const filterKeys = ["zemljaReklamacije", "statusReklamacije", "odgovornaOsoba", "godina"];
     const searchKeys = ["brojReklamacije", "imePrezime", "email", "telefon", "adresa", "brojRacuna", "nazivProizvoda"];
 
     if (filters) {
@@ -31,7 +31,22 @@ const getAllReklamacijeController = async (req: Request, res: Response, next: Ne
           return res.status(400).json({ message: `Invalid filter key: ${key}` });
         }
 
-        andConditions.push({ [key]: { in: [value] } });
+        if (key === "godina") {
+          const years = (Array.isArray(value) ? value : [value]).map((y: string) => Number(y));
+
+          // Convert years to date ranges
+          const yearFilters = years.map((y: number) => ({
+            datumPrijema: {
+              gte: new Date(y, 0, 1), // Jan 1, year y
+              lte: new Date(y, 11, 31), // Dec 31, year y
+            },
+          }));
+
+          // Combine with OR (any of the years)
+          andConditions.push({ OR: yearFilters });
+        } else {
+          andConditions.push({ [key]: { in: Array.isArray(value) ? value : [value] } });
+        }
       }
     }
 
@@ -72,7 +87,7 @@ const getAllReklamacijeCountController = async (req: Request, res: Response, nex
     const andConditions: Prisma.ReklamacijeWhereInput[] = [];
     const orConditions: Prisma.ReklamacijeWhereInput[] = [];
 
-    const filterKeys = ["zemljaReklamacije", "statusReklamacije", "odgovornaOsoba"];
+    const filterKeys = ["zemljaReklamacije", "statusReklamacije", "odgovornaOsoba", "godina"];
     const searchKeys = ["brojReklamacije", "imePrezime", "email", "telefon", "adresa", "brojRacuna", "nazivProizvoda"];
 
     if (filters) {
@@ -82,7 +97,22 @@ const getAllReklamacijeCountController = async (req: Request, res: Response, nex
           return res.status(400).json({ message: `Invalid filter key: ${key}` });
         }
 
-        andConditions.push({ [key]: { in: [value] } });
+        if (key === "godina") {
+          const years = (Array.isArray(value) ? value : [value]).map((y: string) => Number(y));
+
+          // Convert years to date ranges
+          const yearFilters = years.map((y: number) => ({
+            datumPrijema: {
+              gte: new Date(y, 0, 1), // Jan 1, year y
+              lte: new Date(y, 11, 31), // Dec 31, year y
+            },
+          }));
+
+          // Combine with OR (any of the years)
+          andConditions.push({ OR: yearFilters });
+        } else {
+          andConditions.push({ [key]: { in: Array.isArray(value) ? value : [value] } });
+        }
       }
     }
 
