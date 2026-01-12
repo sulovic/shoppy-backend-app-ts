@@ -120,7 +120,7 @@ export const JciPodaciSchema = z.object({
   jciProizvodi: z.array(
     z.object({
       kolicina: z.number("Kolicina is required"),
-      proizvod: JciProizvodiSchema,
+      proizvod: JciProizvodiSchema.omit({ ProizvodMasaOtpada: true }),
     })
   ),
 });
