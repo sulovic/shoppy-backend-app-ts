@@ -261,10 +261,6 @@ const getAllVrsteOtpada = async ({ whereClause, orderBy, take, skip }: { whereCl
 const getAllVrsteOtpadaCount = async ({ whereClause }: { whereClause?: Prisma.VrsteOtpadaWhereInput }) => {
   return await prisma.vrsteOtpada.count({
     where: { ...whereClause },
-    select: {
-      id: true,
-      vrstaOtpada: true,
-    },
   });
 };
 
