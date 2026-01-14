@@ -5,7 +5,6 @@ export const envSchema = z.object({
   DATABASE_USERS_URL: z.string(),
   DATABASE_REKLAMACIJE_URL: z.string(),
   DATABASE_OTPAD_URL: z.string(),
-  DATABASE_ODSUSTVA_URL: z.string(),
   DATABASE_NABAVKE_URL: z.string(),
   ACCESS_TOKEN_SECRET: z.string().min(10),
   REFRESH_TOKEN_SECRET: z.string().min(10),

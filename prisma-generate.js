@@ -8,7 +8,7 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const databases = ["users", "nabavke", "odsustva", "reklamacije", "otpad"];
+const databases = ["users", "nabavke", "reklamacije", "otpad"];
 
 // Clean Prisma client directories
 console.log("Cleaning old Prisma client directories...");

@@ -109,17 +109,17 @@ const deletePorudzbina = async (id: number) => {
   return await prisma.porudzbine.delete({
     where: {
       id,
-      include: {
-        sadrzaj: {
-          select: {
-            id: true,
-            cena: true,
-            kolicina: true,
-            proizvod: {
-              select: {
-                id: true,
-                naziv: true,
-              },
+    },
+    include: {
+      sadrzaj: {
+        select: {
+          id: true,
+          cena: true,
+          kolicina: true,
+          proizvod: {
+            select: {
+              id: true,
+              naziv: true,
             },
           },
         },
