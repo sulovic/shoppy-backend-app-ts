@@ -22,7 +22,7 @@ const getAllPorudzbine = async ({ whereClause, orderBy, take, skip }: { whereCla
           proizvod: {
             select: {
               id: true,
-              proizvod: true,
+              naziv: true,
             },
           },
         },
@@ -51,7 +51,7 @@ const getPorudzbina = async (id: number) => {
           proizvod: {
             select: {
               id: true,
-              proizvod: true,
+              naziv: true,
             },
           },
         },
@@ -72,7 +72,7 @@ const createPorudzbina = async (porudzbina: Prisma.PorudzbineCreateInput) => {
           proizvod: {
             select: {
               id: true,
-              proizvod: true,
+              naziv: true,
             },
           },
         },
@@ -96,7 +96,7 @@ const updatePorudzbina = async (id: number, porudzbina: Prisma.PorudzbineUpdateI
           proizvod: {
             select: {
               id: true,
-              proizvod: true,
+              naziv: true,
             },
           },
         },
@@ -118,7 +118,7 @@ const deletePorudzbina = async (id: number) => {
             proizvod: {
               select: {
                 id: true,
-                proizvod: true,
+                naziv: true,
               },
             },
           },
