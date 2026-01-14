@@ -13,6 +13,21 @@ const getAllPorudzbine = async ({ whereClause, orderBy, take, skip }: { whereCla
     orderBy: orderBy,
     take: take,
     skip: skip,
+    include: {
+      sadrzaj: {
+        select: {
+          id: true,
+          cena: true,
+          kolicina: true,
+          proizvod: {
+            select: {
+              id: true,
+              proizvod: true,
+            },
+          },
+        },
+      },
+    },
   });
 };
 
@@ -27,12 +42,42 @@ const getPorudzbina = async (id: number) => {
     where: {
       id,
     },
+    include: {
+      sadrzaj: {
+        select: {
+          id: true,
+          cena: true,
+          kolicina: true,
+          proizvod: {
+            select: {
+              id: true,
+              proizvod: true,
+            },
+          },
+        },
+      },
+    },
   });
 };
 
 const createPorudzbina = async (porudzbina: Prisma.PorudzbineCreateInput) => {
   return await prisma.porudzbine.create({
     data: porudzbina,
+    include: {
+      sadrzaj: {
+        select: {
+          id: true,
+          cena: true,
+          kolicina: true,
+          proizvod: {
+            select: {
+              id: true,
+              proizvod: true,
+            },
+          },
+        },
+      },
+    },
   });
 };
 
@@ -42,6 +87,21 @@ const updatePorudzbina = async (id: number, porudzbina: Prisma.PorudzbineUpdateI
       id,
     },
     data: porudzbina,
+    include: {
+      sadrzaj: {
+        select: {
+          id: true,
+          cena: true,
+          kolicina: true,
+          proizvod: {
+            select: {
+              id: true,
+              proizvod: true,
+            },
+          },
+        },
+      },
+    },
   });
 };
 
@@ -49,6 +109,21 @@ const deletePorudzbina = async (id: number) => {
   return await prisma.porudzbine.delete({
     where: {
       id,
+      include: {
+        sadrzaj: {
+          select: {
+            id: true,
+            cena: true,
+            kolicina: true,
+            proizvod: {
+              select: {
+                id: true,
+                proizvod: true,
+              },
+            },
+          },
+        },
+      },
     },
   });
 };
