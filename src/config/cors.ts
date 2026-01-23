@@ -1,6 +1,6 @@
 ﻿import type { CorsOptions } from "cors";
 
-const whitelist = ["https://apps.shoppy.rs", "https://testapps.shoppy.rs", "https://127.0.0.1:3000", "https://localhost:3000"];
+const whitelist = ["https://apps.shoppy.rs", "https://appstest.shoppy.rs", "https://127.0.0.1:3000", "https://localhost:3000"];
 
 const corsConfig: CorsOptions = {
   origin: (requestOrigin, callback) => {
