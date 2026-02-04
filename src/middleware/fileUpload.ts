@@ -49,7 +49,7 @@ const fileUpload = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const subdir = Array.isArray(req.params.path) ? req.params.path.join("/") : req.params.path;
 
-    console.log("Subdirectory:", subdir);
+    console.log("Path", req.params.path, "Subdirectory:", subdir);
 
     if (!subdir || !filesUploadConfig.allowedFolders.includes(subdir)) {
       res.status(400).json({ error: "Subdirectory not allowed." });
