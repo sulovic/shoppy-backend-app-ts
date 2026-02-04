@@ -17,7 +17,6 @@ const getPrivilegeForPath = (config: any, segments: string[], method: string) =>
 
 const checkUserRole = async (req: RequestWithAuth, res: Response, next: NextFunction) => {
   try {
-    console.log(req.auth, req.method, req.originalUrl, req.headers["x-original-method"], req.headers["x-original-uri"]);
     if (!req.auth) {
       return res.status(401).json({ error: "Unauthorized - No authUser found" });
     }
@@ -48,7 +47,6 @@ const checkUserRole = async (req: RequestWithAuth, res: Response, next: NextFunc
 
     next();
   } catch (error) {
-    console.log("Error in checkuserrole middleware", error);
     next(error);
   }
 };
