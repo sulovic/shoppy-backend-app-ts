@@ -5,7 +5,7 @@ import resizeImage from "../middleware/resizeImage.js";
 
 const router = Router();
 
-router.post(":path(.*)", fileUpload, resizeImage(1000), uploadController);
-router.delete(":path(.*)", deleteFileController);
+router.post("*path", fileUpload, resizeImage(1000), uploadController);
+router.delete("*path", deleteFileController);
 
 export default router;

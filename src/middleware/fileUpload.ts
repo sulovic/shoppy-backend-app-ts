@@ -47,7 +47,7 @@ const upload = multer({
 
 const fileUpload = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const subdir = req.params.path;
+    const subdir = Array.isArray(req.params.path) ? req.params.path.join("/") : req.params.path;
 
     if (!subdir || !filesUploadConfig.allowedFolders.includes(subdir)) {
       res.status(400).json({ error: "Subdirectory not allowed." });

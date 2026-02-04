@@ -25,7 +25,7 @@ const uploadController = async (req: Request, res: Response, next: NextFunction)
 const deleteFileController = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { files } = req.body as { files: string[] };
-    const subdir = req.params.path;
+    const subdir = Array.isArray(req.params.path) ? req.params.path.join("/") : req.params.path;
 
     if (!files || files.length === 0) {
       return res.status(400).json({ error: "No filenames provided" });
@@ -38,6 +38,10 @@ const deleteFileController = async (req: Request, res: Response, next: NextFunct
     const UPLOAD_BASE_DIR = "/app/uploads";
 
     const uploadDir = path.join(UPLOAD_BASE_DIR, subdir);
+
+    if (!uploadDir.startsWith(UPLOAD_BASE_DIR)) {
+      return res.status(403).json({ error: "Invalid path sequence" });
+    }
 
     const errors: string[] = [];
     const deletedFiles: string[] = [];
