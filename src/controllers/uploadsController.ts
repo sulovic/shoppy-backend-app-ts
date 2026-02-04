@@ -25,7 +25,7 @@ const uploadController = async (req: Request, res: Response, next: NextFunction)
 const deleteFileController = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { files } = req.body as { files: string[] };
-    const subdir = req.params[0];
+    const subdir = req.params.path;
 
     if (!files || files.length === 0) {
       return res.status(400).json({ error: "No filenames provided" });
