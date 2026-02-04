@@ -22,6 +22,7 @@ export const userSensitiveDataSchema = z.object({
   lastName: z.string().min(3, "Last name is required"),
   email: z
     .string()
+    .trim()
     .min(5, "Email is required")
     .max(254, "Email is too long")
     .regex(/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/, "Email contains invalid characters or format"),
@@ -45,6 +46,7 @@ export const userDataSchema = z.object({
   lastName: z.string().min(3, "Last name is required"),
   email: z
     .string()
+    .trim()
     .min(5, "Email is required")
     .max(254, "Email is too long")
     .regex(/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/, "Email contains invalid characters or format"),
@@ -69,11 +71,13 @@ export const reklamacijaSchema = z.object({
   adresa: z.string().nullable().optional(),
   telefon: z
     .string()
+    .trim()
     .min(6, "Telefon is required and must have at least 6 characters")
     .max(20, "Telefon must have at most 20 characters")
     .regex(/^[\d+\s\-()/]+$/, "Telefon contains invalid characters"),
   email: z
     .string()
+    .trim()
     .min(5, "Email is too short")
     .max(254, "Email is too long")
     .regex(/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/, "Email contains invalid characters or format")
@@ -105,7 +109,7 @@ export const JciProizvodiSchema = z.object({
     z.object({
       masa: z.number("Masa is required"),
       VrstaOtpada: VrstaOtpadaSchema,
-    })
+    }),
   ),
 });
 
@@ -120,7 +124,7 @@ export const JciPodaciSchema = z.object({
     z.object({
       kolicina: z.number("Kolicina is required"),
       proizvod: JciProizvodiSchema.omit({ ProizvodMasaOtpada: true }),
-    })
+    }),
   ),
 });
 

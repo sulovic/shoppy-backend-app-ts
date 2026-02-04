@@ -15,7 +15,7 @@ const filesUploadConfig = {
     ods: "application/vnd.oasis.opendocument.spreadsheet",
     mp4: "video/mp4",
   },
-  allowedFolders: ["reklamacije", "otpad", "odsustva", "nabavke"],
+  allowedFolders: ["reklamacije", "otpad", "odsustva", "nabavke", "nabavke/porudzbine"],
 };
 
 export default filesUploadConfig;
