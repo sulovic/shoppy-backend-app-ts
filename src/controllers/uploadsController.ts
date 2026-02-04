@@ -25,7 +25,7 @@ const uploadController = async (req: Request, res: Response, next: NextFunction)
 const deleteFileController = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { files } = req.body as { files: string[] };
-    const subdir = req.params.subdir;
+    const subdir = req.params[0];
 
     if (!files || files.length === 0) {
       return res.status(400).json({ error: "No filenames provided" });
@@ -53,7 +53,7 @@ const deleteFileController = async (req: Request, res: Response, next: NextFunct
           if (err.code === "ENOENT") errors.push(`File not found: ${file}`);
           else errors.push(`Error deleting file ${file}: ${err.message}`);
         }
-      })
+      }),
     );
 
     if (errors.length > 0) {
