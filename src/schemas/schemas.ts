@@ -1,5 +1,11 @@
 import { z } from "zod";
 
+//Helper functions
+export const emptyStringToNull = (val: unknown) => {
+  if (typeof val === "string" && val.trim() === "") return null;
+  return val;
+};
+
 export const envSchema = z.object({
   PORT: z.string().default("5000"),
   DATABASE_USERS_URL: z.string(),
@@ -78,21 +84,24 @@ export const reklamacijaSchema = z.object({
     .min(6, "Telefon is required and must have at least 6 characters")
     .max(20, "Telefon must have at most 20 characters")
     .regex(/^[\d+\s\-()/]+$/, "Telefon contains invalid characters"),
-  email: z
-    .string()
-    .trim()
-    .trim()
-    .min(5, "Email is too short")
-    .max(254, "Email is too long")
-    .regex(/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/, "Email contains invalid characters or format")
-    .nullable()
-    .optional(),
+  email: z.preprocess(
+    emptyStringToNull,
+    z
+      .string()
+      .trim()
+      .trim()
+      .min(5, "Email is too short")
+      .max(254, "Email is too long")
+      .regex(/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/, "Email contains invalid characters or format")
+      .nullable()
+      .optional(),
+  ),
   datumKupovine: z.coerce.date().nullable().optional(),
   brojRacuna: z.string().trim().min(3, "Broj racuna is required").nullable().optional(),
   nazivProizvoda: z.string().nullable().optional(),
   opisReklamacije: z.string().trim().min(10, "Opis reklamacije is too short").nullable().optional(),
   datumOdgovora: z.coerce.date().nullable().optional(),
-  opisOdluke: z.string().trim().min(10, "Opis odluke is too short").nullable().optional(),
+  opisOdluke: z.preprocess(emptyStringToNull, z.string().trim().min(10, "Opis odluke is too short").nullable().optional()),
   komentar: z.string().nullable().optional(),
   smsSent: z.boolean().default(false),
   statusReklamacije: z.enum(["PRIJEM", "OBRADA", "OPRAVDANA", "NEOPRAVDANA", "DODATNI_ROK"], "Status reklamacije is required"),
@@ -151,11 +160,11 @@ export const PorudzbinaSchema = z.object({
   id: z.number().int(),
   proFaktura: z.string().trim().min(3, "Broj pro-fakture is required"),
   dobavljac: z.string().trim().min(5, "Dobavljač is required"),
-  spediter: z.string().trim().min(5, "Spediter is required").nullable().optional(),
+  spediter: z.preprocess(emptyStringToNull, z.string().trim().min(5, "Spediter is required").nullable().optional()),
   datumPorudzbine: z.coerce.date("Datum porudžbine is required"),
   datumPolaska: z.coerce.date().nullable().optional(),
   datumPrijema: z.coerce.date().nullable().optional(),
-  brojKontejnera: z.string().trim().min(3).nullable().optional(),
+  brojKontejnera: z.preprocess(emptyStringToNull, z.string().trim().min(3).nullable().optional()),
   komentar: z.string().nullable().optional(),
   status: z.enum(["NACRT", "PROIZVODNJA", "TRANZIT", "PRIMLJENA"]),
   zemlja: z.enum(["SRBIJA", "CRNA_GORA"]),
