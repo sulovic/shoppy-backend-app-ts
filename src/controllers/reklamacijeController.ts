@@ -28,7 +28,7 @@ const getAllReklamacijeController = async (req: Request, res: Response, next: Ne
       for (const key in filters) {
         const value = filters[key];
         if (!filterKeys.includes(key)) {
-          return res.status(400).json({ message: `Invalid filter key: ${key}` });
+          return res.status(400).json({ error: `Invalid filter key: ${key}` });
         }
 
         if (key === "godina") {
@@ -57,7 +57,7 @@ const getAllReklamacijeController = async (req: Request, res: Response, next: Ne
             contains: search,
             mode: "insensitive",
           },
-        }))
+        })),
       );
     }
 
@@ -94,7 +94,7 @@ const getAllReklamacijeCountController = async (req: Request, res: Response, nex
       for (const key in filters) {
         const value = filters[key];
         if (!filterKeys.includes(key)) {
-          return res.status(400).json({ message: `Invalid filter key: ${key}` });
+          return res.status(400).json({ error: `Invalid filter key: ${key}` });
         }
 
         if (key === "godina") {
@@ -123,7 +123,7 @@ const getAllReklamacijeCountController = async (req: Request, res: Response, nex
             contains: search,
             mode: "insensitive",
           },
-        }))
+        })),
       );
     }
 
@@ -143,13 +143,13 @@ const getReklamacijaController = async (req: Request, res: Response, next: NextF
     const idReklamacije = parseInt(req.params.idReklamacije);
 
     if (isNaN(idReklamacije)) {
-      return res.status(400).json({ message: "Invalid reklamacija ID" });
+      return res.status(400).json({ error: "Invalid reklamacija ID" });
     }
 
     const reklamacijaData = await reklamacijeModel.getReklamacija(idReklamacije);
 
     if (!reklamacijaData) {
-      return res.status(404).json({ message: "Reklamacija not found" });
+      return res.status(404).json({ error: "Reklamacija not found" });
     }
 
     return res.status(200).json({ data: reklamacijaData });
@@ -163,13 +163,13 @@ const getPublicReklamacijaController = async (req: Request, res: Response, next:
     const brojReklamacije = req.params.brojReklamacije;
 
     if (!brojReklamacije) {
-      return res.status(400).json({ message: "Invalid Broj reklamacije" });
+      return res.status(400).json({ error: "Invalid Broj reklamacije" });
     }
 
     const reklamacijeData = await reklamacijeModel.getAllReklamacije({ whereClause: { brojReklamacije } });
 
     if (!reklamacijeData || reklamacijeData.length != 1) {
-      return res.status(404).json({ message: "Reklamacija not found" });
+      return res.status(404).json({ error: "Reklamacija not found" });
     }
 
     const { komentar: _komentar, smsSent: _smsSent, files: _files, ...reklamacijaPublicData } = reklamacijeData[0];
@@ -199,7 +199,7 @@ const updateReklamacijaController = async (req: Request, res: Response, next: Ne
     const idReklamacije: number = parseInt(req.params.idReklamacije);
 
     if (isNaN(idReklamacije)) {
-      return res.status(400).json({ message: "Invalid reklamacija ID" });
+      return res.status(400).json({ error: "Invalid reklamacija ID" });
     }
 
     const parsedReklamacija = reklamacijaSchema.omit({ idReklamacije: true }).parse(req.body);
@@ -220,7 +220,7 @@ const deleteReklamacijaController = async (req: Request, res: Response, next: Ne
     const idReklamacije: number = parseInt(req.params.idReklamacije);
 
     if (isNaN(idReklamacije)) {
-      return res.status(400).json({ message: "Invalid JCI ID" });
+      return res.status(400).json({ error: "Invalid JCI ID" });
     }
 
     const deletedReklamacija = await reklamacijeModel.deleteReklamacija(idReklamacije);

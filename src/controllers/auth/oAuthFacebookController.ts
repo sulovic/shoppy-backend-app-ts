@@ -9,7 +9,7 @@ const config = oAuthProvidersConfig.facebook;
 const handleFacebookLogin = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { code } = req.query;
-    if (!code) return res.status(400).json({ message: "Missing code" });
+    if (!code) return res.status(400).json({ error: "Missing code" });
 
     // Exchange code for access token
     const tokenResponse = await fetch(`${config.tokenUrl}?client_id=${config.clientId}&client_secret=${config.clientSecret}&redirect_uri=${encodeURIComponent(`${req.protocol}://${req.get("host")}${config.redirectURL}`)}&code=${code}`, {
@@ -17,11 +17,11 @@ const handleFacebookLogin = async (req: Request, res: Response, next: NextFuncti
     });
     const tokenData = await tokenResponse.json();
     const accessToken = tokenData.access_token;
-    if (!accessToken) return res.status(401).json({ message: "Token exchange failed" });
+    if (!accessToken) return res.status(401).json({ error: "Token exchange failed" });
 
     // Get user info
     const userRes = await fetch(`https://graph.facebook.com/me?fields=id,name,email&access_token=${accessToken}`);
-    if (!userRes.ok) return res.status(401).json({ message: "Failed to fetch Facebook user info" });
+    if (!userRes.ok) return res.status(401).json({ error: "Failed to fetch Facebook user info" });
 
     const userInfo = await userRes.json();
     const email = userInfo.email || `${userInfo.id}@facebook.oauth.local`; // fallback if no email
@@ -29,7 +29,7 @@ const handleFacebookLogin = async (req: Request, res: Response, next: NextFuncti
     // Find user in DB
     const users = await userModel.getAllUsers({ whereClause: { email } });
     const foundUser = users[0];
-    if (!foundUser) return res.status(401).json({ message: "User not found" });
+    if (!foundUser) return res.status(401).json({ error: "User not found" });
 
     const authUserData = {
       userId: foundUser.userId,

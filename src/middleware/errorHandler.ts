@@ -24,11 +24,11 @@ const errorHandler: ErrorRequestHandler = (err: Error | any, req: Request, res: 
 
   //JWT errors
   if (err.name === "JsonWebTokenError") {
-    res.status(401).json({ error: "Unauthorized - Invalid token" });
+    res.status(401).json({ error: "Invalid token" });
     return;
   }
   if (err.name === "TokenExpiredError") {
-    res.status(401).json({ error: "Unauthorized - Token expired" });
+    res.status(401).json({ error: "Token expired" });
     return;
   }
 
@@ -44,16 +44,16 @@ const errorHandler: ErrorRequestHandler = (err: Error | any, req: Request, res: 
   // Google auth errors
 
   if (err.name === "Invalid Google token") {
-    res.status(401).json({ error: "Unauthorized - Invalid Google token" });
+    res.status(401).json({ error: "Invalid Google token" });
     return;
   }
   if (err.name === "Invalid Google token payload") {
-    res.status(401).json({ error: "Unauthorized - Invalid Google token payload" });
+    res.status(401).json({ error: "Invalid Google token payload" });
     return;
   }
 
   if (err.name === "Google auth Error") {
-    res.status(401).json({ error: "Unauthorized - Google auth Error" });
+    res.status(401).json({ error: "Google auth Error" });
     return;
   }
 

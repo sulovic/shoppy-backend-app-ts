@@ -8,7 +8,7 @@ const refreshAccessTokenController = async (req: Request, res: Response, next: N
     const refreshToken = req.cookies?.refreshToken;
 
     if (!refreshToken) {
-      return res.status(401).json({ error: "Unauthorized - Refresh token not presented" });
+      return res.status(401).json({ error: "Refresh token not presented" });
     }
 
     // Verify the token signature
@@ -22,11 +22,11 @@ const refreshAccessTokenController = async (req: Request, res: Response, next: N
     const foundUser = users?.[0];
 
     if (!foundUser) {
-      return res.status(401).json({ message: "Invalid user or user not found" });
+      return res.status(401).json({ error: "Invalid user or user not found" });
     }
 
     if (refreshToken !== foundUser.refreshToken) {
-      return res.status(401).json({ error: "Unauthorized - Invalid Refresh Token" });
+      return res.status(401).json({ error: "Invalid Refresh Token" });
     }
 
     // Refresh token is valid, issue new access token}

@@ -12,7 +12,7 @@ const handleGoogleLogin = async (req: Request, res: Response, next: NextFunction
     // exchange code for access token
 
     const { code, redirect_uri } = req.body;
-    if (!code) return res.status(400).json({ message: "Missing code" });
+    if (!code) return res.status(400).json({ error: "Missing code" });
 
     const tokenResponse = await fetch(config.tokenUrl, {
       method: "POST",
@@ -29,7 +29,7 @@ const handleGoogleLogin = async (req: Request, res: Response, next: NextFunction
     const tokenData = await tokenResponse.json();
     const idToken = tokenData.id_token;
 
-    if (!idToken) return res.status(401).json({ message: "Token exchange failed" });
+    if (!idToken) return res.status(401).json({ error: "Token exchange failed" });
 
     //  Find user in DB and generate tokens
 
@@ -38,7 +38,7 @@ const handleGoogleLogin = async (req: Request, res: Response, next: NextFunction
 
     const users = await userModel.getAllUsers({ whereClause: { email } });
     const foundUser = users[0];
-    if (!foundUser) return res.status(401).json({ message: "User not found" });
+    if (!foundUser) return res.status(401).json({ error: "User not found" });
 
     const authUserData = {
       userId: foundUser.userId,

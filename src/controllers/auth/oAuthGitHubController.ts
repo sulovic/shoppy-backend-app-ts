@@ -10,7 +10,7 @@ const handleGithubLogin = async (req: Request, res: Response, next: NextFunction
   try {
     // exchange code for access token
     const { code } = req.query;
-    if (!code) return res.status(400).json({ message: "Missing code" });
+    if (!code) return res.status(400).json({ error: "Missing code" });
 
     const tokenResponse = await fetch(config.tokenUrl, {
       method: "POST",
@@ -27,7 +27,7 @@ const handleGithubLogin = async (req: Request, res: Response, next: NextFunction
     });
     const tokenData = await tokenResponse.json();
     const accessToken = tokenData.access_token;
-    if (!accessToken) return res.status(401).json({ message: "Token exchange failed" });
+    if (!accessToken) return res.status(401).json({ error: "Token exchange failed" });
 
     // Get user email
 
@@ -41,7 +41,7 @@ const handleGithubLogin = async (req: Request, res: Response, next: NextFunction
     //  Find user in DB and generate tokens
     const users = await userModel.getAllUsers({ whereClause: { email } });
     const foundUser = users[0];
-    if (!foundUser) return res.status(401).json({ message: "User not found" });
+    if (!foundUser) return res.status(401).json({ error: "User not found" });
 
     const authUserData = {
       userId: foundUser.userId,

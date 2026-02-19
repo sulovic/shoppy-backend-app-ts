@@ -29,7 +29,7 @@ const getAllPorudzbineController = async (req: Request, res: Response, next: Nex
       for (const key in filters) {
         const value = filters[key];
         if (!filterKeys.includes(key)) {
-          return res.status(400).json({ message: `Invalid filter key: ${key}` });
+          return res.status(400).json({ error: `Invalid filter key: ${key}` });
         }
 
         if (key === "godina") {
@@ -58,7 +58,7 @@ const getAllPorudzbineController = async (req: Request, res: Response, next: Nex
             contains: search,
             mode: "insensitive",
           },
-        }))
+        })),
       );
     }
 
@@ -95,7 +95,7 @@ const getAllPorudzbineCountController = async (req: Request, res: Response, next
       for (const key in filters) {
         const value = filters[key];
         if (!filterKeys.includes(key)) {
-          return res.status(400).json({ message: `Invalid filter key: ${key}` });
+          return res.status(400).json({ error: `Invalid filter key: ${key}` });
         }
 
         if (key === "godina") {
@@ -124,7 +124,7 @@ const getAllPorudzbineCountController = async (req: Request, res: Response, next
             contains: search,
             mode: "insensitive",
           },
-        }))
+        })),
       );
     }
 
@@ -144,13 +144,13 @@ const getPorudzbinaController = async (req: Request, res: Response, next: NextFu
     const id = parseInt(req.params.id);
 
     if (isNaN(id)) {
-      return res.status(400).json({ message: "Invalid porudzbina ID" });
+      return res.status(400).json({ error: "Invalid porudzbina ID" });
     }
 
     const porudzbinaData = await nabavkeModel.porudzbine.getPorudzbina(id);
 
     if (!porudzbinaData) {
-      return res.status(404).json({ message: "Porudzbina not found" });
+      return res.status(404).json({ error: "Porudzbina not found" });
     }
 
     return res.status(200).json({ data: porudzbinaData });
@@ -183,7 +183,7 @@ const updatePorudzbinaController = async (req: Request, res: Response, next: Nex
     const id: number = parseInt(req.params.id);
 
     if (isNaN(id)) {
-      return res.status(400).json({ message: "Invalid ID Porudzbine" });
+      return res.status(400).json({ error: "Invalid ID Porudzbine" });
     }
 
     const parsedPorudzbina = PorudzbinaSchema.omit({ id: true }).parse(req.body);
@@ -211,7 +211,7 @@ const deletePorudzbinaController = async (req: Request, res: Response, next: Nex
     const id: number = parseInt(req.params.id);
 
     if (isNaN(id)) {
-      return res.status(400).json({ message: "Invalid ID Porudzbine" });
+      return res.status(400).json({ error: "Invalid ID Porudzbine" });
     }
 
     const deletedPorudzbina = await nabavkeModel.porudzbine.deletePorudzbina(id);
@@ -249,7 +249,7 @@ const getAllProizvodiController = async (req: Request, res: Response, next: Next
       for (const key in filters) {
         const value = filters[key];
         if (!filterKeys.includes(key)) {
-          return res.status(400).json({ message: `Invalid filter key: ${key}` });
+          return res.status(400).json({ error: `Invalid filter key: ${key}` });
         }
 
         andConditions.push({ [key]: { in: [value] } });
@@ -263,7 +263,7 @@ const getAllProizvodiController = async (req: Request, res: Response, next: Next
             contains: search,
             mode: "insensitive",
           },
-        }))
+        })),
       );
     }
 
@@ -300,7 +300,7 @@ const getAllProizvodiCountController = async (req: Request, res: Response, next:
       for (const key in filters) {
         const value = filters[key];
         if (!filterKeys.includes(key)) {
-          return res.status(400).json({ message: `Invalid filter key: ${key}` });
+          return res.status(400).json({ error: `Invalid filter key: ${key}` });
         }
 
         andConditions.push({ [key]: { in: [value] } });
@@ -314,7 +314,7 @@ const getAllProizvodiCountController = async (req: Request, res: Response, next:
             contains: search,
             mode: "insensitive",
           },
-        }))
+        })),
       );
     }
 
@@ -334,13 +334,13 @@ const getProizvodController = async (req: Request, res: Response, next: NextFunc
     const id = parseInt(req.params.id);
 
     if (isNaN(id)) {
-      return res.status(400).json({ message: "Invalid ID Proizvoda" });
+      return res.status(400).json({ error: "Invalid ID Proizvoda" });
     }
 
     const proizvodData = await nabavkeModel.proizvodi.getProizvod(id);
 
     if (!proizvodData) {
-      return res.status(404).json({ message: "Proizvod not found" });
+      return res.status(404).json({ error: "Proizvod not found" });
     }
 
     return res.status(200).json({ data: proizvodData });
@@ -366,7 +366,7 @@ const updateProizvodController = async (req: Request, res: Response, next: NextF
     const id: number = parseInt(req.params.id);
 
     if (isNaN(id)) {
-      return res.status(400).json({ message: "Invalid ID Proizvoda" });
+      return res.status(400).json({ error: "Invalid ID Proizvoda" });
     }
 
     const parsedProizvod = NabavkeProizvodSchema.omit({ id: true }).parse(req.body);
@@ -384,7 +384,7 @@ const deleteProizvodController = async (req: Request, res: Response, next: NextF
     const id: number = parseInt(req.params.id);
 
     if (isNaN(id)) {
-      return res.status(400).json({ message: "Invalid ID Proizvoda" });
+      return res.status(400).json({ error: "Invalid ID Proizvoda" });
     }
 
     const deletedProizvod = await nabavkeModel.proizvodi.deleteProizvod(id);

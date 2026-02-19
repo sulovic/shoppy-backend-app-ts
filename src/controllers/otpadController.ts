@@ -30,7 +30,7 @@ const getAllJciController = async (req: Request, res: Response, next: NextFuncti
       for (const key in filters) {
         const value = filters[key];
         if (!filterKeys.includes(key)) {
-          return res.status(400).json({ message: `Invalid filter key: ${key}` });
+          return res.status(400).json({ error: `Invalid filter key: ${key}` });
         }
 
         if (key === "godina") {
@@ -59,7 +59,7 @@ const getAllJciController = async (req: Request, res: Response, next: NextFuncti
             contains: search,
             mode: "insensitive",
           },
-        }))
+        })),
       );
     }
 
@@ -96,7 +96,7 @@ const getAllJciCountController = async (req: Request, res: Response, next: NextF
       for (const key in filters) {
         const value = filters[key];
         if (!filterKeys.includes(key)) {
-          return res.status(400).json({ message: `Invalid filter key: ${key}` });
+          return res.status(400).json({ error: `Invalid filter key: ${key}` });
         }
 
         if (key === "godina") {
@@ -125,7 +125,7 @@ const getAllJciCountController = async (req: Request, res: Response, next: NextF
             contains: search,
             mode: "insensitive",
           },
-        }))
+        })),
       );
     }
 
@@ -145,13 +145,13 @@ const getJciController = async (req: Request, res: Response, next: NextFunction)
     const id = parseInt(req.params.id);
 
     if (isNaN(id)) {
-      return res.status(400).json({ message: "Invalid JCI ID" });
+      return res.status(400).json({ error: "Invalid JCI ID" });
     }
 
     const jciData = await otpadModel.jci.getJci(id);
 
     if (!jciData) {
-      return res.status(404).json({ message: "JCI not found" });
+      return res.status(404).json({ error: "JCI not found" });
     }
 
     return res.status(200).json({ data: jciData });
@@ -189,7 +189,7 @@ const updateJciController = async (req: Request, res: Response, next: NextFuncti
     const id: number = parseInt(req.params.id);
 
     if (isNaN(id)) {
-      return res.status(400).json({ message: "Invalid JCI ID" });
+      return res.status(400).json({ error: "Invalid JCI ID" });
     }
 
     const parsedJci = JciPodaciSchema.omit({ id: true }).parse(req.body);
@@ -219,7 +219,7 @@ const deleteJciController = async (req: Request, res: Response, next: NextFuncti
     const id = parseInt(req.params.id);
 
     if (isNaN(id)) {
-      return res.status(400).json({ message: "Invalid JCI ID" });
+      return res.status(400).json({ error: "Invalid JCI ID" });
     }
 
     const deletedJci = await otpadModel.jci.deleteJci(id);
@@ -257,7 +257,7 @@ const getAllVrsteOtpadaController = async (req: Request, res: Response, next: Ne
       for (const key in filters) {
         const value = filters[key];
         if (!filterKeys.includes(key)) {
-          return res.status(400).json({ message: `Invalid filter key: ${key}` });
+          return res.status(400).json({ error: `Invalid filter key: ${key}` });
         }
 
         andConditions.push({ [key]: { in: [value] } });
@@ -271,7 +271,7 @@ const getAllVrsteOtpadaController = async (req: Request, res: Response, next: Ne
             contains: search,
             mode: "insensitive",
           },
-        }))
+        })),
       );
     }
 
@@ -308,7 +308,7 @@ const getAllVrsteOtpadaCountController = async (req: Request, res: Response, nex
       for (const key in filters) {
         const value = filters[key];
         if (!filterKeys.includes(key)) {
-          return res.status(400).json({ message: `Invalid filter key: ${key}` });
+          return res.status(400).json({ error: `Invalid filter key: ${key}` });
         }
 
         andConditions.push({ [key]: { in: [value] } });
@@ -322,7 +322,7 @@ const getAllVrsteOtpadaCountController = async (req: Request, res: Response, nex
             contains: search,
             mode: "insensitive",
           },
-        }))
+        })),
       );
     }
 
@@ -343,13 +343,13 @@ const getVrstaOtpadaController = async (req: Request, res: Response, next: NextF
     const id = parseInt(req.params.id);
 
     if (isNaN(id)) {
-      return res.status(400).json({ message: "Invalid Vrsta otpada ID" });
+      return res.status(400).json({ error: "Invalid Vrsta otpada ID" });
     }
 
     const vrstaOtpada = await otpadModel.vrsteOtpada.getVrstaOtpada(id);
 
     if (!vrstaOtpada) {
-      return res.status(404).json({ message: "Vrsta otpada not found" });
+      return res.status(404).json({ error: "Vrsta otpada not found" });
     }
 
     return res.status(200).json({ data: vrstaOtpada });
@@ -375,7 +375,7 @@ const updateVrstaOtpadaController = async (req: Request, res: Response, next: Ne
     const id = parseInt(req.params.id);
 
     if (isNaN(id)) {
-      return res.status(400).json({ message: "Invalid Vrsta otpada ID" });
+      return res.status(400).json({ error: "Invalid Vrsta otpada ID" });
     }
 
     const parsedVrstaOtpada = VrstaOtpadaSchema.parse(req.body);
@@ -393,7 +393,7 @@ const deleteVrstaOtpadaController = async (req: Request, res: Response, next: Ne
     const id = parseInt(req.params.id);
 
     if (isNaN(id)) {
-      return res.status(400).json({ message: "Invalid Vrsta otpada ID" });
+      return res.status(400).json({ error: "Invalid Vrsta otpada ID" });
     }
 
     const deletedVrstaOtpada = await otpadModel.vrsteOtpada.deleteVrstaOtpada(id);
@@ -431,7 +431,7 @@ const getAllProizvodiController = async (req: Request, res: Response, next: Next
       for (const key in filters) {
         const value = filters[key];
         if (!filterKeys.includes(key)) {
-          return res.status(400).json({ message: `Invalid filter key: ${key}` });
+          return res.status(400).json({ error: `Invalid filter key: ${key}` });
         }
 
         andConditions.push({ [key]: { in: [value] } });
@@ -445,7 +445,7 @@ const getAllProizvodiController = async (req: Request, res: Response, next: Next
             contains: search,
             mode: "insensitive",
           },
-        }))
+        })),
       );
     }
 
@@ -482,7 +482,7 @@ const getAllProizvodiCountController = async (req: Request, res: Response, next:
       for (const key in filters) {
         const value = filters[key];
         if (!filterKeys.includes(key)) {
-          return res.status(400).json({ message: `Invalid filter key: ${key}` });
+          return res.status(400).json({ error: `Invalid filter key: ${key}` });
         }
 
         andConditions.push({ [key]: { in: [value] } });
@@ -496,7 +496,7 @@ const getAllProizvodiCountController = async (req: Request, res: Response, next:
             contains: search,
             mode: "insensitive",
           },
-        }))
+        })),
       );
     }
 
@@ -516,13 +516,13 @@ const getProizvodController = async (req: Request, res: Response, next: NextFunc
     const id = parseInt(req.params.id);
 
     if (isNaN(id)) {
-      return res.status(400).json({ message: "Invalid Proizvod ID" });
+      return res.status(400).json({ error: "Invalid Proizvod ID" });
     }
 
     const proizvodData = await otpadModel.proizvodi.getProizvod(id);
 
     if (!proizvodData) {
-      return res.status(404).json({ message: "Proizvod not found" });
+      return res.status(404).json({ error: "Proizvod not found" });
     }
 
     return res.status(200).json({ data: proizvodData });
@@ -562,7 +562,7 @@ const updateProizvodController = async (req: Request, res: Response, next: NextF
     const id: number = parseInt(req.params.id);
 
     if (isNaN(id)) {
-      return res.status(400).json({ message: "Invalid Proizvod ID" });
+      return res.status(400).json({ error: "Invalid Proizvod ID" });
     }
 
     const parsedProizvod = JciProizvodiSchema.omit({ id: true }).parse(req.body);
@@ -593,7 +593,7 @@ const deleteProizvodController = async (req: Request, res: Response, next: NextF
     const id = parseInt(req.params.id);
 
     if (isNaN(id)) {
-      return res.status(400).json({ message: "Invalid Proizvod ID" });
+      return res.status(400).json({ error: "Invalid Proizvod ID" });
     }
 
     const deletedProizvod = await otpadModel.proizvodi.deleteProizvod(id);

@@ -28,10 +28,10 @@ const getAllUsersController = async (req: Request, res: Response, next: NextFunc
       for (const key in filters) {
         const value = filters[key];
         if (!filterKeys.includes(key)) {
-          return res.status(400).json({ message: `Invalid filter key: ${key}` });
+          return res.status(400).json({ error: `Invalid filter key: ${key}` });
         }
 
-        andConditions.push({ [key]: { in: [key==="roleId" ? Number(value) : value] } });
+        andConditions.push({ [key]: { in: [key === "roleId" ? Number(value) : value] } });
       }
     }
 
@@ -42,7 +42,7 @@ const getAllUsersController = async (req: Request, res: Response, next: NextFunc
             contains: search,
             mode: "insensitive",
           },
-        }))
+        })),
       );
     }
 
@@ -90,10 +90,10 @@ const getAllUsersCountController = async (req: Request, res: Response, next: Nex
       for (const key in filters) {
         const value = filters[key];
         if (!filterKeys.includes(key)) {
-          return res.status(400).json({ message: `Invalid filter key: ${key}` });
+          return res.status(400).json({ error: `Invalid filter key: ${key}` });
         }
 
-        andConditions.push({ [key]: { in: [key==="roleId" ? Number(value) : value] } });
+        andConditions.push({ [key]: { in: [key === "roleId" ? Number(value) : value] } });
       }
     }
 
@@ -104,7 +104,7 @@ const getAllUsersCountController = async (req: Request, res: Response, next: Nex
             contains: search,
             mode: "insensitive",
           },
-        }))
+        })),
       );
     }
 
@@ -124,13 +124,13 @@ const getUserController = async (req: Request, res: Response, next: NextFunction
     const userId = parseInt(req.params.userId);
 
     if (isNaN(userId)) {
-      return res.status(400).json({ message: "Invalid user ID" });
+      return res.status(400).json({ error: "Invalid user ID" });
     }
 
     const userSensitiveData = await userModel.getUser(userId);
 
     if (!userSensitiveData) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ error: "User not found" });
     } else {
       const userData: UserData = {
         userId: userSensitiveData.userId,
@@ -179,7 +179,7 @@ const updateUserController = async (req: Request, res: Response, next: NextFunct
     const userId: number = parseInt(req.params.userId);
 
     if (isNaN(userId)) {
-      return res.status(400).json({ message: "Invalid user ID" });
+      return res.status(400).json({ error: "Invalid user ID" });
     }
 
     const { roleId, ...parsedUser } = userSensitiveDataSchema.omit({ userId: true }).parse(req.body);
@@ -211,7 +211,7 @@ const deleteUserController = async (req: Request, res: Response, next: NextFunct
     const userId: number = parseInt(req.params.userId);
 
     if (isNaN(userId)) {
-      return res.status(400).json({ message: "Invalid user ID" });
+      return res.status(400).json({ error: "Invalid user ID" });
     }
 
     const deletedUserSensitiveData = await userModel.deleteUser(userId);

@@ -11,12 +11,12 @@ const verifyAccessToken = async (req: RequestWithAuth, res: Response, next: Next
     const authHeader = req.headers?.authorization;
 
     if (!authHeader) {
-      return res.status(401).json({ error: "Unauthorized - Missing Authorization Header" });
+      return res.status(401).json({ error: "Missing Authorization Header" });
     }
     const [scheme, accessToken] = authHeader.split(" ");
 
     if (scheme !== "Bearer" || !accessToken) {
-      return res.status(401).json({ error: "Unauthorized - Invalid Authorization format" });
+      return res.status(401).json({ error: "Invalid Authorization format" });
     }
 
     // Verify the accessToken signature

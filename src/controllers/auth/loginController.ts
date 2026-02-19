@@ -8,7 +8,7 @@ const loginController = async (req: Request, res: Response, next: NextFunction) 
     const { email, password }: { email: string; password?: string } = req.body;
 
     if (!email || !password) {
-      return res.status(400).json({ message: "Missing email or password" });
+      return res.status(400).json({ error: "Missing email or password" });
     }
 
     const users = await userModel.getAllUsers({ whereClause: { email } });
@@ -16,17 +16,17 @@ const loginController = async (req: Request, res: Response, next: NextFunction) 
     const foundUser = users?.[0];
 
     if (!foundUser) {
-      return res.status(401).json({ message: "Invalid email or user not found" });
+      return res.status(401).json({ error: "Invalid email or user not found" });
     }
 
     if (!foundUser.passwordHash) {
-      return res.status(401).json({ message: "User has no password" });
+      return res.status(401).json({ error: "User has no password" });
     }
 
     const passwordMatch = await bcrypt.compare(password, foundUser.passwordHash);
 
     if (!passwordMatch) {
-      return res.status(401).json({ message: "Invalid password" });
+      return res.status(401).json({ error: "Invalid password" });
     }
 
     const authUserData: UserData = {
