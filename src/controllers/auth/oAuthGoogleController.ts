@@ -36,8 +36,12 @@ const handleGoogleLogin = async (req: Request, res: Response, next: NextFunction
     const decodedIdToken: any = jwt.decode(idToken);
     const email = decodedIdToken.email;
 
-    const users = await userModel.getAllUsers({ whereClause: { email } });
-    const foundUser = users[0];
+    const { usersSensitiveData, count } = await userModel.getAllUsers({ whereClause: { email } });
+
+    if (count === 0) {
+      return res.status(401).json({ error: "Multiple users found" });
+    }
+    const foundUser = usersSensitiveData[0];
     if (!foundUser) return res.status(401).json({ error: "User not found" });
 
     const authUserData = {

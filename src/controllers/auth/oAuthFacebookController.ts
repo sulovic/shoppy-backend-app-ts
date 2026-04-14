@@ -27,8 +27,12 @@ const handleFacebookLogin = async (req: Request, res: Response, next: NextFuncti
     const email = userInfo.email || `${userInfo.id}@facebook.oauth.local`; // fallback if no email
 
     // Find user in DB
-    const users = await userModel.getAllUsers({ whereClause: { email } });
-    const foundUser = users[0];
+    const { usersSensitiveData, count } = await userModel.getAllUsers({ whereClause: { email: email } });
+
+    if (count === 0) {
+      return res.status(401).json({ error: "Multiple users found" });
+    }
+    const foundUser = usersSensitiveData[0];
     if (!foundUser) return res.status(401).json({ error: "User not found" });
 
     const authUserData = {

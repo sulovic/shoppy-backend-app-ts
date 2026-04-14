@@ -17,9 +17,12 @@ const refreshAccessTokenController = async (req: Request, res: Response, next: N
 
     // Check if the provided refresh token matches the one stored in the database
 
-    const users = await userModel.getAllUsers({ whereClause: { email: decodedRefreshToken.email } });
+    const { usersSensitiveData, count } = await userModel.getAllUsers({ whereClause: { email: decodedRefreshToken.email } });
 
-    const foundUser = users?.[0];
+    if (count === 0) {
+      return res.status(401).json({ error: "Multiple users found" });
+    }
+    const foundUser = usersSensitiveData[0];
 
     if (!foundUser) {
       return res.status(401).json({ error: "Invalid user or user not found" });

@@ -11,9 +11,12 @@ const loginController = async (req: Request, res: Response, next: NextFunction) 
       return res.status(400).json({ error: "Missing email or password" });
     }
 
-    const users = await userModel.getAllUsers({ whereClause: { email } });
+    const { usersSensitiveData, count } = await userModel.getAllUsers({ whereClause: { email: email } });
 
-    const foundUser = users?.[0];
+    if (count === 0) {
+      return res.status(401).json({ error: "Multiple users found" });
+    }
+    const foundUser = usersSensitiveData[0];
 
     if (!foundUser) {
       return res.status(401).json({ error: "Invalid email or user not found" });
