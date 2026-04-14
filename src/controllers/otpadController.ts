@@ -67,14 +67,14 @@ const getAllJciController = async (req: Request, res: Response, next: NextFuncti
       AND: [...andConditions, orConditions.length > 0 ? { OR: orConditions } : {}],
     };
 
-    const jciData = await otpadModel.jci.getAllJci({
+    const { jci, count } = await otpadModel.jci.getAllJci({
       whereClause,
       orderBy,
       take,
       skip,
     });
 
-    return res.status(200).json({ data: jciData });
+    return res.status(200).json({ data: jci, count });
   } catch (err) {
     next(err);
   }
@@ -279,14 +279,14 @@ const getAllVrsteOtpadaController = async (req: Request, res: Response, next: Ne
       AND: [...andConditions, orConditions.length > 0 ? { OR: orConditions } : {}],
     };
 
-    const vrsteOtpadaData = await otpadModel.vrsteOtpada.getAllVrsteOtpada({
+    const { vrsteOtpada, count } = await otpadModel.vrsteOtpada.getAllVrsteOtpada({
       whereClause,
       orderBy,
       take,
       skip,
     });
 
-    return res.status(200).json({ data: vrsteOtpadaData });
+    return res.status(200).json({ data: vrsteOtpada, count });
   } catch (err) {
     next(err);
   }
@@ -453,14 +453,14 @@ const getAllProizvodiController = async (req: Request, res: Response, next: Next
       AND: [...andConditions, orConditions.length > 0 ? { OR: orConditions } : {}],
     };
 
-    const proizvodiData = await otpadModel.proizvodi.getAllProizvodi({
+    const { proizvodi, count } = await otpadModel.proizvodi.getAllProizvodi({
       whereClause,
       orderBy,
       take,
       skip,
     });
 
-    return res.status(200).json({ data: proizvodiData });
+    return res.status(200).json({ data: proizvodi, count });
   } catch (err) {
     next(err);
   }

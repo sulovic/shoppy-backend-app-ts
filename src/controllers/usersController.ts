@@ -50,7 +50,7 @@ const getAllUsersController = async (req: Request, res: Response, next: NextFunc
       AND: [...andConditions, orConditions.length > 0 ? { OR: orConditions } : {}],
     };
 
-    const usersSensitiveData = await userModel.getAllUsers({
+    const { usersSensitiveData, count } = await userModel.getAllUsers({
       whereClause,
       orderBy,
       take,
@@ -68,7 +68,7 @@ const getAllUsersController = async (req: Request, res: Response, next: NextFunc
       };
     });
 
-    return res.status(200).json({ data: usersData });
+    return res.status(200).json({ data: usersData, count });
   } catch (err) {
     next(err);
   }

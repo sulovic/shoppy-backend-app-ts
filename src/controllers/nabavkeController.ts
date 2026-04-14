@@ -66,14 +66,14 @@ const getAllPorudzbineController = async (req: Request, res: Response, next: Nex
       AND: [...andConditions, orConditions.length > 0 ? { OR: orConditions } : {}],
     };
 
-    const porudzbineData = await nabavkeModel.porudzbine.getAllPorudzbine({
+    const { porudzbine, count } = await nabavkeModel.porudzbine.getAllPorudzbine({
       whereClause,
       orderBy,
       take,
       skip,
     });
 
-    return res.status(200).json({ data: porudzbineData });
+    return res.status(200).json({ data: porudzbine, count });
   } catch (err) {
     next(err);
   }
@@ -271,14 +271,14 @@ const getAllProizvodiController = async (req: Request, res: Response, next: Next
       AND: [...andConditions, orConditions.length > 0 ? { OR: orConditions } : {}],
     };
 
-    const proizvodiData = await nabavkeModel.proizvodi.getAllProizvodi({
+    const { proizvodi, count } = await nabavkeModel.proizvodi.getAllProizvodi({
       whereClause,
       orderBy,
       take,
       skip,
     });
 
-    return res.status(200).json({ data: proizvodiData });
+    return res.status(200).json({ data: proizvodi, count });
   } catch (err) {
     next(err);
   }

@@ -10,25 +10,31 @@ const prisma = new PrismaClient({ adapter });
 // JCI models
 
 const getAllJci = async ({ whereClause, orderBy, take, skip }: { whereClause?: Prisma.JciPodaciWhereInput; orderBy?: Prisma.JciPodaciOrderByWithRelationInput; take?: number; skip?: number }) => {
-  return await prisma.jciPodaci.findMany({
-    where: { ...whereClause },
-    orderBy: orderBy,
-    take: take,
-    skip: skip,
-    include: {
-      jciProizvodi: {
-        select: {
-          kolicina: true,
-          proizvod: {
-            select: {
-              id: true,
-              proizvod: true,
+  const [jci, count] = await prisma.$transaction([
+    prisma.jciPodaci.findMany({
+      where: { ...whereClause },
+      orderBy: orderBy,
+      take: take,
+      skip: skip,
+      include: {
+        jciProizvodi: {
+          select: {
+            kolicina: true,
+            proizvod: {
+              select: {
+                id: true,
+                proizvod: true,
+              },
             },
           },
         },
       },
-    },
-  });
+    }),
+    prisma.jciPodaci.count({
+      where: { ...whereClause },
+    }),
+  ]);
+  return { jci, count };
 };
 
 const getAllJciCount = async ({ whereClause }: { whereClause?: Prisma.JciPodaciWhereInput }) => {
@@ -123,27 +129,33 @@ const deleteJci = async (id: number) => {
 //Proizvodi models
 
 const getAllProizvodi = async ({ whereClause, orderBy, take, skip }: { whereClause?: Prisma.ProizvodiWhereInput; orderBy?: Prisma.ProizvodiOrderByWithRelationInput; take?: number; skip?: number }) => {
-  return await prisma.proizvodi.findMany({
-    where: { ...whereClause },
-    orderBy: orderBy,
-    take: take,
-    skip: skip,
-    select: {
-      id: true,
-      proizvod: true,
-      ProizvodMasaOtpada: {
-        select: {
-          masa: true,
-          VrstaOtpada: {
-            select: {
-              id: true,
-              vrstaOtpada: true,
+  const [proizvodi, count] = await prisma.$transaction([
+    prisma.proizvodi.findMany({
+      where: { ...whereClause },
+      orderBy: orderBy,
+      take: take,
+      skip: skip,
+      select: {
+        id: true,
+        proizvod: true,
+        ProizvodMasaOtpada: {
+          select: {
+            masa: true,
+            VrstaOtpada: {
+              select: {
+                id: true,
+                vrstaOtpada: true,
+              },
             },
           },
         },
       },
-    },
-  });
+    }),
+    prisma.proizvodi.count({
+      where: { ...whereClause },
+    }),
+  ]);
+  return { proizvodi, count };
 };
 
 const getAllProizvodiCount = async ({ whereClause }: { whereClause?: Prisma.ProizvodiWhereInput }) => {
@@ -246,16 +258,22 @@ const deleteProizvod = async (id: number) => {
 // Vrste otpada models
 
 const getAllVrsteOtpada = async ({ whereClause, orderBy, take, skip }: { whereClause?: Prisma.VrsteOtpadaWhereInput; orderBy?: Prisma.VrsteOtpadaOrderByWithRelationInput; take?: number; skip?: number }) => {
-  return await prisma.vrsteOtpada.findMany({
-    where: { ...whereClause },
-    orderBy: orderBy,
-    take: take,
-    skip: skip,
-    select: {
-      id: true,
-      vrstaOtpada: true,
-    },
-  });
+  const [vrsteOtpada, count] = await prisma.$transaction([
+    prisma.vrsteOtpada.findMany({
+      where: { ...whereClause },
+      orderBy: orderBy,
+      take: take,
+      skip: skip,
+      select: {
+        id: true,
+        vrstaOtpada: true,
+      },
+    }),
+    prisma.vrsteOtpada.count({
+      where: { ...whereClause },
+    }),
+  ]);
+  return { vrsteOtpada, count };
 };
 
 const getAllVrsteOtpadaCount = async ({ whereClause }: { whereClause?: Prisma.VrsteOtpadaWhereInput }) => {

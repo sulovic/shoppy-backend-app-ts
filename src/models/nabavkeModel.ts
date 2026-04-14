@@ -8,28 +8,35 @@ const adapter = new PrismaPg({
 const prisma = new PrismaClient({ adapter });
 
 const getAllPorudzbine = async ({ whereClause, orderBy, take, skip }: { whereClause?: Prisma.PorudzbineWhereInput; orderBy?: Prisma.PorudzbineOrderByWithRelationInput; take?: number; skip?: number }) => {
-  return await prisma.porudzbine.findMany({
-    where: { ...whereClause },
-    orderBy: orderBy,
-    take: take,
-    skip: skip,
-    include: {
-      sadrzaj: {
-        select: {
-          id: true,
-          cena: true,
-          kolicina: true,
-          proizvod: {
-            select: {
-              id: true,
-              naziv: true,
-              SKU: true,
+  const [porudzbine, count] = await prisma.$transaction([
+    prisma.porudzbine.findMany({
+      where: { ...whereClause },
+      orderBy: orderBy,
+      take: take,
+      skip: skip,
+      include: {
+        sadrzaj: {
+          select: {
+            id: true,
+            cena: true,
+            kolicina: true,
+            proizvod: {
+              select: {
+                id: true,
+                naziv: true,
+                SKU: true,
+              },
             },
           },
         },
       },
-    },
-  });
+    }),
+    prisma.porudzbine.count({
+      where: { ...whereClause },
+    }),
+  ]);
+
+  return { porudzbine, count };
 };
 
 const getAllPorudzbineCount = async ({ whereClause }: { whereClause?: Prisma.PorudzbineWhereInput }) => {
@@ -134,12 +141,19 @@ const deletePorudzbina = async (id: number) => {
 };
 
 const getAllProizvodi = async ({ whereClause, orderBy, take, skip }: { whereClause?: Prisma.ProizvodiWhereInput; orderBy?: Prisma.ProizvodiOrderByWithRelationInput; take?: number; skip?: number }) => {
-  return await prisma.proizvodi.findMany({
-    where: { ...whereClause },
-    orderBy: orderBy,
-    take: take,
-    skip: skip,
-  });
+  const [proizvodi, count] = await prisma.$transaction([
+    prisma.proizvodi.findMany({
+      where: { ...whereClause },
+      orderBy: orderBy,
+      take: take,
+      skip: skip,
+    }),
+    prisma.proizvodi.count({
+      where: { ...whereClause },
+    }),
+  ]);
+
+  return { proizvodi, count };
 };
 
 const getAllProizvodiCount = async ({ whereClause }: { whereClause?: Prisma.ProizvodiWhereInput }) => {

@@ -8,12 +8,18 @@ const adapter = new PrismaPg({
 const prisma = new PrismaClient({ adapter });
 
 const getAllReklamacije = async ({ whereClause, orderBy, take, skip }: { whereClause?: Prisma.ReklamacijeWhereInput; orderBy?: Prisma.ReklamacijeOrderByWithRelationInput; take?: number; skip?: number }) => {
-  return await prisma.reklamacije.findMany({
-    where: { ...whereClause },
-    orderBy: orderBy,
-    take: take,
-    skip: skip,
-  });
+  const [reklamacije, count] = await prisma.$transaction([
+    prisma.reklamacije.findMany({
+      where: { ...whereClause },
+      orderBy: orderBy,
+      take: take,
+      skip: skip,
+    }),
+    prisma.reklamacije.count({
+      where: { ...whereClause },
+    }),
+  ]);
+  return { reklamacije, count };
 };
 
 const getAllReklamacijeCount = async ({ whereClause }: { whereClause?: Prisma.ReklamacijeWhereInput }) => {

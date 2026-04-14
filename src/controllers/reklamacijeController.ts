@@ -65,14 +65,14 @@ const getAllReklamacijeController = async (req: Request, res: Response, next: Ne
       AND: [...andConditions, orConditions.length > 0 ? { OR: orConditions } : {}],
     };
 
-    const reklamacijeData = await reklamacijeModel.getAllReklamacije({
+    const { reklamacije, count } = await reklamacijeModel.getAllReklamacije({
       whereClause,
       orderBy,
       take,
       skip,
     });
 
-    return res.status(200).json({ data: reklamacijeData });
+    return res.status(200).json({ data: reklamacije, count });
   } catch (err) {
     next(err);
   }
@@ -166,13 +166,13 @@ const getPublicReklamacijaController = async (req: Request, res: Response, next:
       return res.status(400).json({ error: "Invalid Broj reklamacije" });
     }
 
-    const reklamacijeData = await reklamacijeModel.getAllReklamacije({ whereClause: { brojReklamacije } });
+    const { reklamacije, count } = await reklamacijeModel.getAllReklamacije({ whereClause: { brojReklamacije } });
 
-    if (!reklamacijeData || reklamacijeData.length != 1) {
+    if (!reklamacije || reklamacije.length != 1 || count != 1) {
       return res.status(404).json({ error: "Reklamacija not found" });
     }
 
-    const { komentar: _komentar, smsSent: _smsSent, files: _files, ...reklamacijaPublicData } = reklamacijeData[0];
+    const { komentar: _komentar, smsSent: _smsSent, files: _files, ...reklamacijaPublicData } = reklamacije[0];
     res.status(200).json({ data: reklamacijaPublicData });
   } catch (err) {
     next(err);

@@ -10,19 +10,25 @@ const adapter = new PrismaPg({
 const prisma = new PrismaClient({ adapter });
 
 const getAllUsers = async ({ whereClause, orderBy, take, skip }: { whereClause?: Prisma.UsersWhereInput; orderBy?: Prisma.UsersOrderByWithRelationInput; take?: number; skip?: number }) => {
-  return await prisma.users.findMany({
-    where: { ...whereClause, deleted: false },
-    orderBy: orderBy,
-    take: take,
-    skip: skip,
-    include: {
-      role: {
-        select: {
-          role: true,
+  const [users, count] = await prisma.$transaction([
+    prisma.users.findMany({
+      where: { ...whereClause, deleted: false },
+      orderBy: orderBy,
+      take: take,
+      skip: skip,
+      include: {
+        role: {
+          select: {
+            role: true,
+          },
         },
       },
-    },
-  });
+    }),
+    prisma.users.count({
+      where: { ...whereClause, deleted: false },
+    }),
+  ]);
+  return { usersSensitiveData: users, count };
 };
 
 const getAllUsersCount = async ({ whereClause }: { whereClause?: Prisma.UsersWhereInput }) => {
